@@ -1,18 +1,19 @@
 import React from 'react'
-import { Route, Routes, BrowserRouter } from "react-router-dom"
-import Login from  './pages/auth/login'
+import { Route, Routes, BrowserRouter } from 'react-router-dom'
+import Login from './pages/auth/login'
+import NewPartitura from './pages/partituras/newpartitura'
 import Menu from './pages/menu/menu'
-
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        {/* Rutas independientes (no anidadas) */}
-        <Route path="/" element={<Login />} />
-        <Route path="/menu" element={<Menu />} />
-      </Routes>
-    </BrowserRouter>
-  )
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/new_partitura" element={<NewPartitura />} />
+                <Route path="/menu" element={<Menu />} />
+                {/*<Route path="*" element={<NoPage />} />*/}
+            </Routes>
+        </BrowserRouter>
+    )
 }
 
 export default App
