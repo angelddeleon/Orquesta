@@ -4,7 +4,8 @@ import Layout from '../../layout/layout';
 export default function Login(){
     return (
         <Layout>
-            <h1>Login</h1>
+            <img src="" alt="" />
+            <h1>Bienvenido de Nuevo</h1>
         </Layout>
     )
 }
