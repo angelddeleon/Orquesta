@@ -1,0 +1,10 @@
+/* login.css */
+.container {
+    width: 100% !important; /* Fuerza el ancho al 100% */
+}
+
+@media (min-width: 992px) { /* Pantallas grandes (lg) */
+    .container {
+        width: 25% !important; /* Fuerza el ancho al 25% */
+    }
+}
