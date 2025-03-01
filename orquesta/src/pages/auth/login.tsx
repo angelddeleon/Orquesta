@@ -1,19 +1,26 @@
 import React from 'react';
-// import Layout from '../../layout/layout';
-import './styles/login.css'; // Importa el archivo CSS
+import './styles/login.css';
 
 export default function Login() {
     return (
-        // <Layout>
-            <div className="h-100 w-100 d-flex justify-content-center align-items-start pt-5">
-                {/* Contenedor con ancho responsive */}
-                <div className="container text-center w-100 w-lg-25 p-3">
+        <main className="d-flex vh-100 vw-100">
+            {/* Segundo div (50% del ancho en pantallas grandes, 100% en móviles) */}
+            <div 
+                id='loginBackground' 
+                className="w-100 w-md-100 h-100 d-flex justify-content-center align-items-center d-none d-md-flex"
+            >
+                {/* Contenido del segundo div (puedes agregar una imagen o texto aquí) */}
+            </div>
+
+            {/* Primer div (50% del ancho en pantallas grandes, 100% en móviles) */}
+            <div id='login' className="w-100 w-lg-50 bg-primary h-100 d-flex justify-content-center align-items-center">
+                <div className="text-center w-90 w-lg-25 p-3">
                     {/* Imagen responsive */}
                     <img 
                         src="/brand/logo.webp" 
                         alt="Logo" 
-                        className="img-fluid mb-2" // Margen inferior reducido
-                        style={{ maxWidth: '150px', height: 'auto', marginTop: '-20px' }} // Mover la imagen hacia arriba
+                        className="img-fluid mb-2" 
+                        style={{ maxWidth: '150px', height: 'auto' }} 
                     />
 
                     {/* Título */}
@@ -39,11 +46,11 @@ export default function Login() {
                         <button 
                             className="btn btn-primary w-100 rounded-pill py-2"
                         >
-                            Iniciar Sesion
+                            Iniciar Sesión
                         </button>
                     </form>
                 </div>
             </div>
-        // </Layout>
+        </main>
     );
 }
