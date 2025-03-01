@@ -1,10 +1,10 @@
 import React from 'react';
-import Layout from '../../layout/layout';
+// import Layout from '../../layout/layout';
 import './styles/login.css'; // Importa el archivo CSS
 
 export default function Login() {
     return (
-        <Layout>
+        // <Layout>
             <div className="h-100 w-100 d-flex justify-content-center align-items-start pt-5">
                 {/* Contenedor con ancho responsive */}
                 <div className="container text-center w-100 w-lg-25 p-3">
@@ -44,6 +44,6 @@ export default function Login() {
                     </form>
                 </div>
             </div>
-        </Layout>
+        // </Layout>
     );
 }
