@@ -7,6 +7,7 @@
 body, html {
     color: black;
     font-family: 'Inter', sans-serif;
+    background-color: #f8f9fa;
 }
 
 .btn-primary {
@@ -20,4 +21,32 @@ body, html {
 
 .btn-primary:hover {
     background-color: #B59C1A;
+}
+body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+.main-content {
+    min-height: 100vh;
+    padding-top: 56px;
+    /* Altura del header móvil */
+    transition: all 0.3s;
+}
+
+@media (min-width: 768px) {
+    .main-content {
+        padding-top: 0;
+        margin-left: 15% !important;
+        width: 85% !important;
+    }
+
+    /* Sidebar fijo para desktop */
+    .sidebar-desktop {
+        width: 15% !important;
+        position: fixed;
+        left: 0;
+        height: 100vh;
+    }
 }
