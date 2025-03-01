@@ -2,9 +2,10 @@
 
 :root {
     --primary: #C7AE1F;
- }
+}
 
-body, html {
+body,
+html {
     color: black;
     font-family: 'Inter', sans-serif;
     background-color: #f8f9fa;
@@ -22,10 +23,15 @@ body, html {
 .btn-primary:hover {
     background-color: #B59C1A;
 }
+
 body {
     overflow-x: hidden;
     margin: 0;
     padding: 0;
+}
+
+.text-primary {
+    color: var(--primary) !important;
 }
 
 .main-content {
