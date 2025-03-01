@@ -14,7 +14,6 @@ function App() {
                 <Route path="/menu" element={<Menu />} />
                 <Route path="/usuarios" element={<Usuarios />} />
                 <Route path="/crear_usuario" element={<CrearUsuario />} />
-                
                 {/*<Route path="*" element={<NoPage />} />*/}
             </Routes>
         </BrowserRouter>

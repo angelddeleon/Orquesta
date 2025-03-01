@@ -1,13 +1,25 @@
-import React from 'react'
-import Layout from '../../layout/layout'
-import { Link } from 'react-router-dom'
-import './styles/menu.css'
+import React, {useState, useEffect} from 'react';
+import Layout from '../../layout/layout';
+import { Link } from 'react-router-dom';
+import './styles/menu.css';
+import type Partitura from '../../types/Partitura';
 
 export default function Menu() {
+
+    const [partituras, setPartituras] = useState<Partitura[]>([]);
+
+    //Vincular con el Fetch del backend
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await fetch('/data/partituras.json');
+            const data = await response.json();
+            setPartituras(data);
+        };
+        fetchData();
+    }, []);
+
     return (
         <Layout>
-            {/* <div className="d-flex vh-100"> */}
-
             {/* Contenido principal - 80% del ancho */}
             <div className="main-content p-4">
                 {/* Header con título y botones */}
@@ -60,11 +72,28 @@ export default function Menu() {
                                 <th>Observaciones</th>
                             </tr>
                         </thead>
-                        <tbody>{/* Aquí irían las filas de datos */}</tbody>
+                        <tbody>
+                            {partituras.map((partitura, index) => (
+                                <tr key={index}>
+                                    <td>{partitura.archivero}</td>
+                                    <td>{partitura.caja}</td>
+                                    <td>{partitura.compositor}</td>
+                                    <td>{partitura.arreglista}</td>
+                                    <td>{partitura.orquestacion}</td>
+                                    <td>{partitura.obra}</td>
+                                    <td>{partitura.originales}</td>
+                                    <td>{partitura.originales}</td>
+                                    <td>{partitura.copias}</td>
+                                    <td>{partitura.copias}</td>
+                                    <td>{partitura.categoria}</td>
+                                    <td>{partitura.score}</td>
+                                    <td>{partitura.observaciones}</td>
+                                </tr>
+                            ))}
+                        </tbody>
                     </table>
                 </div>
             </div>
-            {/* </div> */}
         </Layout>
-    )
+    );
 }
