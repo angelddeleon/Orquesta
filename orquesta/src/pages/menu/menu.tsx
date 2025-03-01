@@ -1,22 +1,28 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../../layout/layout';
 import { Link } from 'react-router-dom';
 import './styles/menu.css';
 import type Partitura from '../../types/Partitura';
 
 export default function Menu() {
-
     const [partituras, setPartituras] = useState<Partitura[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(10);
+    const [totalPages, setTotalPages] = useState(0);
 
-    //Vincular con el Fetch del backend
+    // Obtener datos del backend
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch('/data/partituras.json');
-            const data = await response.json();
+            const response = await fetch(`/api/partituras?page=${currentPage}&limit=${itemsPerPage}`);
+            const { data, total } = await response.json();
             setPartituras(data);
+            setTotalPages(Math.ceil(total / itemsPerPage));
         };
         fetchData();
-    }, []);
+    }, [currentPage, itemsPerPage]);
+
+    // Cambiar de página
+    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
     return (
         <Layout>
@@ -51,8 +57,6 @@ export default function Menu() {
                         Filtrar
                     </button>
                 </div>
-
-                {/* Tabla de partituras */}
                 <div className="table-responsive">
                     <table className="table table-striped table-hover">
                         <thead>
@@ -93,6 +97,41 @@ export default function Menu() {
                         </tbody>
                     </table>
                 </div>
+
+                {/* Controles de paginación */}
+                <nav>
+                    <ul className="pagination justify-content-center">
+                        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                            <button
+                                className="page-link"
+                                onClick={() => paginate(currentPage - 1)}
+                            >
+                                Anterior
+                            </button>
+                        </li>
+                        {[...Array(totalPages).keys()].map((number) => (
+                            <li
+                                key={number + 1}
+                                className={`page-item ${currentPage === number + 1 ? 'active' : ''}`}
+                            >
+                                <button
+                                    className="page-link"
+                                    onClick={() => paginate(number + 1)}
+                                >
+                                    {number + 1}
+                                </button>
+                            </li>
+                        ))}
+                        <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                            <button
+                                className="page-link"
+                                onClick={() => paginate(currentPage + 1)}
+                            >
+                                Siguiente
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </Layout>
     );
