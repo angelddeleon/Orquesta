@@ -33,7 +33,7 @@ export default function UserForm() {
                 {/* Contenido principal - 80% del ancho */}
                 <div className="main-content flex-grow-1 p-4" style={{ width: '80%' }}>
                     <div className="text-center mb-4">
-                        <h5 className="text-warning mb-2">ORQUESTA SINFONICA DE CARABOBO</h5>
+                        <h5 className="text-primary mb-2">ORQUESTA SINFONICA DE CARABOBO</h5>
                         <h1 className="mb-3">Crear un Usuario</h1>
                         <p className="text-muted">Rellene todo el siguiente formulario y una vez finalizado presione el boton</p>
                     </div>
