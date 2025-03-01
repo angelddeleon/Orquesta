@@ -13,7 +13,7 @@ export default function Login() {
             </div>
 
             {/* Primer div (50% del ancho en pantallas grandes, 100% en móviles) */}
-            <div id='login' className="w-100 w-lg-50 bg-primary h-100 d-flex justify-content-center align-items-center">
+            <div id='login' className="w-100 w-lg-50 h-100 d-flex justify-content-center align-items-center">
                 <div className="text-center w-90 w-lg-25 p-3">
                     {/* Imagen responsive */}
                     <img 
