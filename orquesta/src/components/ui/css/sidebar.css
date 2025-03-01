@@ -1,0 +1,9 @@
+.text-dark:hover {
+    color: #C7AE1F !important;
+    transition: all 0.3s ease;
+}
+
+.text-danger:hover {
+    color: #b62a38 !important;
+    transition: all 0.3s ease;
+}

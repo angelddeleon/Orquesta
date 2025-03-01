@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import React from 'react'
 import { Link } from 'react-router-dom'
+import './css/sidebar.css'
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [isMobile, setIsMobile] = useState(false)
