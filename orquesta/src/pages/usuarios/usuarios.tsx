@@ -6,60 +6,7 @@ export default function Usuarios() {
   return (
     <Layout>
       <div className="d-flex vh-100">
-        {/* Sidebar - 20% del ancho */}
-        <div
-          className="sidebar bg-light d-flex flex-column"
-          style={{ width: "20%" }}
-        >
-          {/* Logo */}
-          <div className="sidebar-header p-4 text-center">
-            <img
-              src="/brand/logo.webp"
-              alt="Logo"
-              className="img-fluid"
-              style={{ maxWidth: "220px", width: "100%" }}
-            />
-          </div>
-
-          {/* Opciones del menú */}
-          <nav className="flex-grow-1 p-3">
-            <div className="d-flex flex-column gap-2">
-              <Link
-                to="/partituras"
-                className="btn btn-outline-secondary text-start rounded-pill d-flex justify-content-between align-items-center"
-              >
-                Partituras
-                <i className="fa-solid fa-music ms-2"></i>
-              </Link>
-              <Link
-                to="/reportes"
-                className="btn btn-outline-secondary text-start rounded-pill d-flex justify-content-between align-items-center"
-              >
-                Reportes
-                <i className="fa-solid fa-chart-column ms-2"></i>
-              </Link>
-              <Link
-                to="/usuarios"
-                className="btn btn-outline-secondary text-start rounded-pill d-flex justify-content-between align-items-center"
-              >
-                Usuarios
-                <i className="fa-solid fa-users ms-2"></i>
-              </Link>
-            </div>
-          </nav>
-
-          {/* Botón de regreso */}
-          <div className="p-3 mt-auto">
-            <Link
-              to="/"
-              className="btn btn-link text-muted w-100 d-flex align-items-center justify-content-center"
-            >
-              <i className="fa-solid fa-arrow-left me-2"></i>
-              Volver al Login
-            </Link>
-          </div>
-        </div>
-
+      
         {/* Contenido principal - 80% del ancho */}
         <div className="main-content flex-grow-1 p-4" style={{ width: "80%" }}>
           {/* Header con título y botones */}
