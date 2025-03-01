@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
+import Layout from '../../layout/layout'
+import { Link } from 'react-router-dom'
+
+// import '../../layout/global.css'
 export default function NewPartitura() {
     // Opciones para instrumentos.PLACEHOLDER, debe venir del backend?
     const instrumentOptions = [
@@ -82,226 +86,241 @@ export default function NewPartitura() {
         toast.success('Partitura creada con éxito')
     }
     return (
-        // <Layout>
-        <>
-            <div className="wrapper">
-                <div className="d-flex align-items-center justify-content-center my-5 my-lg-0">
-                    <div className="container-fluid">
-                        <div className="row row-cols-1 row-cols-lg-2 row-cols-xl-3">
-                            <div className="col mx-auto">
-                                <div className="my-4 text-center">
-                                    <p className="fw-bold text-nowrap text-primary">ORQUESTA SINFÓNICA DE CARABOBO</p>
-                                    <h1>Nueva Partitura</h1>
-                                    <small className="text-secondary">
-                                        Rellene todo el siguiente formulario y una vez finalizado presione el boton
-                                    </small>
-                                </div>
-                                <div className="">
-                                    <div className="card-body">
-                                        <div className="p-4 rounded">
-                                            <div className="form-body">
-                                                <form className="row g-3" onSubmit={handleSubmit}>
-                                                    <div className="col-sm-6">
-                                                        <label htmlFor="archivero" className="form-label">
-                                                            Archivero
-                                                        </label>
-                                                        <input type="text" className="form-control" id="archivero" placeholder="A" />
-                                                    </div>
-                                                    <div className="col-sm-6">
-                                                        <label htmlFor="inputLastName" className="form-label">
-                                                            Caja
-                                                        </label>
-                                                        <input type="text" className="form-control" id="inputLastName" placeholder="001" />
-                                                    </div>
-                                                    {/* Compositores */}
-                                                    <div className="col-12">
-                                                        <label className="form-label">Compositores</label>
-                                                        {compositor.map((Compositor, index) => (
-                                                            <div className="input-group mb-2" key={`Compositor-${index}`}>
-                                                                <input
-                                                                    type="text"
-                                                                    className="form-control"
-                                                                    value={Compositor}
-                                                                    onChange={(e) => handleCompositorChange(index, e.target.value)}
-                                                                    placeholder={`Compositor ${index + 1}`}
-                                                                />
-                                                                {index === compositor.length - 1 && (
-                                                                    <button type="button" className="btn btn-outline-primary" onClick={addCompositor}>
-                                                                        +
-                                                                    </button>
-                                                                )}
-                                                                {index > 0 && (
-                                                                    <button
-                                                                        type="button"
-                                                                        className="btn btn-outline-danger"
-                                                                        onClick={() => removeCompositor(index)}
-                                                                        disabled={Compositor.trim() !== ''}>
-                                                                        -
-                                                                    </button>
-                                                                )}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-
-                                                    {/* Arreglistas */}
-                                                    <div className="col-12">
-                                                        <label className="form-label">Arreglistas</label>
-                                                        {arrangers.map((arranger, index) => (
-                                                            <div className="input-group mb-2" key={`arranger-${index}`}>
-                                                                <input
-                                                                    type="text"
-                                                                    className="form-control"
-                                                                    value={arranger}
-                                                                    onChange={(e) => handleArrangerChange(index, e.target.value)}
-                                                                    placeholder={`Arreglista ${index + 1}`}
-                                                                />
-                                                                {index === arrangers.length - 1 && (
-                                                                    <button type="button" className="btn btn-outline-primary" onClick={addArranger}>
-                                                                        +
-                                                                    </button>
-                                                                )}
-                                                                {index > 0 && (
-                                                                    <button
-                                                                        type="button"
-                                                                        className="btn btn-outline-danger"
-                                                                        onClick={() => removeArranger(index)}
-                                                                        disabled={arranger.trim() !== ''}>
-                                                                        -
-                                                                    </button>
-                                                                )}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-
-                                                    <div className="col-12">
-                                                        <label htmlFor="" className="mb-4">
-                                                            Instrumentos
-                                                        </label>
-                                                        {/* Sección Originales */}
-                                                        <div className="mb-4">
-                                                            <div className="d-flex align-items-center justify-content-between mb-2">
-                                                                <label className="form-label me-2">Original</label>
-                                                                <button
-                                                                    type="button"
-                                                                    className="btn btn-sm btn-outline-primary"
-                                                                    onClick={addOriginal}>
-                                                                    +
-                                                                </button>
-                                                            </div>
-                                                            {originales.map((original, index) => (
-                                                                <div className="input-group mb-2" key={`original-${index}`}>
-                                                                    <select
-                                                                        className="form-select"
-                                                                        value={original.instrument}
-                                                                        onChange={(e) => handleOriginalChange(index, 'instrument', e.target.value)}>
-                                                                        <option value="">Seleccionar instrumento</option>
-                                                                        {instrumentOptions.map((inst, i) => (
-                                                                            <option key={i} value={inst}>
-                                                                                {inst}
-                                                                            </option>
-                                                                        ))}
-                                                                    </select>
-                                                                    <input
-                                                                        type="number"
-                                                                        min="1"
-                                                                        className="form-control"
-                                                                        placeholder="Cantidad"
-                                                                        value={original.quantity}
-                                                                        onChange={(e) => handleOriginalChange(index, 'quantity', e.target.value)}
-                                                                    />
-                                                                    <button
-                                                                        type="button"
-                                                                        className="btn btn-outline-danger"
-                                                                        onClick={() => removeOriginal(index)}>
-                                                                        -
-                                                                    </button>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                        <hr />
-                                                        {/* Sección Copias */}
-                                                        <div className="mb-4">
-                                                            <div className="d-flex align-items-center justify-content-between mb-2">
-                                                                <label className="form-label me-2">Copia</label>
-                                                                <button type="button" className="btn btn-sm btn-outline-primary" onClick={addCopia}>
-                                                                    +
-                                                                </button>
-                                                            </div>
-                                                            {copias.map((copia, index) => (
-                                                                <div className="input-group mb-2" key={`copia-${index}`}>
-                                                                    <select
-                                                                        className="form-select"
-                                                                        value={copia.instrument}
-                                                                        onChange={(e) => handleCopiaChange(index, 'instrument', e.target.value)}>
-                                                                        <option value="">Seleccionar instrumento</option>
-                                                                        {instrumentOptions.map((inst, i) => (
-                                                                            <option key={i} value={inst}>
-                                                                                {inst}
-                                                                            </option>
-                                                                        ))}
-                                                                    </select>
-                                                                    <input
-                                                                        type="number"
-                                                                        min="1"
-                                                                        className="form-control"
-                                                                        placeholder="Cantidad"
-                                                                        value={copia.quantity}
-                                                                        onChange={(e) => handleCopiaChange(index, 'quantity', e.target.value)}
-                                                                    />
-                                                                    <button
-                                                                        type="button"
-                                                                        className="btn btn-outline-danger"
-                                                                        onClick={() => removeCopia(index)}>
-                                                                        -
-                                                                    </button>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="col-12">
-                                                        <label htmlFor="categoriaOrquesta" className="form-label">
-                                                            Categoria de Orquesta
-                                                        </label>
-                                                        <select className="form-select" id="categoriaOrquesta" aria-label="Default select example">
-                                                            <option selected value="Orquesta A">
-                                                                Orquesta A
-                                                            </option>
-                                                            <option value="Orquesta J">Orquesta J</option>
-                                                            <option value="OSC">OSC</option>
-                                                        </select>
-                                                    </div>
-                                                    <div className="col-12">
-                                                        <label htmlFor="score" className="form-label">
-                                                            Score
-                                                        </label>
-                                                        <select className="form-select" id="score" aria-label="Default select example">
-                                                            <option selected value="si">
-                                                                Si
-                                                            </option>
-                                                            <option value="no">No</option>
-                                                        </select>
-                                                        <div className="col-12">
-                                                            <label htmlFor="observaciones" className="form-label mt-4">
-                                                                Observaciones
+        <Layout>
+            <>
+                <div className="wrapper overflow-hidden">
+                    <div className="d-flex align-items-center justify-content-center my-5 my-lg-0">
+                        <div className="container-fluid">
+                            <div className="row row-cols-1 row-cols-lg-2 row-cols-xl-3">
+                                <div className="col mx-auto">
+                                    <div className="my-4 text-center">
+                                        <p className="fw-bold text-nowrap text-primary">ORQUESTA SINFÓNICA DE CARABOBO</p>
+                                        <h1>Nueva Partitura</h1>
+                                        <small className="text-secondary">
+                                            Rellene todo el siguiente formulario y una vez finalizado presione el boton
+                                        </small>
+                                    </div>
+                                    <div className="">
+                                        <div className="card-body">
+                                            <div className="p-4">
+                                                <div className="form-body">
+                                                    <form className="row g-3" onSubmit={handleSubmit}>
+                                                        <div className="col-sm-6">
+                                                            <label htmlFor="archivero" className="form-label">
+                                                                Archivero
                                                             </label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                id="observaciones"
-                                                                placeholder="Observaciones"
-                                                            />
+                                                            <input type="text" className="form-control" id="archivero" placeholder="A" />
                                                         </div>
-                                                    </div>
-                                                    <div className="col-12">
-                                                        <div className="d-grid">
-                                                            <button className="btn btn-primary">
-                                                                <i className="bx bx-user"></i>
-                                                                Crear Partitura
-                                                            </button>
+                                                        <div className="col-sm-6">
+                                                            <label htmlFor="inputLastName" className="form-label">
+                                                                Caja
+                                                            </label>
+                                                            <input type="text" className="form-control" id="inputLastName" placeholder="001" />
                                                         </div>
-                                                    </div>
-                                                </form>
+                                                        {/* Compositores */}
+                                                        <div className="col-12">
+                                                            <label className="form-label">Compositores</label>
+                                                            {compositor.map((Compositor, index) => (
+                                                                <div className="input-group mb-2" key={`Compositor-${index}`}>
+                                                                    <input
+                                                                        type="text"
+                                                                        className="form-control"
+                                                                        value={Compositor}
+                                                                        onChange={(e) => handleCompositorChange(index, e.target.value)}
+                                                                        placeholder={`Compositor ${index + 1}`}
+                                                                    />
+                                                                    {index === compositor.length - 1 && (
+                                                                        <button
+                                                                            type="button"
+                                                                            className="btn btn-outline-primary"
+                                                                            onClick={addCompositor}>
+                                                                            +
+                                                                        </button>
+                                                                    )}
+                                                                    {index > 0 && (
+                                                                        <button
+                                                                            type="button"
+                                                                            className="btn btn-outline-danger"
+                                                                            onClick={() => removeCompositor(index)}
+                                                                            disabled={Compositor.trim() !== ''}>
+                                                                            -
+                                                                        </button>
+                                                                    )}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+
+                                                        {/* Arreglistas */}
+                                                        <div className="col-12">
+                                                            <label className="form-label">Arreglistas</label>
+                                                            {arrangers.map((arranger, index) => (
+                                                                <div className="input-group mb-2" key={`arranger-${index}`}>
+                                                                    <input
+                                                                        type="text"
+                                                                        className="form-control"
+                                                                        value={arranger}
+                                                                        onChange={(e) => handleArrangerChange(index, e.target.value)}
+                                                                        placeholder={`Arreglista ${index + 1}`}
+                                                                    />
+                                                                    {index === arrangers.length - 1 && (
+                                                                        <button
+                                                                            type="button"
+                                                                            className="btn btn-outline-primary"
+                                                                            onClick={addArranger}>
+                                                                            +
+                                                                        </button>
+                                                                    )}
+                                                                    {index > 0 && (
+                                                                        <button
+                                                                            type="button"
+                                                                            className="btn btn-outline-danger"
+                                                                            onClick={() => removeArranger(index)}
+                                                                            disabled={arranger.trim() !== ''}>
+                                                                            -
+                                                                        </button>
+                                                                    )}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+
+                                                        <div className="col-12">
+                                                            <label htmlFor="" className="mb-4">
+                                                                Instrumentos
+                                                            </label>
+                                                            {/* Sección Originales */}
+                                                            <div className="mb-4">
+                                                                <div className="d-flex align-items-center justify-content-between mb-2">
+                                                                    <label className="form-label me-2">Original</label>
+                                                                    <button
+                                                                        type="button"
+                                                                        className="btn btn-sm btn-outline-primary"
+                                                                        onClick={addOriginal}>
+                                                                        +
+                                                                    </button>
+                                                                </div>
+                                                                {originales.map((original, index) => (
+                                                                    <div className="input-group mb-2" key={`original-${index}`}>
+                                                                        <select
+                                                                            className="form-select"
+                                                                            value={original.instrument}
+                                                                            onChange={(e) =>
+                                                                                handleOriginalChange(index, 'instrument', e.target.value)
+                                                                            }>
+                                                                            <option value="">Seleccionar instrumento</option>
+                                                                            {instrumentOptions.map((inst, i) => (
+                                                                                <option key={i} value={inst}>
+                                                                                    {inst}
+                                                                                </option>
+                                                                            ))}
+                                                                        </select>
+                                                                        <input
+                                                                            type="number"
+                                                                            min="1"
+                                                                            className="form-control"
+                                                                            placeholder="Cantidad"
+                                                                            value={original.quantity}
+                                                                            onChange={(e) => handleOriginalChange(index, 'quantity', e.target.value)}
+                                                                        />
+                                                                        <button
+                                                                            type="button"
+                                                                            className="btn btn-outline-danger"
+                                                                            onClick={() => removeOriginal(index)}>
+                                                                            -
+                                                                        </button>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                            <hr />
+                                                            {/* Sección Copias */}
+                                                            <div className="mb-4">
+                                                                <div className="d-flex align-items-center justify-content-between mb-2">
+                                                                    <label className="form-label me-2">Copia</label>
+                                                                    <button
+                                                                        type="button"
+                                                                        className="btn btn-sm btn-outline-primary"
+                                                                        onClick={addCopia}>
+                                                                        +
+                                                                    </button>
+                                                                </div>
+                                                                {copias.map((copia, index) => (
+                                                                    <div className="input-group mb-2" key={`copia-${index}`}>
+                                                                        <select
+                                                                            className="form-select"
+                                                                            value={copia.instrument}
+                                                                            onChange={(e) => handleCopiaChange(index, 'instrument', e.target.value)}>
+                                                                            <option value="">Seleccionar instrumento</option>
+                                                                            {instrumentOptions.map((inst, i) => (
+                                                                                <option key={i} value={inst}>
+                                                                                    {inst}
+                                                                                </option>
+                                                                            ))}
+                                                                        </select>
+                                                                        <input
+                                                                            type="number"
+                                                                            min="1"
+                                                                            className="form-control"
+                                                                            placeholder="Cantidad"
+                                                                            value={copia.quantity}
+                                                                            onChange={(e) => handleCopiaChange(index, 'quantity', e.target.value)}
+                                                                        />
+                                                                        <button
+                                                                            type="button"
+                                                                            className="btn btn-outline-danger"
+                                                                            onClick={() => removeCopia(index)}>
+                                                                            -
+                                                                        </button>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="col-12">
+                                                            <label htmlFor="categoriaOrquesta" className="form-label">
+                                                                Categoria de Orquesta
+                                                            </label>
+                                                            <select
+                                                                className="form-select"
+                                                                id="categoriaOrquesta"
+                                                                aria-label="Default select example">
+                                                                <option selected value="Orquesta A">
+                                                                    Orquesta A
+                                                                </option>
+                                                                <option value="Orquesta J">Orquesta J</option>
+                                                                <option value="OSC">OSC</option>
+                                                            </select>
+                                                        </div>
+                                                        <div className="col-12">
+                                                            <label htmlFor="score" className="form-label">
+                                                                Score
+                                                            </label>
+                                                            <select className="form-select" id="score" aria-label="Default select example">
+                                                                <option selected value="si">
+                                                                    Si
+                                                                </option>
+                                                                <option value="no">No</option>
+                                                            </select>
+                                                            <div className="col-12">
+                                                                <label htmlFor="observaciones" className="form-label mt-4">
+                                                                    Observaciones
+                                                                </label>
+                                                                <input
+                                                                    type="text"
+                                                                    className="form-control"
+                                                                    id="observaciones"
+                                                                    placeholder="Observaciones"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-12">
+                                                            <div className="d-grid">
+                                                                <button className="btn btn-primary">
+                                                                    <i className="bx bx-user"></i>
+                                                                    Crear Partitura
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -310,10 +329,9 @@ export default function NewPartitura() {
                         </div>
                     </div>
                 </div>
-            </div>
-            {/* </div> */}
-            <ToastContainer />
-        </>
-        // </Layout>
+                {/* </div> */}
+                <ToastContainer />
+            </>
+        </Layout>
     )
 }
