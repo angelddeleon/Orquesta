@@ -88,7 +88,7 @@ export default function NewPartitura() {
     return (
         <Layout>
             <>
-                <div className="wrapper overflow-hidden">
+                <div className="wrapper overflow-hidden px-4 py-2">
                     <div className="d-flex align-items-center justify-content-center my-5 my-lg-0">
                         <div className="container-fluid">
                             <div className="row row-cols-1 row-cols-lg-2 row-cols-xl-3">
