@@ -9,13 +9,29 @@ const Sidebar = () => {
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth < 768)
-            if (window.innerWidth >= 768) setIsOpen(false)
+            if (window.innerWidth >= 768) {
+                setIsOpen(false)
+                document.body.classList.remove('body-no-scroll') // Limpiar al cambiar a desktop
+            }
         }
 
         handleResize()
         window.addEventListener('resize', handleResize)
         return () => window.removeEventListener('resize', handleResize)
     }, [])
+
+    useEffect(() => {
+        if (isOpen && isMobile) {
+            document.body.classList.add('body-no-scroll')
+        } else {
+            document.body.classList.remove('body-no-scroll')
+        }
+
+        // Cleanup al desmontar
+        return () => {
+            document.body.classList.remove('body-no-scroll')
+        }
+    }, [isOpen, isMobile]) // Dependencias del efecto
 
     return (
         <>
@@ -31,7 +47,7 @@ const Sidebar = () => {
             </nav>
 
             {/* Desktop Sidebar */}
-            <div className="d-none d-md-block col-md-3 vh-100 bg-white shadow-sm position-fixed">
+            <div className="d-none d-md-block col-md-2 vh-100 bg-white shadow-sm position-fixed">
                 <div className="p-2 h-100 d-flex flex-column">
                     {/* Logo */}
                     <div className="sidebar-header text-center">
@@ -67,7 +83,6 @@ const Sidebar = () => {
                     visibility: isOpen ? 'visible' : 'hidden',
                     zIndex: 1045,
                     backgroundColor: 'white',
-                    // boxShadow: isOpen ? '0 0.5rem 1rem rgba(0, 0, 0, 0.15)' : 'none',
                 }}>
                 <div className="offcanvas-header border-bottom">
                     <h5 className="offcanvas-title">
@@ -109,6 +124,7 @@ const Sidebar = () => {
                         height: '100vh',
                         backgroundColor: 'rgba(0,0,0,0.5)',
                     }}
+                    onClick={() => setIsOpen(false)}
                 />
             )}
         </>

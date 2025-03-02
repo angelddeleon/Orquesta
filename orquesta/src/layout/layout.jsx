@@ -7,7 +7,7 @@ export default function Layout({ children }) {
         <div className="container-fluid">
             <div className="row">
                 <Sidebar />
-                <main className="col-12 col-md-9 ms-md-auto main-content">{children}</main>
+                <main className="col-12 col-md-10 ms-md-auto main-content">{children}</main>
             </div>
         </div>
     )
