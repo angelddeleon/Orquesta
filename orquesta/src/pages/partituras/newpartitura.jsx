@@ -30,11 +30,11 @@ export default function NewPartitura() {
     const addCompositor = () => setCompositor([...compositor, ''])
 
     //Remueve en base al index
-    const removeCompositor = (indexToRemove: number) => {
+    const removeCompositor = (indexToRemove) => {
         setCompositor(compositor.filter((_, index) => index !== indexToRemove))
     }
     //Handler para agregar compositores
-    const handleCompositorChange = (index: number, value: string) => {
+    const handleCompositorChange = (index, value) => {
         const newcompositor = [...compositor]
         newcompositor[index] = value
         setCompositor(newcompositor)
@@ -47,20 +47,20 @@ export default function NewPartitura() {
     const addArranger = () => setArrangers([...arrangers, ''])
 
     //Remueve en base al index
-    const removeArranger = (indexToRemove: number) => {
+    const removeArranger = (indexToRemove) => {
         setArrangers(arrangers.filter((_, index) => index !== indexToRemove))
     }
 
     //Handler para agregar arreglistas
-    const handleArrangerChange = (index: number, value: string) => {
+    const handleArrangerChange = (index, value) => {
         const newArrangers = [...arrangers]
         newArrangers[index] = value
         setArrangers(newArrangers)
     }
 
     // Estados para instrumentos
-    const [originales, setOriginales] = useState<{ instrument: string; quantity: string }[]>([])
-    const [copias, setCopias] = useState<{ instrument: string; quantity: string }[]>([])
+    const [originales, setOriginales] = useState([])
+    const [copias, setCopias] = useState([])
 
     // Handlers para Originales
     const addOriginal = () => setOriginales([...originales, { instrument: '', quantity: '' }])

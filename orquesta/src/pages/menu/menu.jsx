@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../../layout/layout';
 import { Link } from 'react-router-dom';
 import './styles/menu.css';
-import type Partitura from '../../types/Partitura';
 
 export default function Menu() {
-    const [partituras, setPartituras] = useState<Partitura[]>([]);
+    const [partituras, setPartituras] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
@@ -22,7 +21,7 @@ export default function Menu() {
     }, [currentPage, itemsPerPage]);
 
     // Cambiar de página
-    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
         <Layout>

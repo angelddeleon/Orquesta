@@ -11,7 +11,7 @@ export default function UserForm() {
         contrasena: '',
     })
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e) => {
         const { name, value } = e.target
         setFormData((prev) => ({
             ...prev,
@@ -19,7 +19,7 @@ export default function UserForm() {
         }))
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e) => {
         e.preventDefault()
         console.log('Datos del formulario:', formData)
         // Aquí iría la lógica para enviar los datos al servidor
