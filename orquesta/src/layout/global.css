@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+/* styles/custom.css */
 
 :root {
     --primary: #C7AE1F;
@@ -44,13 +45,13 @@ body {
 @media (min-width: 768px) {
     .main-content {
         padding-top: 0;
-        margin-left: 15% !important;
-        width: 85% !important;
+        margin-left: 10% !important;
+        width: 90% !important;
     }
 
     /* Sidebar fijo para desktop */
     .sidebar-desktop {
-        width: 15% !important;
+        width: 10% !important;
         position: fixed;
         left: 0;
         height: 100vh;
