@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import Layout from '../../layout/layout'
-import { Link } from 'react-router-dom'
+import ExpansiveToast from '../../components/ui/expansiveToast'
+import { useNavigate } from 'react-router-dom'
 
-// import '../../layout/global.css'
 export default function NewPartitura() {
+    const navigate = useNavigate() // Hook de react-router-dom para navegar entre rutas
     // Opciones para instrumentos.PLACEHOLDER, debe venir del backend?
     const instrumentOptions = [
         'Violín',
@@ -21,8 +22,34 @@ export default function NewPartitura() {
         'Percusión',
         'Arpa',
         'Piano',
+        'Nuevo...',
     ]
-
+    //ESTRUCTURA PARA LA PETICIÓN
+    // eslint-disable-next-line no-unused-vars
+    const template = {
+        Archivero: 'String',
+        Caja: 'String',
+        Compositores: ['String'],
+        Arreglistas: ['String'],
+        Orquestacion: 'String',
+        Instrumentos: {
+            Original: [
+                {
+                    Nombre: 'String',
+                    Cantidad: 'Number',
+                },
+            ],
+            Copia: [
+                {
+                    Nombre: 'String',
+                    Cantidad: 'Number',
+                },
+            ],
+        },
+        Categoria: 'String',
+        Score: 'String',
+        Observaciones: 'String',
+    }
     // estado de Compositores
     const [compositor, setCompositor] = useState([''])
 
@@ -63,27 +90,168 @@ export default function NewPartitura() {
     const [copias, setCopias] = useState([])
 
     // Handlers para Originales
-    const addOriginal = () => setOriginales([...originales, { instrument: '', quantity: '' }])
+    const addOriginal = () => setOriginales([...originales, { instrument: '', quantity: '', isNew: false }])
     const removeOriginal = (index) => setOriginales(originales.filter((_, i) => i !== index))
     const handleOriginalChange = (index, field, value) => {
         const newOriginales = [...originales]
-        newOriginales[index][field] = value
+
+        if (field === 'instrument') {
+            if (value === 'Nuevo...') {
+                // Modo nuevo instrumento
+                newOriginales[index] = {
+                    instrument: '',
+                    quantity: originales[index].quantity,
+                    isNew: true,
+                }
+            } else {
+                // Mantener el estado actual de isNew
+                newOriginales[index] = {
+                    instrument: value,
+                    quantity: originales[index].quantity,
+                    isNew: originales[index].isNew,
+                }
+            }
+        } else {
+            newOriginales[index][field] = value
+        }
+
         setOriginales(newOriginales)
     }
 
     // Handlers para Copias
-    const addCopia = () => setCopias([...copias, { instrument: '', quantity: '' }])
+    const addCopia = () => setCopias([...copias, { instrument: '', quantity: '', isNew: false }])
     const removeCopia = (index) => setCopias(copias.filter((_, i) => i !== index))
     const handleCopiaChange = (index, field, value) => {
         const newCopias = [...copias]
-        newCopias[index][field] = value
+
+        if (field === 'instrument') {
+            if (value === 'Nuevo...') {
+                newCopias[index] = {
+                    instrument: '',
+                    quantity: copias[index].quantity,
+                    isNew: true,
+                }
+            } else {
+                newCopias[index] = {
+                    instrument: value,
+                    quantity: copias[index].quantity,
+                    isNew: copias[index].isNew,
+                }
+            }
+        } else {
+            newCopias[index][field] = value
+        }
+
         setCopias(newCopias)
     }
 
     // Manejador de envío del formulario
     const handleSubmit = (event) => {
         event.preventDefault()
-        toast.success('Partitura creada con éxito')
+        const data = {
+            archivero: event.target.archivero.value,
+            caja: event.target.caja.value,
+            compositores: compositor,
+            arreglistas: arrangers,
+            orquestacion: event.target.orquestacion.value,
+            instrumentos: {
+                original: originales.map((original) => ({
+                    instrument: original.instrument,
+                    quantity: original.quantity,
+                })),
+                copia: copias.map((copia) => ({
+                    instrument: copia.instrument,
+                    quantity: copia.quantity,
+                })),
+            },
+            categoria: event.target.categoriaOrquesta.value,
+            score: event.target.score.value,
+            observaciones: event.target.observaciones.value,
+        }
+        console.log(data)
+        sendForm(data)
+
+        // toast.success('Partitura creada con éxito')
+    }
+    const sendForm = async (data) => {
+        try {
+            const response = await fetch('localhost/sdsadasd', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            console.log(data)
+            if (response.ok) {
+                toast.success('Partitura creada con éxito', {
+                    onClick: () => navigate('/menu'),
+                    onClose: () => navigate('/menu'),
+                })
+            } else {
+                toast.error(
+                    <ExpansiveToast
+                        title="Error al crear la partitura"
+                        content={
+                            <>
+                                <p className="mb-2 fs-6">Hubo un error al procesar la respuesta del servidor.</p>
+                            </>
+                        }
+                    />,
+                    {
+                        position: 'top-right',
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: false,
+                        pauseOnHover: true,
+                        draggable: true,
+                    }
+                )
+            }
+        } catch (error) {
+            if (error instanceof TypeError) {
+                toast.error(
+                    <ExpansiveToast
+                        title="Error al crear la partitura"
+                        content={
+                            <>
+                                <p className="mb-2 fs-6">No se ha podido conectar con el servidor, asegurate de tener conexión a internet.</p>
+                            </>
+                        }
+                    />,
+                    {
+                        position: 'top-right',
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: false,
+                        pauseOnHover: true,
+                        draggable: true,
+                    }
+                )
+            }
+            if (error instanceof SyntaxError) {
+                toast.error(
+                    <ExpansiveToast
+                        title="Error al crear la partitura"
+                        content={
+                            <>
+                                <p className="mb-2 fs-6">Hubo un error al procesar la respuesta del servidor.</p>
+                            </>
+                        }
+                    />,
+                    {
+                        position: 'top-right',
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: false,
+                        pauseOnHover: true,
+                        draggable: true,
+                    }
+                )
+            }
+
+            console.log(error)
+        }
     }
     return (
         <Layout>
@@ -112,11 +280,12 @@ export default function NewPartitura() {
                                                             <input type="text" className="form-control" id="archivero" placeholder="A" />
                                                         </div>
                                                         <div className="col-sm-6">
-                                                            <label htmlFor="inputLastName" className="form-label">
+                                                            <label htmlFor="caja" className="form-label">
                                                                 Caja
                                                             </label>
-                                                            <input type="text" className="form-control" id="inputLastName" placeholder="001" />
+                                                            <input type="text" className="form-control" id="caja" placeholder="001" />
                                                         </div>
+
                                                         {/* Compositores */}
                                                         <div className="col-12">
                                                             <label className="form-label">Compositores</label>
@@ -184,6 +353,18 @@ export default function NewPartitura() {
                                                         </div>
 
                                                         <div className="col-12">
+                                                            <label htmlFor="orquestacion" className="form-label">
+                                                                Orquestación
+                                                            </label>
+                                                            <input
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="orquestacion"
+                                                                placeholder="Orquestación"
+                                                            />
+                                                        </div>
+
+                                                        <div className="col-12">
                                                             <label htmlFor="" className="mb-4">
                                                                 Instrumentos
                                                             </label>
@@ -200,19 +381,31 @@ export default function NewPartitura() {
                                                                 </div>
                                                                 {originales.map((original, index) => (
                                                                     <div className="input-group mb-2" key={`original-${index}`}>
-                                                                        <select
-                                                                            className="form-select"
-                                                                            value={original.instrument}
-                                                                            onChange={(e) =>
-                                                                                handleOriginalChange(index, 'instrument', e.target.value)
-                                                                            }>
-                                                                            <option value="">Seleccionar instrumento</option>
-                                                                            {instrumentOptions.map((inst, i) => (
-                                                                                <option key={i} value={inst}>
-                                                                                    {inst}
-                                                                                </option>
-                                                                            ))}
-                                                                        </select>
+                                                                        {original.isNew ? (
+                                                                            <input
+                                                                                type="text"
+                                                                                className="form-control"
+                                                                                placeholder="Nuevo instrumento"
+                                                                                value={original.instrument}
+                                                                                onChange={(e) =>
+                                                                                    handleOriginalChange(index, 'instrument', e.target.value)
+                                                                                }
+                                                                            />
+                                                                        ) : (
+                                                                            <select
+                                                                                className="form-select"
+                                                                                value={original.instrument}
+                                                                                onChange={(e) =>
+                                                                                    handleOriginalChange(index, 'instrument', e.target.value)
+                                                                                }>
+                                                                                <option value="">Seleccionar instrumento</option>
+                                                                                {instrumentOptions.map((inst, i) => (
+                                                                                    <option key={i} value={inst}>
+                                                                                        {inst}
+                                                                                    </option>
+                                                                                ))}
+                                                                            </select>
+                                                                        )}
                                                                         <input
                                                                             type="number"
                                                                             min="1"
@@ -244,17 +437,31 @@ export default function NewPartitura() {
                                                                 </div>
                                                                 {copias.map((copia, index) => (
                                                                     <div className="input-group mb-2" key={`copia-${index}`}>
-                                                                        <select
-                                                                            className="form-select"
-                                                                            value={copia.instrument}
-                                                                            onChange={(e) => handleCopiaChange(index, 'instrument', e.target.value)}>
-                                                                            <option value="">Seleccionar instrumento</option>
-                                                                            {instrumentOptions.map((inst, i) => (
-                                                                                <option key={i} value={inst}>
-                                                                                    {inst}
-                                                                                </option>
-                                                                            ))}
-                                                                        </select>
+                                                                        {copia.isNew ? (
+                                                                            <input
+                                                                                type="text"
+                                                                                className="form-control"
+                                                                                placeholder="Nuevo instrumento"
+                                                                                value={copia.instrument}
+                                                                                onChange={(e) =>
+                                                                                    handleCopiaChange(index, 'instrument', e.target.value)
+                                                                                }
+                                                                            />
+                                                                        ) : (
+                                                                            <select
+                                                                                className="form-select"
+                                                                                value={copia.instrument}
+                                                                                onChange={(e) =>
+                                                                                    handleCopiaChange(index, 'instrument', e.target.value)
+                                                                                }>
+                                                                                <option value="">Seleccionar instrumento</option>
+                                                                                {instrumentOptions.map((inst, i) => (
+                                                                                    <option key={i} value={inst}>
+                                                                                        {inst}
+                                                                                    </option>
+                                                                                ))}
+                                                                            </select>
+                                                                        )}
                                                                         <input
                                                                             type="number"
                                                                             min="1"
