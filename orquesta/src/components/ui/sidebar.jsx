@@ -59,9 +59,9 @@ const Sidebar = () => {
                             <i className="fa-solid fa-music mx-2 "></i>
                             Partituras
                         </Link>
-                        <Link to="/reportes" className="d-block text-dark text-decoration-none py-2">
+                        <Link to="/prestamo" className="d-block text-dark text-decoration-none py-2">
                             <i className="fa-solid fa-chart-column mx-2"></i>
-                            Reportes
+                            Prestamo
                         </Link>
                         <Link to="/usuarios" className="d-block text-dark text-decoration-none py-2">
                             <i className="fa-solid fa-users mx-2"></i>

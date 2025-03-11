@@ -60,12 +60,12 @@ export default function Menu() {
                     <table className="table table-striped table-hover">
                         <thead>
                             <tr>
+                                <th>Obra</th>
                                 <th>Archivero</th>
                                 <th>Caja</th>
                                 <th>Compositor</th>
                                 <th>Arreglista</th>
                                 <th>Orquestación</th>
-                                <th>Obra</th>
                                 <th>Originales</th>
                                 <th>#</th>
                                 <th>Copias</th>
@@ -78,12 +78,12 @@ export default function Menu() {
                         <tbody>
                             {partituras.map((partitura, index) => (
                                 <tr key={index}>
+                                    <td>{partitura.obra}</td>
                                     <td>{partitura.archivero}</td>
                                     <td>{partitura.caja}</td>
                                     <td>{partitura.compositor}</td>
                                     <td>{partitura.arreglista}</td>
                                     <td>{partitura.orquestacion}</td>
-                                    <td>{partitura.obra}</td>
                                     <td>{partitura.originales}</td>
                                     <td>{partitura.originales}</td>
                                     <td>{partitura.copias}</td>
