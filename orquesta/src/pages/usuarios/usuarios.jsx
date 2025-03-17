@@ -10,6 +10,8 @@ export default function Usuarios() {
 
     // Obtener datos del backend
     useEffect(() => {
+        
+        /*
         const fetchData = async () => {
             const response = await fetch(
                 `http://localhost:3000/api/usuarios?page=${currentPage}&limit=${itemsPerPage}`
@@ -19,6 +21,15 @@ export default function Usuarios() {
             setTotalPages(Math.ceil(total / itemsPerPage));
         };
         fetchData();
+        */
+
+
+        // Simular datos
+        const data = [
+            { id: 1, nombre: "Juan", apellido: "Pérez", correo: "juan@gmail.com", role: "Admin" },
+            { id: 2, nombre: "María", apellido: "López", correo: "maria@gmail.com", role: "User" },
+        ]
+        setUsuarios(data);
     }, [currentPage, itemsPerPage]);
 
     // Cambiar de página
@@ -66,17 +77,17 @@ export default function Usuarios() {
                                     <th>Apellido</th>
                                     <th>Correo</th>
                                     <th>Role</th>
-                                    <th></th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {usuarios.map((usuario, index) => (
                                     <tr key={index}>
-                                        <td>{usuario.nombre}</td>
-                                        <td>{usuario.apellido}</td>
-                                        <td>{usuario.correo}</td>
-                                        <td>{usuario.role}</td>
-                                        <td>
+                                        <td className="align-middle">{usuario.nombre}</td>
+                                        <td className="align-middle">{usuario.apellido}</td>
+                                        <td className="align-middle">{usuario.correo}</td>
+                                        <td className="align-middle">{usuario.role}</td>
+                                        <td className="align-middle">
                                             <Link to={`/editar_usuario/${usuario.id}`} className="btn btn-sm btn-primary">
                                                 Editar
                                             </Link>
