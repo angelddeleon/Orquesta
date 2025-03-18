@@ -15,6 +15,20 @@ export default function Usuarios() {
 
     // Obtener datos del backend (simulado)
     useEffect(() => {
+
+        //Conexion con Backend
+         /*
+        const fetchData = async () => {
+            const response = await fetch(
+                `http://localhost:3000/api/usuarios?page=${currentPage}&limit=${itemsPerPage}`
+            );
+            const { data, total } = await response.json();
+            setUsuarios(data);
+            setTotalPages(Math.ceil(total / itemsPerPage));
+        };
+        fetchData();
+        */
+
         const data = [
             { id: 1, nombre: "Juan", apellido: "Pérez", correo: "juan@gmail.com", role: "Admin" },
             { id: 2, nombre: "María", apellido: "López", correo: "maria@gmail.com", role: "Empleado" },
