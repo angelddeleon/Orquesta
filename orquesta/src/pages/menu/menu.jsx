@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../../layout/layout';
 import { Link } from 'react-router-dom';
 import './styles/menu.css';
+import Imprimir from '../../components/ui/imprimir';
 
 export default function Menu() {
     const [partituras, setPartituras] = useState([]);
@@ -144,10 +145,7 @@ export default function Menu() {
                 <div className="d-flex justify-content-between align-items-center mb-4">
                     <h1>Partituras</h1>
                     <div className="d-flex gap-2">
-                        <button className="btn btn-primary">
-                            <i className="fa-solid fa-arrow-up me-2"></i>
-                            Imprimir
-                        </button>
+                        <Imprimir />
                         <button className="btn btn-blue">
                             <Link to="/new_partitura" className="text-white text-decoration-none">
                                 + Crear Partitura
