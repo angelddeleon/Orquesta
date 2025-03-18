@@ -9,8 +9,9 @@ export default function Menu() {
     const [itemsPerPage] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
 
-    // Obtener datos del backend
+    // Obtener datos del backend (comentado y reemplazado por datos de prueba)
     useEffect(() => {
+        /*
         const fetchData = async () => {
             const response = await fetch(`/api/partituras?page=${currentPage}&limit=${itemsPerPage}`);
             const { data, total } = await response.json();
@@ -18,6 +19,56 @@ export default function Menu() {
             setTotalPages(Math.ceil(total / itemsPerPage));
         };
         fetchData();
+        */
+
+        // Datos de prueba
+        const dataDePrueba = [
+            {
+                id: 1,
+                obra: "Sinfonía No. 5",
+                archivero: "Juan Pérez",
+                caja: "Caja 1",
+                compositor: "Ludwig van Beethoven",
+                arreglista: "N/A",
+                orquestacion: "Completa",
+                originales: 1,
+                copias: 5,
+                categoria: "Clásica",
+                score: "Partitura completa",
+                observaciones: "En buen estado",
+            },
+            {
+                id: 2,
+                obra: "El Lago de los Cisnes",
+                archivero: "María López",
+                caja: "Caja 2",
+                compositor: "Pyotr Ilyich Tchaikovsky",
+                arreglista: "N/A",
+                orquestacion: "Completa",
+                originales: 1,
+                copias: 3,
+                categoria: "Ballet",
+                score: "Partitura completa",
+                observaciones: "Requiere restauración",
+            },
+            {
+                id: 3,
+                obra: "Carmen",
+                archivero: "Carlos Gómez",
+                caja: "Caja 3",
+                compositor: "Georges Bizet",
+                arreglista: "N/A",
+                orquestacion: "Completa",
+                originales: 1,
+                copias: 7,
+                categoria: "Ópera",
+                score: "Partitura completa",
+                observaciones: "Falta una página",
+            },
+        ];
+
+        setPartituras(dataDePrueba);
+        setTotalPages(Math.ceil(dataDePrueba.length / itemsPerPage));
     }, [currentPage, itemsPerPage]);
 
     // Cambiar de página
@@ -73,6 +124,7 @@ export default function Menu() {
                                 <th>Categoría</th>
                                 <th>Score</th>
                                 <th>Observaciones</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -91,6 +143,11 @@ export default function Menu() {
                                     <td>{partitura.categoria}</td>
                                     <td>{partitura.score}</td>
                                     <td>{partitura.observaciones}</td>
+                                    <td className="align-middle">
+                                        <Link to={`/editar_partitura/${partitura.id}`} className="btn btn-sm btn-primary">
+                                            Editar
+                                        </Link>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>

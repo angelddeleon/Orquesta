@@ -7,6 +7,7 @@ import Usuarios from "./pages/usuarios/usuarios"
 import CrearUsuario from "./pages/usuarios/crearUsuario"
 import Prestamo from './pages/prestamo/prestamo'
 import EditarUsuario from './pages/usuarios/editarUsuario'
+import EditarPartitura from './pages/partituras/editarPartitura'
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                 <Route path="/" element={<Login />} />
                 <Route path="/new_partitura" element={<NewPartitura />} />
                 <Route path="/menu" element={<Menu />} />
+                <Route path="/editar_partitura/:id" element={<EditarPartitura />} />
                 <Route path="/usuarios" element={<Usuarios />} />
                 <Route path="/crear_usuario" element={<CrearUsuario />} />
                 <Route path="/editar_usuario/:id" element={<EditarUsuario />} />
