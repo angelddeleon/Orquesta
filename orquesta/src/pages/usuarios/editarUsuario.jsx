@@ -1,41 +1,71 @@
-import React from 'react'
-import { useState } from 'react'
-import Layout from '../../layout/layout'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import Layout from '../../layout/layout';
 
 export default function EditarUsuario() {
+    const { id } = useParams(); // Obtén el id de los parámetros de la URL
     const [formData, setFormData] = useState({
         nombre: '',
         apellido: '',
         correo: '',
         contrasena: '',
-    })
+    });
+
+    // Función para obtener los datos del usuario
+    useEffect(() => {
+        const fetchUsuario = async () => {
+            try {
+                const response = await fetch(`http://localhost:3000/usuarios/${id}`); // Ajusta la URL según tu API
+                if (!response.ok) {
+                    throw new Error('Error al obtener los datos del usuario');
+                }
+                const data = await response.json();
+                setFormData(data); // Rellena el formulario con los datos del usuario
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        fetchUsuario();
+    }, [id]); // Ejecuta este efecto cuando el id cambie
 
     const handleChange = (e) => {
-        const { name, value } = e.target
+        const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
             [name]: value,
-        }))
-    }
+        }));
+    };
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        console.log('Datos del formulario:', formData)
-        // Aquí iría la lógica para enviar los datos al servidor
-    }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch(`http://localhost:3000/usuarios/${id}`, {
+                method: 'PUT', // Usa PUT para actualizar el usuario
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+            if (!response.ok) {
+                throw new Error('Error al actualizar el usuario');
+            }
+            alert('Usuario actualizado correctamente');
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Hubo un error al actualizar el usuario');
+        }
+    };
 
     return (
         <Layout>
             <div className="d-flex vh-100">
-               
-
                 {/* Contenido principal - 80% del ancho */}
                 <div className="main-content flex-grow-1 p-4" style={{ width: '80%' }}>
                     <div className="text-center mb-4">
                         <h5 className="text-primary mb-2">ORQUESTA SINFONICA DE CARABOBO</h5>
                         <h1 className="mb-3">Editar un Usuario</h1>
-                        <p className="text-muted">Rellene todo el siguiente formulario y una vez finalizado presione el boton</p>
+                        <p className="text-muted">Rellene todo el siguiente formulario y una vez finalizado presione el botón</p>
                     </div>
 
                     <div className="row justify-content-center">
@@ -117,5 +147,5 @@ export default function EditarUsuario() {
                 </div>
             </div>
         </Layout>
-    )
+    );
 }
