@@ -8,6 +8,7 @@ import CrearUsuario from "./pages/usuarios/crearUsuario"
 import Prestamo from './pages/prestamo/prestamo'
 import EditarUsuario from './pages/usuarios/editarUsuario'
 import EditarPartitura from './pages/partituras/editarPartitura'
+import NotFound from './pages/404'
 
 function App() {
     return (
@@ -21,7 +22,7 @@ function App() {
                 <Route path="/crear_usuario" element={<CrearUsuario />} />
                 <Route path="/editar_usuario/:id" element={<EditarUsuario />} />
                 <Route path="/prestamo" element={<Prestamo />} />
-                {/*<Route path="*" element={<NoPage />} />*/}
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
     )

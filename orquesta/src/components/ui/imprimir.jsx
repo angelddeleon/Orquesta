@@ -58,7 +58,7 @@ export default function Imprimir() {
                 <Modal.Body>
                     <Form>
                         {/* Lista de opciones */}
-                        {["Univ. Jose Antonio Paez", "Av. Bolivar", "Hesperia"].map((title) => (
+                        {["U.J.A.P", "Av. Bolivar", "Hesperia"].map((title) => (
                             <div key={title} className="d-flex justify-content-between align-items-center mb-3">
                                 <strong>{title}</strong>
                                 <div>
