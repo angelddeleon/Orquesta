@@ -27,9 +27,20 @@ export default function Usuarios() {
         // Simular datos
         const data = [
             { id: 1, nombre: "Juan", apellido: "Pérez", correo: "juan@gmail.com", role: "Admin" },
-            { id: 2, nombre: "María", apellido: "López", correo: "maria@gmail.com", role: "User" },
-        ]
+            { id: 2, nombre: "María", apellido: "López", correo: "maria@gmail.com", role: "Empleado" },
+            { id: 3, nombre: "Carlos", apellido: "Gómez", correo: "carlos@gmail.com", role: "Empleado" },
+            { id: 4, nombre: "Ana", apellido: "Martínez", correo: "ana@gmail.com", role: "Empleado" },
+            { id: 5, nombre: "Luis", apellido: "Rodríguez", correo: "luis@gmail.com", role: "Empleado" },
+            { id: 6, nombre: "Sofía", apellido: "Hernández", correo: "sofia@gmail.com", role: "Empleado" },
+            { id: 7, nombre: "Pedro", apellido: "Díaz", correo: "pedro@gmail.com", role: "Empleado" },
+            { id: 8, nombre: "Laura", apellido: "García", correo: "laura@gmail.com", role: "Empleado" },
+            { id: 9, nombre: "Diego", apellido: "Fernández", correo: "diego@gmail.com", role: "Empleado" },
+            { id: 10, nombre: "Marta", apellido: "Sánchez", correo: "marta@gmail.com", role: "Empleado" },
+        ];
         setUsuarios(data);
+        setTotalPages(Math.ceil(data.length / itemsPerPage));
+
+        
     }, [currentPage, itemsPerPage]);
 
     // Cambiar de página

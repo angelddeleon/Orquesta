@@ -6,6 +6,7 @@ import Menu from './pages/menu/menu'
 import Usuarios from "./pages/usuarios/usuarios"
 import CrearUsuario from "./pages/usuarios/crearUsuario"
 import Prestamo from './pages/prestamo/prestamo'
+import EditarUsuario from './pages/usuarios/editarUsuario'
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                 <Route path="/menu" element={<Menu />} />
                 <Route path="/usuarios" element={<Usuarios />} />
                 <Route path="/crear_usuario" element={<CrearUsuario />} />
+                <Route path="/editar_usuario/:id" element={<EditarUsuario />} />
                 <Route path="/prestamo" element={<Prestamo />} />
                 {/*<Route path="*" element={<NoPage />} />*/}
             </Routes>
