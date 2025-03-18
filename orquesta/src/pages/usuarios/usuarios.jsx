@@ -7,24 +7,10 @@ export default function Usuarios() {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
+    const [searchTerm, setSearchTerm] = useState(""); // Estado para el término de búsqueda
 
-    // Obtener datos del backend
+    // Obtener datos del backend (simulado)
     useEffect(() => {
-        
-        /*
-        const fetchData = async () => {
-            const response = await fetch(
-                `http://localhost:3000/api/usuarios?page=${currentPage}&limit=${itemsPerPage}`
-            );
-            const { data, total } = await response.json();
-            setUsuarios(data);
-            setTotalPages(Math.ceil(total / itemsPerPage));
-        };
-        fetchData();
-        */
-
-
-        // Simular datos
         const data = [
             { id: 1, nombre: "Juan", apellido: "Pérez", correo: "juan@gmail.com", role: "Admin" },
             { id: 2, nombre: "María", apellido: "López", correo: "maria@gmail.com", role: "Empleado" },
@@ -39,12 +25,26 @@ export default function Usuarios() {
         ];
         setUsuarios(data);
         setTotalPages(Math.ceil(data.length / itemsPerPage));
+    }, [itemsPerPage]);
 
-        
-    }, [currentPage, itemsPerPage]);
+    // Función para filtrar usuarios
+    const filteredUsuarios = usuarios.filter((usuario) => {
+        const searchLower = searchTerm.toLowerCase();
+        return (
+            usuario.nombre.toLowerCase().includes(searchLower) ||
+            usuario.apellido.toLowerCase().includes(searchLower) ||
+            usuario.correo.toLowerCase().includes(searchLower) ||
+            usuario.role.toLowerCase().includes(searchLower)
+        );
+    });
 
     // Cambiar de página
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+    // Calcular los usuarios a mostrar en la página actual
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredUsuarios.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
         <Layout>
@@ -71,6 +71,8 @@ export default function Usuarios() {
                                 type="text"
                                 className="form-control"
                                 placeholder="Buscar usuario..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)} // Actualiza el término de búsqueda
                             />
                         </div>
                         <button className="btn btn-outline-secondary">
@@ -92,7 +94,7 @@ export default function Usuarios() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {usuarios.map((usuario, index) => (
+                                {currentItems.map((usuario, index) => (
                                     <tr key={index}>
                                         <td className="align-middle">{usuario.nombre}</td>
                                         <td className="align-middle">{usuario.apellido}</td>
@@ -120,7 +122,7 @@ export default function Usuarios() {
                                     Anterior
                                 </button>
                             </li>
-                            {[...Array(totalPages).keys()].map((number) => (
+                            {[...Array(Math.ceil(filteredUsuarios.length / itemsPerPage)).keys()].map((number) => (
                                 <li
                                     key={number + 1}
                                     className={`page-item ${currentPage === number + 1 ? 'active' : ''}`}
@@ -133,7 +135,7 @@ export default function Usuarios() {
                                     </button>
                                 </li>
                             ))}
-                            <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                            <li className={`page-item ${currentPage === Math.ceil(filteredUsuarios.length / itemsPerPage) ? 'disabled' : ''}`}>
                                 <button
                                     className="page-link"
                                     onClick={() => paginate(currentPage + 1)}
