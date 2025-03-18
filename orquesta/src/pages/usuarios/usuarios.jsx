@@ -8,6 +8,10 @@ export default function Usuarios() {
     const [itemsPerPage] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
     const [searchTerm, setSearchTerm] = useState(""); // Estado para el término de búsqueda
+    const [showFilters, setShowFilters] = useState(false); // Estado para mostrar/ocultar el panel de filtros
+    const [filters, setFilters] = useState({
+        role: "",
+    }); // Estado para almacenar los filtros
 
     // Obtener datos del backend (simulado)
     useEffect(() => {
@@ -30,12 +34,14 @@ export default function Usuarios() {
     // Función para filtrar usuarios
     const filteredUsuarios = usuarios.filter((usuario) => {
         const searchLower = searchTerm.toLowerCase();
-        return (
+        const matchesSearch = (
             usuario.nombre.toLowerCase().includes(searchLower) ||
             usuario.apellido.toLowerCase().includes(searchLower) ||
             usuario.correo.toLowerCase().includes(searchLower) ||
             usuario.role.toLowerCase().includes(searchLower)
         );
+        const matchesRole = filters.role ? usuario.role === filters.role : true;
+        return matchesSearch && matchesRole;
     });
 
     // Cambiar de página
@@ -45,6 +51,22 @@ export default function Usuarios() {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredUsuarios.slice(indexOfFirstItem, indexOfLastItem);
+
+    // Manejar cambios en los filtros
+    const handleFilterChange = (e) => {
+        const { name, value } = e.target;
+        setFilters((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    // Limpiar filtros
+    const clearFilters = () => {
+        setFilters({
+            role: "",
+        });
+    };
 
     return (
         <Layout>
@@ -72,14 +94,49 @@ export default function Usuarios() {
                                 className="form-control"
                                 placeholder="Buscar usuario..."
                                 value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)} // Actualiza el término de búsqueda
+                                onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
-                        <button className="btn btn-outline-secondary">
+                        <button
+                            className="btn btn-outline-secondary"
+                            onClick={() => setShowFilters(!showFilters)}
+                        >
                             <i className="fa-solid fa-filter me-2"></i>
                             Filtrar
                         </button>
                     </div>
+
+                    {/* Panel de filtros */}
+                    {showFilters && (
+                        <div className="card mb-4">
+                            <div className="card-body">
+                                <h5 className="card-title">Filtros</h5>
+                                <div className="row">
+                                    <div className="col-md-4">
+                                        <label htmlFor="role" className="form-label">
+                                            Role
+                                        </label>
+                                        <select
+                                            className="form-select"
+                                            id="role"
+                                            name="role"
+                                            value={filters.role}
+                                            onChange={handleFilterChange}
+                                        >
+                                            <option value="">Todos</option>
+                                            <option value="Admin">Admin</option>
+                                            <option value="Empleado">Empleado</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="mt-3">
+                                    <button className="btn btn-secondary me-2" onClick={clearFilters}>
+                                        Limpiar Filtros
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Tabla de usuarios */}
                     <div className="table-responsive">
@@ -100,11 +157,15 @@ export default function Usuarios() {
                                         <td className="align-middle">{usuario.apellido}</td>
                                         <td className="align-middle">{usuario.correo}</td>
                                         <td className="align-middle">{usuario.role}</td>
-                                        <td className="align-middle">
-                                            <Link to={`/editar_usuario/${usuario.id}`} className="btn btn-sm btn-primary">
-                                                Editar
-                                            </Link>
-                                        </td>
+                                        {usuario.role === "Admin" ? (
+                                            <td className="align-middle"></td>
+                                        ) : (
+                                            <td className="align-middle">
+                                                <Link to={`/editar_usuario/${usuario.id}`} className="btn btn-sm btn-primary">
+                                                    Editar
+                                                </Link>
+                                            </td>
+                                        )}
                                     </tr>
                                 ))}
                             </tbody>
