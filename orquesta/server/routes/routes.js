@@ -14,7 +14,7 @@ const router = Router();
 // Rutas para registros
 
 //Iniciar Sesion
-router.get("/login", loginTest);
+router.post("/login", loginTest);
 
 router.get("/registros", getRegistros); // Obtener todos los registros (con paginación)
 router.get("/registros/:id", getRegistroById); // Obtener un registro por ID
