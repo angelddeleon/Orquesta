@@ -14,6 +14,7 @@ const router = Router();
 // Rutas para registros
 
 //Iniciar Sesion
+//Cambiar el loginTest por loginDB para probar con la base de datos
 router.post("/login", loginTest);
 
 router.get("/registros", getRegistros); // Obtener todos los registros (con paginación)
