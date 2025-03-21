@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import routes from "./routes/routes.js";
 import errorHandler from "./middlewares/errorHandler.js";
+import cors from "cors";
 
 dotenv.config(); // Cargar variables de entorno
 
@@ -9,6 +10,11 @@ const app = express();
 
 // Middleware para manejar JSON
 app.use(express.json());
+
+// Middleware para manejar CORS
+app.use(cors({
+    origin: 'http://localhost:5173' // Permite este origen específico
+}));
 
 // Rutas
 app.use("/api", routes);
