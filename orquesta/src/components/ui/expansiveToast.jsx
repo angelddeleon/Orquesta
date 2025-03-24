@@ -10,7 +10,7 @@ const ExpansiveToast = ({ title, content }) => {
                     <h6 className="mb-0 fw-semibold text-nowrap">{title}</h6>
                 </div>
                 <button className="btn btn-secundary text-secondary" onClick={() => setIsExpanded(!isExpanded)}>
-                    {isExpanded ? <i class="fa-solid fa-caret-up"></i> : <i class="fa-solid fa-caret-down"></i>}
+                    {isExpanded ? <i className="fa-solid fa-caret-up"></i> : <i className="fa-solid fa-caret-down"></i>}
                 </button>
             </div>
 

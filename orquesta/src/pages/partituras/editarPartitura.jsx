@@ -1,273 +1,652 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import Layout from '../../layout/layout';
+import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import Layout from "../../layout/layout";
+import ExpansiveToast from "../../components/ui/expansiveToast";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function EditarPartitura() {
-    const { id } = useParams(); // Obtén el id de los parámetros de la URL
-    const [formData, setFormData] = useState({
-        obra: '',
-        archivero: '',
-        caja: '',
-        compositor: '',
-        arreglista: '',
-        orquestacion: '',
-        originales: '',
-        copias: '',
-        categoria: '',
-        score: '',
-        observaciones: '',
-    });
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
 
-    // Función para obtener los datos de la partitura
-    useEffect(() => {
-        const fetchPartitura = async () => {
-            try {
-                const response = await fetch(`http://localhost:3000/partituras/${id}`); // Ajusta la URL según tu API
-                if (!response.ok) {
-                    throw new Error('Error al obtener los datos de la partitura');
-                }
-                const data = await response.json();
-                setFormData(data); // Rellena el formulario con los datos de la partitura
-            } catch (error) {
-                console.error('Error:', error);
-            }
+  const instrumentOptions = [
+    "Violín",
+    "Viola",
+    "Violonchelo",
+    "Contrabajo",
+    "Flauta",
+    "Oboe",
+    "Clarinete",
+    "Fagot",
+    "Trompeta",
+    "Trombón",
+    "Tuba",
+    "Percusión",
+    "Arpa",
+    "Piano",
+    "Nuevo...",
+  ];
+
+  // Estados del formulario
+  const [obra, setObra] = useState("");
+  const [sede, setSede] = useState("");
+  const [formato, setFormato] = useState("");
+  const [archivero, setArchivero] = useState("");
+  const [caja, setCaja] = useState("");
+  const [Compositor, setCompositor] = useState([""]);
+  const [arrangers, setArrangers] = useState([""]);
+  const [orquestacion, setOrquestacion] = useState("");
+  const [originales, setOriginales] = useState([]);
+  const [copias, setCopias] = useState([]);
+  const [categoriaOrquesta, setCategoriaOrquesta] = useState("Orquesta A");
+  const [score, setScore] = useState("si");
+  const [observaciones, setObservaciones] = useState("");
+
+  useEffect(() => {
+    const fetchPartitura = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:3000/api/partituras/${id}`
+        );
+        const data = await response.json();
+        console.log(data);
+        if (!response.ok)
+          throw new Error(data.message || "Error cargando partitura");
+
+        // Transformar datos de la API al formato del estado
+        const instrumentOptionsWithoutNew = instrumentOptions.filter(
+          (opt) => opt !== "Nuevo..."
+        );
+
+        const processInstruments = (instruments) => {
+          return instruments.map((inst) => ({
+            instrument: inst.Nombre,
+            quantity: inst.Cantidad.toString(),
+            isNew: !instrumentOptionsWithoutNew.includes(inst.Nombre),
+          }));
         };
 
-        fetchPartitura();
-    }, [id]); // Ejecuta este efecto cuando el id cambie
+        // Setear todos los estados con los datos obtenidos
+        setObra(data.obra || "");
+        setSede(data.sede || "");
+        setFormato(data.formato || "");
+        setArchivero(data.archivero || "");
+        setCaja(data.caja || "");
+        setCompositor(data.Compositores?.length > 0 ? data.Compositores : [""]);
+        setArrangers(data.Arreglistas?.length > 0 ? data.Arreglistas : [""]);
+        setOrquestacion(data.Orquestacion?.join("; ") || "");
+        setOriginales(processInstruments(data.Instrumento?.Original || []));
+        setCopias(processInstruments(data.Instrumento?.Copia || []));
+        setCategoriaOrquesta(data.Categoria || "Orquesta A");
+        setScore(data.Score ? "si" : "no");
+        setObservaciones(data.observaciones || "");
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+        setIsLoading(false);
+      } catch (error) {
+        toast.error(error.message);
+        // navigate('/menu')
+      }
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await fetch(`http://localhost:3000/partituras/${id}`, {
-                method: 'PUT', // Usa PUT para actualizar la partitura
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-            if (!response.ok) {
-                throw new Error('Error al actualizar la partitura');
-            }
-            alert('Partitura actualizada correctamente');
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Hubo un error al actualizar la partitura');
+    fetchPartitura();
+  }, []);
+
+  // Handlers para compositores
+  const handleCompositorChange = (index, value) => {
+    const newCompositors = [...Compositor];
+    newCompositors[index] = value;
+    setCompositor(newCompositors);
+  };
+
+  const addCompositor = () => setCompositor([...Compositor, ""]);
+  const removeCompositor = (index) =>
+    setCompositor(Compositor.filter((_, i) => i !== index));
+
+  // Handlers para arreglistas
+  const handleArrangerChange = (index, value) => {
+    const newArrangers = [...arrangers];
+    newArrangers[index] = value;
+    setArrangers(newArrangers);
+  };
+
+  const addArranger = () => setArrangers([...arrangers, ""]);
+  const removeArranger = (index) =>
+    setArrangers(arrangers.filter((_, i) => i !== index));
+
+  // Handlers para instrumentos
+  const handleInstrumentChange = (type, index, field, value) => {
+    const instruments = type === "original" ? [...originales] : [...copias];
+
+    if (field === "instrument") {
+      if (value === "Nuevo...") {
+        instruments[index] = {
+          instrument: "",
+          quantity: instruments[index].quantity,
+          isNew: true,
+        };
+      } else {
+        const instrumentOptionsWithoutNew = instrumentOptions.filter(
+          (opt) => opt !== "Nuevo..."
+        );
+        const isExisting = instrumentOptionsWithoutNew.includes(value);
+        instruments[index] = {
+          instrument: value,
+          quantity: instruments[index].quantity,
+          isNew: !isExisting,
+        };
+      }
+    } else {
+      instruments[index][field] = value;
+    }
+
+    type === "original" ? setOriginales(instruments) : setCopias(instruments);
+  };
+
+  const addInstrument = (type) => {
+    const newInstrument = { instrument: "", quantity: "", isNew: false };
+    type === "original"
+      ? setOriginales([...originales, newInstrument])
+      : setCopias([...copias, newInstrument]);
+  };
+
+  const removeInstrument = (type, index) => {
+    type === "original"
+      ? setOriginales(originales.filter((_, i) => i !== index))
+      : setCopias(copias.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const formData = {
+      Obra: obra,
+      Archivero: archivero,
+      Caja: caja,
+      Sede: sede,
+      Compositores: Compositor.filter((c) => c.trim() !== ""),
+      Arreglistas: arrangers.filter((a) => a.trim() !== ""),
+      Orquestacion: orquestacion.split(";").map((item) => item.trim()),
+      Formato: formato,
+      Instrumentos: {
+        Original: originales.map((o) => ({
+          Nombre: o.instrument,
+          Cantidad: Number(o.quantity),
+        })),
+        Copia: copias.map((c) => ({
+          Nombre: c.instrument,
+          Cantidad: Number(c.quantity),
+        })),
+      },
+      Categoria: categoriaOrquesta,
+      Score: score === "si",
+      Observaciones: observaciones,
+    };
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/partituras/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            // 'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify(formData),
         }
-    };
+      );
 
+      const data = await response.json();
+
+      if (!response.ok)
+        throw new Error(data.message || "Error actualizando partitura");
+
+      toast.success("Partitura actualizada con éxito", {
+        onClose: () => navigate("/menu"),
+        autoClose: 2000,
+      });
+    } catch (error) {
+      toast.error(
+        <ExpansiveToast
+          title="Error actualizando partitura"
+          content={<p className="mb-2 fs-6">{error.message}</p>}
+        />,
+        {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+        }
+      );
+      console.error("Error:", error);
+    }
+  };
+
+  if (isLoading)
     return (
-        <Layout>
-            <div className="d-flex vh-100">
-                {/* Contenido principal - 80% del ancho */}
-                <div className="main-content flex-grow-1 p-4" style={{ width: '80%' }}>
-                    <div className="text-center mb-4">
-                        <h5 className="text-primary mb-2">ORQUESTA SINFONICA DE CARABOBO</h5>
-                        <h1 className="mb-3">Editar Partitura</h1>
-                        <p className="text-muted">Rellene todo el siguiente formulario y una vez finalizado presione el botón</p>
-                    </div>
-
-                    <div className="row justify-content-center">
-                        <div className="col-md-8">
-                            <form onSubmit={handleSubmit}>
-                                <div className="row mb-3">
-                                    <div className="col-md-6 mb-3 mb-md-0">
-                                        <label htmlFor="obra" className="form-label">
-                                            Obra
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="obra"
-                                            name="obra"
-                                            placeholder="Nombre de la obra"
-                                            value={formData.obra}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label htmlFor="archivero" className="form-label">
-                                            Archivero
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="archivero"
-                                            name="archivero"
-                                            placeholder="Nombre del archivero"
-                                            value={formData.archivero}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="row mb-3">
-                                    <div className="col-md-6 mb-3 mb-md-0">
-                                        <label htmlFor="caja" className="form-label">
-                                            Caja
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="caja"
-                                            name="caja"
-                                            placeholder="Número de caja"
-                                            value={formData.caja}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label htmlFor="compositor" className="form-label">
-                                            Compositor
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="compositor"
-                                            name="compositor"
-                                            placeholder="Nombre del compositor"
-                                            value={formData.compositor}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="row mb-3">
-                                    <div className="col-md-6 mb-3 mb-md-0">
-                                        <label htmlFor="arreglista" className="form-label">
-                                            Arreglista
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="arreglista"
-                                            name="arreglista"
-                                            placeholder="Nombre del arreglista"
-                                            value={formData.arreglista}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label htmlFor="orquestacion" className="form-label">
-                                            Orquestación
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="orquestacion"
-                                            name="orquestacion"
-                                            placeholder="Tipo de orquestación"
-                                            value={formData.orquestacion}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="row mb-3">
-                                    <div className="col-md-6 mb-3 mb-md-0">
-                                        <label htmlFor="originales" className="form-label">
-                                            Originales
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            id="originales"
-                                            name="originales"
-                                            placeholder="Número de originales"
-                                            value={formData.originales}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label htmlFor="copias" className="form-label">
-                                            Copias
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            id="copias"
-                                            name="copias"
-                                            placeholder="Número de copias"
-                                            value={formData.copias}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="row mb-3">
-                                    <div className="col-md-6 mb-3 mb-md-0">
-                                        <label htmlFor="categoria" className="form-label">
-                                            Categoría
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="categoria"
-                                            name="categoria"
-                                            placeholder="Categoría de la partitura"
-                                            value={formData.categoria}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label htmlFor="score" className="form-label">
-                                            Score
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="score"
-                                            name="score"
-                                            placeholder="Score de la partitura"
-                                            value={formData.score}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="mb-3">
-                                    <label htmlFor="observaciones" className="form-label">
-                                        Observaciones
-                                    </label>
-                                    <textarea
-                                        className="form-control"
-                                        id="observaciones"
-                                        name="observaciones"
-                                        placeholder="Observaciones adicionales"
-                                        value={formData.observaciones}
-                                        onChange={handleChange}
-                                        rows="3"
-                                    ></textarea>
-                                </div>
-
-                                <div className="d-grid">
-                                    <button type="submit" className="btn py-2" style={{ backgroundColor: '#d4b52c', color: 'white' }}>
-                                        Editar Partitura
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </Layout>
+      <Layout>
+        <div className="text-center my-5">Cargando partitura...</div>
+      </Layout>
     );
+
+  return (
+    <Layout>
+      <div className="wrapper overflow-hidden px-4 py-2">
+        <div className="d-flex align-items-center justify-content-center my-5 my-lg-0">
+          <div className="container-fluid">
+            <div className="row row-cols-1 row-cols-lg-2 row-cols-xl-3">
+              <div className="col mx-auto">
+                <div className="my-4 text-center">
+                  <p className="fw-bold text-nowrap text-primary">
+                    ORQUESTA SINFÓNICA DE CARABOBO
+                  </p>
+                  <h1>Editar Partitura</h1>
+                  <small className="text-secondary">
+                    Modifique los campos necesarios y presione el botón para
+                    guardar
+                  </small>
+                </div>
+
+                <div className="card-body">
+                  <div className="p-4">
+                    <form className="row g-3" onSubmit={handleSubmit}>
+                      <div className="col-sm-6">
+                        <label htmlFor="archivero" className="form-label">
+                          Archivero
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="archivero"
+                          value={archivero}
+                          onChange={(e) => setArchivero(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="col-sm-6">
+                        <label htmlFor="caja" className="form-label">
+                          Caja
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="caja"
+                          value={caja}
+                          onChange={(e) => setCaja(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="col-12">
+                        <label className="form-label">Compositores</label>
+                        {Compositor.map((Compositor, index) => (
+                          <div
+                            className="input-group mb-2"
+                            key={`Compositor-${index}`}
+                          >
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={Compositor}
+                              onChange={(e) =>
+                                handleCompositorChange(index, e.target.value)
+                              }
+                              placeholder={`Compositor ${index + 1}`}
+                            />
+                            {index === arrangers.length - 1 && (
+                              <button
+                                type="button"
+                                className="btn btn-outline-primary"
+                                onClick={addCompositor}
+                              >
+                                +
+                              </button>
+                            )}
+                            {index > 0 && (
+                              <button
+                                type="button"
+                                className="btn btn-outline-danger"
+                                onClick={() => removeCompositor(index)}
+                              >
+                                -
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="col-12">
+                        <label htmlFor="obra" className="form-label">
+                          Obra
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="obra"
+                          required
+                          value={obra}
+                          onChange={(e) => setObra(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="col-12">
+                        <label htmlFor="sede" className="form-label">
+                          Sede
+                        </label>
+                        <select
+                          className="form-select"
+                          id="sede"
+                          required
+                          value={sede}
+                          onChange={(e) => setSede(e.target.value)}
+                        >
+                          <option value="">Seleccionar sede</option>
+                          <option value="Hesperia">Hesperia</option>
+                          <option value="Av. Bolivar">Av. Bolivar</option>
+                          <option value="Univ. José Antonio Páez">
+                            Univ. José Antonio Páez
+                          </option>
+                        </select>
+                      </div>
+
+                      <div className="col-12">
+                        <label htmlFor="formato" className="form-label">
+                          Formato
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="obra"
+                          required
+                          value={formato}
+                          onChange={(e) => setFormato(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="col-12">
+                        <label className="form-label">Arreglistas</label>
+                        {arrangers.map((arranger, index) => (
+                          <div
+                            className="input-group mb-2"
+                            key={`arranger-${index}`}
+                          >
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={arranger}
+                              onChange={(e) =>
+                                handleArrangerChange(index, e.target.value)
+                              }
+                              placeholder={`Arreglista ${index + 1}`}
+                            />
+                            {index === arrangers.length - 1 && (
+                              <button
+                                type="button"
+                                className="btn btn-outline-primary"
+                                onClick={addArranger}
+                              >
+                                +
+                              </button>
+                            )}
+                            {index > 0 && (
+                              <button
+                                type="button"
+                                className="btn btn-outline-danger"
+                                onClick={() => removeArranger(index)}
+                              >
+                                -
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="col-12">
+                        <label htmlFor="orquestacion" className="form-label">
+                          Orquestación
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="orquestacion"
+                          value={orquestacion}
+                          onChange={(e) => setOrquestacion(e.target.value)}
+                          placeholder="Separar por punto y coma (;)"
+                        />
+                      </div>
+
+                      <div className="col-12">
+                        <label className="mb-4">Instrumentos</label>
+                        <div className="mb-4">
+                          <div className="d-flex align-items-center justify-content-between mb-2">
+                            <label className="form-label me-2">Original</label>
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-outline-primary"
+                              onClick={() => addInstrument("original")}
+                            >
+                              +
+                            </button>
+                          </div>
+                          {originales.map((original, index) => (
+                            <div
+                              className="input-group mb-2"
+                              key={`original-${index}`}
+                            >
+                              {original.isNew ? (
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="Nuevo instrumento"
+                                  value={original.instrument}
+                                  onChange={(e) =>
+                                    handleInstrumentChange(
+                                      "original",
+                                      index,
+                                      "instrument",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              ) : (
+                                <select
+                                  className="form-select"
+                                  value={original.instrument}
+                                  onChange={(e) =>
+                                    handleInstrumentChange(
+                                      "original",
+                                      index,
+                                      "instrument",
+                                      e.target.value
+                                    )
+                                  }
+                                >
+                                  <option value="">
+                                    Seleccionar instrumento
+                                  </option>
+                                  {instrumentOptions.map((inst, i) => (
+                                    <option key={i} value={inst}>
+                                      {inst}
+                                    </option>
+                                  ))}
+                                </select>
+                              )}
+                              <input
+                                type="number"
+                                min="1"
+                                className="form-control"
+                                placeholder="Cantidad"
+                                value={original.quantity}
+                                onChange={(e) =>
+                                  handleInstrumentChange(
+                                    "original",
+                                    index,
+                                    "quantity",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                              <button
+                                type="button"
+                                className="btn btn-outline-danger"
+                                onClick={() =>
+                                  removeInstrument("original", index)
+                                }
+                              >
+                                -
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                        <hr />
+                        <div className="mb-4">
+                          <div className="d-flex align-items-center justify-content-between mb-2">
+                            <label className="form-label me-2">Copia</label>
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-outline-primary"
+                              onClick={() => addInstrument("copia")}
+                            >
+                              +
+                            </button>
+                          </div>
+                          {copias.map((copia, index) => (
+                            <div
+                              className="input-group mb-2"
+                              key={`copia-${index}`}
+                            >
+                              {copia.isNew ? (
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="Nuevo instrumento"
+                                  value={copia.instrument}
+                                  onChange={(e) =>
+                                    handleInstrumentChange(
+                                      "copia",
+                                      index,
+                                      "instrument",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              ) : (
+                                <select
+                                  className="form-select"
+                                  value={copia.instrument}
+                                  onChange={(e) =>
+                                    handleInstrumentChange(
+                                      "copia",
+                                      index,
+                                      "instrument",
+                                      e.target.value
+                                    )
+                                  }
+                                >
+                                  <option value="">
+                                    Seleccionar instrumento
+                                  </option>
+                                  {instrumentOptions.map((inst, i) => (
+                                    <option key={i} value={inst}>
+                                      {inst}
+                                    </option>
+                                  ))}
+                                </select>
+                              )}
+                              <input
+                                type="number"
+                                min="1"
+                                className="form-control"
+                                placeholder="Cantidad"
+                                value={copia.quantity}
+                                onChange={(e) =>
+                                  handleInstrumentChange(
+                                    "copia",
+                                    index,
+                                    "quantity",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                              <button
+                                type="button"
+                                className="btn btn-outline-danger"
+                                onClick={() => removeInstrument("copia", index)}
+                              >
+                                -
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="col-12">
+                        <label
+                          htmlFor="categoriaOrquesta"
+                          className="form-label"
+                        >
+                          Categoría de Orquesta
+                        </label>
+                        <select
+                          className="form-select"
+                          id="categoriaOrquesta"
+                          value={categoriaOrquesta}
+                          onChange={(e) => setCategoriaOrquesta(e.target.value)}
+                        >
+                          <option value="Orquesta A">Orquesta A</option>
+                          <option value="Orquesta J">Orquesta J</option>
+                          <option value="OSC">OSC</option>
+                        </select>
+                      </div>
+
+                      <div className="col-12">
+                        <label htmlFor="score" className="form-label">
+                          Score
+                        </label>
+                        <select
+                          className="form-select"
+                          id="score"
+                          value={score}
+                          onChange={(e) => setScore(e.target.value)}
+                        >
+                          <option value="si">Si</option>
+                          <option value="no">No</option>
+                        </select>
+                      </div>
+
+                      <div className="col-12">
+                        <label
+                          htmlFor="observaciones"
+                          className="form-label mt-4"
+                        >
+                          Observaciones
+                        </label>
+                        <textarea
+                          className="form-control"
+                          id="observaciones"
+                          value={observaciones}
+                          onChange={(e) => setObservaciones(e.target.value)}
+                          placeholder="Observaciones"
+                          rows="3"
+                        />
+                      </div>
+
+                      <div className="col-12">
+                        <div className="d-grid">
+                          <button type="submit" className="btn btn-primary">
+                            Actualizar Partitura
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ToastContainer />
+      </div>
+    </Layout>
+  );
 }

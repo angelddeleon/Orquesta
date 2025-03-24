@@ -9,6 +9,7 @@ import {
 
 import { loginTest } from "../controllers/login.controller.js";
 
+import partituraRouter from "./partituras/partituraRouter.js";
 const router = Router();
 
 // Rutas para registros
@@ -22,5 +23,8 @@ router.get("/registros/:id", getRegistroById); // Obtener un registro por ID
 router.post("/registros", createRegistro); // Crear un nuevo registro
 router.put("/registros/:id", updateRegistro); // Actualizar un registro
 router.delete("/registros/:id", deleteRegistro); // Eliminar un registro
+
+// Rutas para partituras
+router.use("/partituras", partituraRouter);
 
 export default router;
