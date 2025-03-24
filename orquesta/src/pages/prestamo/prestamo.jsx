@@ -121,10 +121,6 @@ export default function Prestamo() {
   const currentItems = filteredPrestamos.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredPrestamos.length / itemsPerPage);
 
-  const handleEdit = (id) => {
-    console.log("Editar préstamo con ID:", id);
-    // Aquí iría la lógica para editar
-  };
 
   const clearFilters = () => {
     setFilters({
@@ -145,7 +141,7 @@ export default function Prestamo() {
           <div className="d-flex gap-2">
             <button className="btn btn-blue">
               <Link
-                to="/nuevo_prestamo"
+                to="/prestamo/nuevo_prestamo"
                 className="text-white text-decoration-none"
               >
                 + Agregar Préstamo
@@ -324,12 +320,12 @@ export default function Prestamo() {
                             <td className="text-center">{prestamo.ubicacionAnterior}</td>
                             <td className="text-center">{prestamo.ubicacionActual}</td>
                             <td className="text-center">
-                              <button 
+                              <Link 
                                 className="btn btn-sm btn-outline-primary"
-                                onClick={() => handleEdit(prestamo.id)}
+                                to={`/prestamo/editar_prestamo/${prestamo.id}`}
                               >
                                 <i className="fa-solid fa-pen-to-square"></i> Editar
-                              </button>
+                              </Link>
                             </td>
                           </tr>
                         ))
