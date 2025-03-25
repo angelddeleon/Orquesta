@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import Layout from "../../layout/layout";
 import ExpansiveToast from "../../components/ui/expansiveToast";
@@ -6,28 +6,13 @@ import { useNavigate } from "react-router-dom";
 
 export default function NewPartitura() {
   const navigate = useNavigate(); // Hook de react-router-dom para navegar entre rutas
-  // Opciones para instrumentos.PLACEHOLDER, debe venir del backend?
-  const instrumentOptions = [
-    "Violín",
-    "Viola",
-    "Violonchelo",
-    "Contrabajo",
-    "Flauta",
-    "Oboe",
-    "Clarinete",
-    "Fagot",
-    "Trompeta",
-    "Trombón",
-    "Tuba",
-    "Percusión",
-    "Arpa",
-    "Piano",
-    "Nuevo...",
-  ];
+
+  const [instrumentOptions, setInstrumentOptions] = useState([]);
 
   // Agregar estado para sede y obra
   const [obra, setObra] = useState("");
   const [sede, setSede] = useState("");
+  const [caja, setCaja] = useState("");
   const [formato, setFormato] = useState("");
 
   // estado de Compositores
@@ -139,7 +124,7 @@ export default function NewPartitura() {
     const data = {
       Obra: obra,
       Archivero: event.target.archivero.value,
-      Caja: event.target.caja.value,
+      Caja: caja,
       Sede: sede,
       Compositores: compositor,
       Arreglistas: arrangers,
@@ -164,6 +149,34 @@ export default function NewPartitura() {
     console.log(data);
     sendForm(data);
   };
+  const formatCaja = (input) => {
+    if (input === "") return "";
+
+    // Convertir primer carácter a mayúscula y validar que sea letra
+    const firstChar = input[0].toUpperCase();
+    if (!/[A-Z]/.test(firstChar)) return "";
+
+    // Filtrar solo números en el resto del input
+    const remaining = input.slice(1);
+    const numbers = remaining.replace(/[^0-9]/g, "");
+
+    return numbers ? `${firstChar}-${numbers}` : `${firstChar}-`;
+  };
+  useEffect(() => {
+    const fetchInstruments = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/instrumentos");
+        const data = await response.json();
+        // Supongamos que el endpoint retorna un arreglo de objetos con { id, nombre }
+        // Agregamos "Nuevo..." manualmente al final de la lista, si lo necesitas.
+        setInstrumentOptions([...data.map((inst) => inst.nombre), "Nuevo..."]);
+      } catch (error) {
+        console.error("Error fetching instruments:", error);
+      }
+    };
+
+    fetchInstruments();
+  }, []);
 
   // Función sendForm actualizada
   const sendForm = async (data) => {
@@ -211,6 +224,37 @@ export default function NewPartitura() {
       console.error("Error:", error);
     }
   };
+  useEffect(() => {
+    const fetchInstruments = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/instrumentos");
+        const data = await response.json();
+        // Supongamos que el endpoint retorna un arreglo de objetos con { id, nombre }
+        // Agregamos "Nuevo..." manualmente al final de la lista, si lo necesitas.
+        setInstrumentOptions([...data.map((inst) => inst.nombre), "Nuevo..."]);
+      } catch (error) {
+        console.error("Error fetching instruments:", error);
+      }
+    };
+
+    fetchInstruments();
+  }, []);
+  useEffect(() => {
+    const fetchInstruments = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/instrumentos");
+        const data = await response.json();
+        // Supongamos que el endpoint retorna un arreglo de objetos con { id, nombre }
+        // Agregamos "Nuevo..." manualmente al final de la lista, si lo necesitas.
+        setInstrumentOptions([...data.map((inst) => inst.nombre), "Nuevo..."]);
+      } catch (error) {
+        console.error("Error fetching instruments:", error);
+      }
+    };
+
+    fetchInstruments();
+  }, []);
+
   return (
     <Layout>
       <>
@@ -253,7 +297,14 @@ export default function NewPartitura() {
                                 type="text"
                                 className="form-control"
                                 id="caja"
-                                placeholder="001"
+                                value={caja}
+                                onChange={(e) => {
+                                  const formattedValue = formatCaja(
+                                    e.target.value
+                                  );
+                                  setCaja(formattedValue);
+                                }}
+                                placeholder="Ej: A-123"
                               />
                             </div>
 
@@ -422,72 +473,99 @@ export default function NewPartitura() {
                                     +
                                   </button>
                                 </div>
-                                {originales.map((original, index) => (
-                                  <div
-                                    className="input-group mb-2"
-                                    key={`original-${index}`}
-                                  >
-                                    {original.isNew ? (
+                                {originales.map((original, index) => {
+                                  // Total de ocurrencias del instrumento seleccionado en todo el array
+                                  const totalOccurrences = originales.filter(
+                                    (o) =>
+                                      o.instrument === original.instrument &&
+                                      o.instrument !== ""
+                                  ).length;
+                                  // Secuencia: número de la ocurrencia actual entre las que tengan el mismo instrumento
+                                  const sequence = originales.filter(
+                                    (o, i) =>
+                                      o.instrument === original.instrument &&
+                                      o.instrument !== "" &&
+                                      i <= index
+                                  ).length;
+                                  // Mostrar el contador solo si hay más de una ocurrencia
+                                  const counter =
+                                    totalOccurrences > 1 ? (
+                                      <span className="input-group-text">
+                                        {sequence}
+                                      </span>
+                                    ) : null;
+                                  return (
+                                    <div
+                                      className="input-group mb-2"
+                                      key={`original-${index}`}
+                                    >
+                                      {/* Colocar el contador a la izquierda */}
+                                      {counter}
+                                      {original.isNew ? (
+                                        <input
+                                          type="text"
+                                          className="form-control"
+                                          placeholder="Nuevo instrumento"
+                                          value={original.instrument}
+                                          required
+                                          onChange={(e) =>
+                                            handleOriginalChange(
+                                              index,
+                                              "instrument",
+                                              e.target.value
+                                            )
+                                          }
+                                        />
+                                      ) : (
+                                        <select
+                                          className="form-select"
+                                          value={original.instrument}
+                                          onChange={(e) =>
+                                            handleOriginalChange(
+                                              index,
+                                              "instrument",
+                                              e.target.value
+                                            )
+                                          }
+                                        >
+                                          <option value="">
+                                            Seleccionar instrumento
+                                          </option>
+                                          {instrumentOptions.map((inst, i) => (
+                                            <option key={i} value={inst}>
+                                              {inst}
+                                            </option>
+                                          ))}
+                                        </select>
+                                      )}
                                       <input
-                                        type="text"
+                                        type="number"
+                                        min="1"
                                         className="form-control"
-                                        placeholder="Nuevo instrumento"
-                                        value={original.instrument}
+                                        placeholder="Cantidad"
+                                        value={original.quantity}
                                         onChange={(e) =>
                                           handleOriginalChange(
                                             index,
-                                            "instrument",
+                                            "quantity",
                                             e.target.value
                                           )
                                         }
                                       />
-                                    ) : (
-                                      <select
-                                        className="form-select"
-                                        value={original.instrument}
-                                        onChange={(e) =>
-                                          handleOriginalChange(
-                                            index,
-                                            "instrument",
-                                            e.target.value
-                                          )
-                                        }
+                                      <button
+                                        type="button"
+                                        className="btn btn-outline-danger"
+                                        onClick={() => removeOriginal(index)}
                                       >
-                                        <option value="">
-                                          Seleccionar instrumento
-                                        </option>
-                                        {instrumentOptions.map((inst, i) => (
-                                          <option key={i} value={inst}>
-                                            {inst}
-                                          </option>
-                                        ))}
-                                      </select>
-                                    )}
-                                    <input
-                                      type="number"
-                                      min="1"
-                                      className="form-control"
-                                      placeholder="Cantidad"
-                                      value={original.quantity}
-                                      onChange={(e) =>
-                                        handleOriginalChange(
-                                          index,
-                                          "quantity",
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                    <button
-                                      type="button"
-                                      className="btn btn-outline-danger"
-                                      onClick={() => removeOriginal(index)}
-                                    >
-                                      -
-                                    </button>
-                                  </div>
-                                ))}
+                                        -
+                                      </button>
+                                    </div>
+                                  );
+                                })}
                               </div>
+
                               <hr />
+                              {/* Sección Copias */}
                               {/* Sección Copias */}
                               <div className="mb-4">
                                 <div className="d-flex align-items-center justify-content-between mb-2">
@@ -502,70 +580,91 @@ export default function NewPartitura() {
                                     +
                                   </button>
                                 </div>
-                                {copias.map((copia, index) => (
-                                  <div
-                                    className="input-group mb-2"
-                                    key={`copia-${index}`}
-                                  >
-                                    {copia.isNew ? (
+                                {copias.map((copia, index) => {
+                                  const totalOccurrences = copias.filter(
+                                    (o) =>
+                                      o.instrument === copia.instrument &&
+                                      o.instrument !== ""
+                                  ).length;
+                                  const sequence = copias.filter(
+                                    (o, i) =>
+                                      o.instrument === copia.instrument &&
+                                      o.instrument !== "" &&
+                                      i <= index
+                                  ).length;
+                                  const counter =
+                                    totalOccurrences > 1 ? (
+                                      <span className="input-group-text">
+                                        {sequence}
+                                      </span>
+                                    ) : null;
+                                  return (
+                                    <div
+                                      className="input-group mb-2"
+                                      key={`copia-${index}`}
+                                    >
+                                      {counter}
+                                      {copia.isNew ? (
+                                        <input
+                                          type="text"
+                                          className="form-control"
+                                          placeholder="Nuevo instrumento"
+                                          value={copia.instrument}
+                                          required
+                                          onChange={(e) =>
+                                            handleCopiaChange(
+                                              index,
+                                              "instrument",
+                                              e.target.value
+                                            )
+                                          }
+                                        />
+                                      ) : (
+                                        <select
+                                          className="form-select"
+                                          value={copia.instrument}
+                                          onChange={(e) =>
+                                            handleCopiaChange(
+                                              index,
+                                              "instrument",
+                                              e.target.value
+                                            )
+                                          }
+                                        >
+                                          <option value="">
+                                            Seleccionar instrumento
+                                          </option>
+                                          {instrumentOptions.map((inst, i) => (
+                                            <option key={i} value={inst}>
+                                              {inst}
+                                            </option>
+                                          ))}
+                                        </select>
+                                      )}
                                       <input
-                                        type="text"
+                                        type="number"
+                                        min="1"
                                         className="form-control"
-                                        placeholder="Nuevo instrumento"
-                                        value={copia.instrument}
+                                        placeholder="Cantidad"
+                                        value={copia.quantity}
                                         onChange={(e) =>
                                           handleCopiaChange(
                                             index,
-                                            "instrument",
+                                            "quantity",
                                             e.target.value
                                           )
                                         }
                                       />
-                                    ) : (
-                                      <select
-                                        className="form-select"
-                                        value={copia.instrument}
-                                        onChange={(e) =>
-                                          handleCopiaChange(
-                                            index,
-                                            "instrument",
-                                            e.target.value
-                                          )
-                                        }
+                                      <button
+                                        type="button"
+                                        className="btn btn-outline-danger"
+                                        onClick={() => removeCopia(index)}
                                       >
-                                        <option value="">
-                                          Seleccionar instrumento
-                                        </option>
-                                        {instrumentOptions.map((inst, i) => (
-                                          <option key={i} value={inst}>
-                                            {inst}
-                                          </option>
-                                        ))}
-                                      </select>
-                                    )}
-                                    <input
-                                      type="number"
-                                      min="1"
-                                      className="form-control"
-                                      placeholder="Cantidad"
-                                      value={copia.quantity}
-                                      onChange={(e) =>
-                                        handleCopiaChange(
-                                          index,
-                                          "quantity",
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                    <button
-                                      type="button"
-                                      className="btn btn-outline-danger"
-                                      onClick={() => removeCopia(index)}
-                                    >
-                                      -
-                                    </button>
-                                  </div>
-                                ))}
+                                        -
+                                      </button>
+                                    </div>
+                                  );
+                                })}
                               </div>
                             </div>
 
@@ -581,11 +680,12 @@ export default function NewPartitura() {
                                 id="categoriaOrquesta"
                                 aria-label="Default select example"
                               >
-                                <option defaultValue value="Orquesta A">
-                                  Orquesta A
-                                </option>
+                                <option value="Orquesta A">Orquesta A</option>
                                 <option value="Orquesta J">Orquesta J</option>
                                 <option value="OSC">OSC</option>
+                                <option value="Orquesta Típica">
+                                  Orquesta Típica
+                                </option>
                               </select>
                             </div>
                             <div className="col-12">
