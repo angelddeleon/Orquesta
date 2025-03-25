@@ -1,7 +1,6 @@
-import React from 'react'
-import { useState } from 'react'
-import Layout from '../../layout/layout'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react';
+import Layout from '../../layout/layout';
+import { Link } from 'react-router-dom';
 
 export default function UserForm() {
     const [formData, setFormData] = useState({
@@ -9,28 +8,41 @@ export default function UserForm() {
         apellido: '',
         correo: '',
         contrasena: '',
-    })
+        role: 'archivero',  // Establecemos 'archivero' por defecto
+    });
 
     const handleChange = (e) => {
-        const { name, value } = e.target
+        const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
             [name]: value,
-        }))
-    }
+        }));
+    };
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        console.log('Datos del formulario:', formData)
-        // Aquí iría la lógica para enviar los datos al servidor
-    }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log('Datos del formulario:', formData);
+
+        // Enviar los datos al servidor
+        const response = await fetch('http://localhost:3000/api/usuarios', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            alert('Usuario creado exitosamente');
+        } else {
+            alert('Error: ' + data.error);
+        }
+    };
 
     return (
         <Layout>
             <div className="d-flex vh-100">
-               
-
-                {/* Contenido principal - 80% del ancho */}
                 <div className="main-content flex-grow-1 p-4" style={{ width: '80%' }}>
                     <div className="text-center mb-4">
                         <h5 className="text-primary mb-2">ORQUESTA SINFONICA DE CARABOBO</h5>
@@ -106,6 +118,22 @@ export default function UserForm() {
                                     />
                                 </div>
 
+                                {/* Selector de Roles */}
+                                <div className="mb-3">
+                                    <label htmlFor="role" className="form-label">Role</label>
+                                    <select
+                                        id="role"
+                                        name="role"
+                                        className="form-control"
+                                        value={formData.role}
+                                        onChange={handleChange}
+                                        required
+                                    >
+                                        <option value="archivero">Archivero</option>
+                                        <option value="administrador">Administrador</option>
+                                    </select>
+                                </div>
+
                                 <div className="d-grid">
                                     <button type="submit" className="btn py-2" style={{ backgroundColor: '#d4b52c', color: 'white' }}>
                                         Crear Usuario
@@ -117,5 +145,5 @@ export default function UserForm() {
                 </div>
             </div>
         </Layout>
-    )
+    );
 }

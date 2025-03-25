@@ -10,10 +10,12 @@ import {
 import { loginTest } from "../controllers/login.controller.js";
 
 import partituraRouter from "./partituras/partituraRouter.js";
+import usuarioRouter from "./usuarios/usuarioRouter.js";
 const router = Router();
 
 // Rutas para registros
 
+// USUARIO
 //Iniciar Sesion
 //Cambiar el loginTest por loginDB para probar con la base de datos
 router.post("/login", loginTest);
@@ -26,5 +28,6 @@ router.delete("/registros/:id", deleteRegistro); // Eliminar un registro
 
 // Rutas para partituras
 router.use("/partituras", partituraRouter);
+router.use("/usuarios", usuarioRouter)
 
 export default router;

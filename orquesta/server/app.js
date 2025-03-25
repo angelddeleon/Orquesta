@@ -6,14 +6,17 @@ import cors from "cors";
 
 dotenv.config(); // Cargar variables de entorno
 
-const app = express();
+const app = express()
 
 // Middleware para manejar JSON
 app.use(express.json());
 
 // Middleware para manejar CORS
 app.use(cors({
-    origin: 'http://localhost:5173' // Permite este origen específico
+    origin: 'http://localhost:5173',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 }));
 
 // Rutas
