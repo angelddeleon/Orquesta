@@ -1,15 +1,18 @@
 import { Router } from "express";
 import {
-    getRegistros,
-    getRegistroById,
-    createRegistro,
-    updateRegistro,
-    deleteRegistro,
+  getRegistros,
+  getRegistroById,
+  createRegistro,
+  updateRegistro,
+  deleteRegistro,
 } from "../controllers/registroController.js";
 
 import { loginTest } from "../controllers/login.controller.js";
 
 import partituraRouter from "./partituras/partituraRouter.js";
+
+import { obtenerInstrumentos } from "../controllers/instrumento.controller.js";
+
 import usuarioRouter from "./usuarios/usuarioRouter.js";
 const router = Router();
 
@@ -28,6 +31,7 @@ router.delete("/registros/:id", deleteRegistro); // Eliminar un registro
 
 // Rutas para partituras
 router.use("/partituras", partituraRouter);
+router.get("/instrumentos", obtenerInstrumentos);
 router.use("/usuarios", usuarioRouter)
 
 export default router;

@@ -19,7 +19,7 @@ export default function Menu() {
   const [filters, setFilters] = useState({
     obra: "",
     archivero: "",
-    caja: { letra: "", numero: "" },
+    caja: "",
     compositores: [""],
     arreglistas: [""],
     orquestaciones: [""],
@@ -40,8 +40,7 @@ export default function Menu() {
           categoria: filters.categoria,
           score: filters.score,
           observaciones: filters.observaciones,
-          cajaLetra: filters.caja.letra,
-          cajaNumero: filters.caja.numero,
+          caja: filters.caja,
           // Para campos que son arrays, se separan por ';'
           compositores: filters.compositores.join(";"),
           arreglistas: filters.arreglistas.join(";"),
@@ -84,7 +83,7 @@ export default function Menu() {
     setFilters({
       obra: "",
       archivero: "",
-      caja: { letra: "", numero: "" },
+      caja: "",
       compositores: [""],
       arreglistas: [""],
       orquestaciones: [""],
@@ -94,71 +93,23 @@ export default function Menu() {
     });
   };
 
-  const filteredPartituras = partituras.filter((partitura) => {
-    // Filtros básicos
-    const basicFilters =
-      partitura.obra.toLowerCase().includes(filters.obra.toLowerCase()) &&
-      partitura.archivero
-        .toLowerCase()
-        .includes(filters.archivero.toLowerCase()) &&
-      partitura.categoria.includes(filters.categoria) &&
-      partitura.observaciones.includes(filters.observaciones);
+  // Función para formatear el valor de caja
+  const formatCaja = (input) => {
+    if (input === "") return "";
 
-    // Filtros múltiples (OR) para campos que son arrays
-    const compositoresFilter = filters.compositores.some((c) => c.trim())
-      ? filters.compositores.some(
-          (c) =>
-            c && partitura.compositor.toLowerCase().includes(c.toLowerCase())
-        )
-      : true;
+    const firstChar = input[0].toUpperCase();
+    if (!/[A-Z]/.test(firstChar)) {
+      return "";
+    }
 
-    const arreglistasFilter = filters.arreglistas.some((a) => a.trim())
-      ? filters.arreglistas.some(
-          (a) =>
-            a && partitura.arreglista.toLowerCase().includes(a.toLowerCase())
-        )
-      : true;
+    const remaining = input.slice(1);
+    const numbers = remaining.replace(/[^0-9]/g, "");
 
-    const orquestacionesFilter = filters.orquestaciones.some((o) => o.trim())
-      ? filters.orquestaciones.some(
-          (o) =>
-            o && partitura.orquestacion.toLowerCase().includes(o.toLowerCase())
-        )
-      : true;
+    return numbers.length > 0 ? `${firstChar}-${numbers}` : `${firstChar}-`;
+  };
 
-    // Filtro de caja
-    const cajaFilter =
-      partitura.caja.startsWith(filters.caja.letra) &&
-      partitura.caja.includes(filters.caja.numero);
-
-    // Filtro de score
-    const scoreFilter =
-      filters.score === ""
-        ? true
-        : filters.score === "si"
-        ? partitura.score
-        : !partitura.score;
-
-    return (
-      basicFilters &&
-      compositoresFilter &&
-      arreglistasFilter &&
-      orquestacionesFilter &&
-      cajaFilter &&
-      scoreFilter
-    );
-  });
-
-  // Calcular los usuarios a mostrar en la página actual
-  //   const indexOfLastItem = currentPage * itemsPerPage;
-  //   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  //   const currentItems = filteredPartituras.slice(
-  //     indexOfFirstItem,
-  //     indexOfLastItem
-  //   );
-  console.log("filteredPartituras", filters);
-  console.log("filteredPartituras", filteredPartituras);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <Layout>
       {/* Contenido principal - 80% del ancho */}
@@ -373,34 +324,18 @@ export default function Menu() {
                 <div className="col-md-4 mb-3">
                   <label>Caja</label>
                   <div className="d-flex gap-2">
-                    <select
-                      className="form-select"
-                      value={filters.caja.letra}
-                      onChange={(e) =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          caja: { ...prev.caja, letra: e.target.value },
-                        }))
-                      }
-                    >
-                      <option value="">Letra</option>
-                      {["A", "B", "C", "D"].map((letra) => (
-                        <option key={letra} value={letra}>
-                          {letra}
-                        </option>
-                      ))}
-                    </select>
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="Número"
-                      value={filters.caja.numero}
-                      onChange={(e) =>
+                      placeholder="Ej: A-123"
+                      value={filters.caja}
+                      onChange={(e) => {
+                        const formattedValue = formatCaja(e.target.value);
                         setFilters((prev) => ({
                           ...prev,
-                          caja: { ...prev.caja, numero: e.target.value },
-                        }))
-                      }
+                          caja: formattedValue,
+                        }));
+                      }}
                     />
                   </div>
                 </div>
@@ -455,10 +390,7 @@ export default function Menu() {
         )}
 
         {/* Tabla de partituras */}
-        <div
-          className="table-responsive"
-          style={{ maxHeight: "calc(100vh - 300px)", overflowY: "auto" }}
-        >
+        <div className="table-responsive" style={{ overflowY: "auto" }}>
           <table className="table table-striped table-hover align-middle">
             <thead className="sticky-top bg-white">
               <tr>
@@ -480,7 +412,7 @@ export default function Menu() {
               </tr>
             </thead>
             <tbody>
-              {filteredPartituras.map((partitura, index) => (
+              {partituras.map((partitura, index) => (
                 <tr key={index}>
                   <td
                     className="text-truncate"

@@ -62,17 +62,34 @@ const PartituraModal = ({ partitura, onClose }) => {
                 <h5>Instrumentos Originales</h5>
                 {partitura.instrumentos_originales?.length > 0 ? (
                   <ul className="list-group">
-                    {partitura.instrumentos_originales.map((inst, i) => (
-                      <li
-                        key={`orig-${i}`}
-                        className="list-group-item d-flex justify-content-between align-items-center"
-                      >
-                        {inst.nombre}
-                        <span className="badge bg-primary rounded-pill">
-                          {inst.cantidad}
-                        </span>
-                      </li>
-                    ))}
+                    {partitura.instrumentos_originales.map((inst, i) => {
+                      // Calcular total de ocurrencias del instrumento
+                      const totalOccurrences =
+                        partitura.instrumentos_originales.filter(
+                          (item) => item.nombre === inst.nombre
+                        ).length;
+                      // Calcular la secuencia (posición) de la ocurrencia actual
+                      const sequence = partitura.instrumentos_originales.filter(
+                        (item, index) =>
+                          item.nombre === inst.nombre && index <= i
+                      ).length;
+                      return (
+                        <li
+                          key={`orig-${i}`}
+                          className="list-group-item d-flex justify-content-between align-items-center"
+                        >
+                          <div>
+                            {totalOccurrences > 1 && (
+                              <span className="me-2">{sequence}</span>
+                            )}
+                            {inst.nombre}
+                          </div>
+                          <span className="badge bg-primary rounded-pill">
+                            {inst.cantidad}
+                          </span>
+                        </li>
+                      );
+                    })}
                   </ul>
                 ) : (
                   <div className="alert alert-info">
@@ -85,17 +102,32 @@ const PartituraModal = ({ partitura, onClose }) => {
                 <h5>Instrumentos Copias</h5>
                 {partitura.instrumentos_copias?.length > 0 ? (
                   <ul className="list-group">
-                    {partitura.instrumentos_copias.map((inst, i) => (
-                      <li
-                        key={`copy-${i}`}
-                        className="list-group-item d-flex justify-content-between align-items-center"
-                      >
-                        {inst.nombre}
-                        <span className="badge bg-success rounded-pill">
-                          {inst.cantidad}
-                        </span>
-                      </li>
-                    ))}
+                    {partitura.instrumentos_copias.map((inst, i) => {
+                      const totalOccurrences =
+                        partitura.instrumentos_copias.filter(
+                          (item) => item.nombre === inst.nombre
+                        ).length;
+                      const sequence = partitura.instrumentos_copias.filter(
+                        (item, index) =>
+                          item.nombre === inst.nombre && index <= i
+                      ).length;
+                      return (
+                        <li
+                          key={`copy-${i}`}
+                          className="list-group-item d-flex justify-content-between align-items-center"
+                        >
+                          <div>
+                            {totalOccurrences > 1 && (
+                              <span className="me-2">{sequence}</span>
+                            )}
+                            {inst.nombre}
+                          </div>
+                          <span className="badge bg-success rounded-pill">
+                            {inst.cantidad}
+                          </span>
+                        </li>
+                      );
+                    })}
                   </ul>
                 ) : (
                   <div className="alert alert-info">

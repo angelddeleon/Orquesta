@@ -21,24 +21,17 @@ export const obtenerPartituras = async (req, res) => {
 
     console.log(req.query);
     // Filtros básicos
-    const {
-      obra,
-      archivero,
-      categoria,
-      score,
-      observaciones,
-      cajaLetra,
-      cajaNumero,
-    } = req.query;
+    const { obra, archivero, categoria, score, observaciones, caja } =
+      req.query;
 
     const compositores = req.query.compositores
-      ? req.query.compositores.split(",")
+      ? req.query.compositores.split(";")
       : [];
     const arreglistas = req.query.arreglistas
-      ? req.query.arreglistas.split(",")
+      ? req.query.arreglistas.split(";")
       : [];
     const orquestaciones = req.query.orquestaciones
-      ? req.query.orquestaciones.split(",")
+      ? req.query.orquestaciones.split(";")
       : [];
 
     // Construir el objeto where principal
@@ -60,14 +53,11 @@ export const obtenerPartituras = async (req, res) => {
     if (score) {
       whereClause.score = score === "si";
     }
-    // if (caja) {
-    //   whereClause.caja = {
-    //     [Op.and]: [
-    //       cajaLetra ? { [Op.like]: `${cajaLetra}%` } : {},
-    //       cajaNumero ? { [Op.like]: `%${cajaNumero}%` } : {},
-    //     ],
-    //   };
-    // }
+    if (caja) {
+      whereClause.caja = {
+        [Op.like]: `%${caja.toLowerCase()}%`,
+      };
+    }
     if (compositores.length > 0 && compositores[0]) {
       whereClause.compositor = {
         [Op.or]: compositores.map((c) => ({
@@ -130,6 +120,7 @@ export const obtenerPartituras = async (req, res) => {
       paginaActual: page,
       partituras: formatted,
     });
+    console.log(formatted);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });
