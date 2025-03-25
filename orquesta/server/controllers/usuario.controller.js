@@ -1,9 +1,10 @@
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import Usuario from '../models/Usuario.js';
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import Usuario from "../models/Usuario.js";
+import process from "process";
 
 export const crearUsuario = async (req, res) => {
-  const { nombre, apellido, correo, contrasena, role = 'archivero' } = req.body;
+  const { nombre, apellido, correo, contrasena, role = "archivero" } = req.body;
 
   if (!contrasena) {
     return res.status(400).json({ error: "La contraseña es obligatoria" });
@@ -24,7 +25,7 @@ export const crearUsuario = async (req, res) => {
 
     // Respuesta exitosa con el token
     res.status(201).json({
-      message: 'Usuario registrado exitosamente',
+      message: "Usuario registrado exitosamente",
       user: {
         id: newUser.id,
         nombre: newUser.nombre,
@@ -34,7 +35,7 @@ export const crearUsuario = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Error al registrar el usuario:', error);
+    console.error("Error al registrar el usuario:", error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -46,34 +47,32 @@ export const login = async (req, res) => {
   try {
     const user = await Usuario.findOne({ where: { email } });
     if (!user) {
-      return res.status(400).json({ error: 'Usuario no encontrado' });
+      return res.status(400).json({ error: "Usuario no encontrado" });
     }
 
     if (user.isBlocked) {
-      return res.status(400).json({ error: 'Usuario bloqueado' });
+      return res.status(400).json({ error: "Usuario bloqueado" });
     }
 
     const isMatch = await bcrypt.compare(contraseña, user.contraseña);
     if (!isMatch) {
-      return res.status(400).json({ error: 'Contraseña incorrecta' });
+      return res.status(400).json({ error: "Contraseña incorrecta" });
     }
 
-    const token = jwt.sign(
-      { userId: user.id, role: user.role },
-      'secreto',
-      { expiresIn: '1h' }
-    );
+    const token = jwt.sign({ userId: user.id, role: user.role }, "secreto", {
+      expiresIn: "1h",
+    });
 
-    res.cookie('token', token, {
+    res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
       maxAge: 3600000, // 1 hour
-      path: '/',
+      path: "/",
     });
 
     res.json({
-      message: 'Login exitoso',
+      message: "Login exitoso",
       user: {
         id: user.id,
         nombre: user.nombre,
@@ -82,8 +81,8 @@ export const login = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Error en el login:', error);
-    res.status(500).json({ error: 'Error en el servidor' });
+    console.error("Error en el login:", error);
+    res.status(500).json({ error: "Error en el servidor" });
   }
 };
 
@@ -103,7 +102,7 @@ export const eliminarUsuario = async (req, res) => {
 
   try {
     await Usuario.destroy({ where: { id } });
-    res.json({ message: 'Usuario eliminado exitosamente' });
+    res.json({ message: "Usuario eliminado exitosamente" });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -114,25 +113,25 @@ export const verifyToken = (req, res) => {
   const token = req.cookies.token;
 
   if (!token) {
-    return res.status(401).json({ error: 'No hay token. Inicia sesión' });
+    return res.status(401).json({ error: "No hay token. Inicia sesión" });
   }
 
-  jwt.verify(token, 'secreto', (err, decoded) => {
+  jwt.verify(token, "secreto", (err, decoded) => {
     if (err) {
-      res.clearCookie('token');
-      return res.status(401).json({ error: 'Token inválido' });
+      res.clearCookie("token");
+      return res.status(401).json({ error: "Token inválido" });
     }
 
-    res.json({ message: 'Token válido', user: decoded });
+    res.json({ message: "Token válido", user: decoded });
   });
 };
 
 // Logout
 export const logout = (req, res) => {
   try {
-    res.clearCookie('token');
-    res.json({ message: 'Sesión cerrada correctamente' });
+    res.clearCookie("token");
+    res.json({ message: "Sesión cerrada correctamente" });
   } catch (error) {
-    res.status(500).json({ error: 'Error al cerrar sesión' });
+    res.status(500).json({ error: "Error al cerrar sesión" });
   }
 };
