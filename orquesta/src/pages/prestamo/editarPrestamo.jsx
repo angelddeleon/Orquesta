@@ -147,7 +147,7 @@ export default function EditarPrestamo() {
                   <p className="fw-bold text-nowrap text-primary">
                     ORQUESTA SINFÓNICA DE CARABOBO
                   </p>
-                  <h1>Editar Préstamo #{id}</h1>
+                  <h1>Editar Préstamo</h1>
                   <small className="text-secondary">
                     Modifique los campos necesarios y guarde los cambios
                   </small>
@@ -267,13 +267,9 @@ export default function EditarPrestamo() {
                               onChange={handleChange}
                             >
                               <option value="">Seleccionar ubicación</option>
-                              <option value="Almacén A">Almacén A</option>
-                              <option value="Almacén B">Almacén B</option>
-                              <option value="Almacén C">Almacén C</option>
-                              <option value="Sala de Exposición 1">Sala de Exposición 1</option>
-                              <option value="Sala de Exposición 2">Sala de Exposición 2</option>
-                              <option value="Sala de Exposición 3">Sala de Exposición 3</option>
-                              <option value="Sala de Restauración">Sala de Restauración</option>
+                              <option value="UJAP">UJAP</option>
+                              <option value="Bolivar">Avenida Bolivar</option>
+                              <option value="Hesperia">Hesperia</option>
                             </select>
                           </div>
 
@@ -291,13 +287,9 @@ export default function EditarPrestamo() {
                               onChange={handleChange}
                             >
                               <option value="">Seleccionar ubicación</option>
-                              <option value="Almacén A">Almacén A</option>
-                              <option value="Almacén B">Almacén B</option>
-                              <option value="Almacén C">Almacén C</option>
-                              <option value="Sala de Exposición 1">Sala de Exposición 1</option>
-                              <option value="Sala de Exposición 2">Sala de Exposición 2</option>
-                              <option value="Sala de Exposición 3">Sala de Exposición 3</option>
-                              <option value="Sala de Restauración">Sala de Restauración</option>
+                              <option value="UJAP">UJAP</option>
+                              <option value="Bolivar">Avenida Bolivar</option>
+                              <option value="Hesperia">Hesperia</option>
                             </select>
                           </div>
 
