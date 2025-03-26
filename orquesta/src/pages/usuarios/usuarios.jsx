@@ -28,8 +28,8 @@ export default function Usuarios() {
         const searchLower = searchTerm.toLowerCase();
         const matchesSearch = (
             usuario.nombre.toLowerCase().includes(searchLower) ||
-            usuario.apellido.toLowerCase().includes(searchLower) ||
-            usuario.correo.toLowerCase().includes(searchLower) ||
+            usuario.email.toLowerCase().includes(searchLower) ||
+            usuario.telefono.toLowerCase().includes(searchLower) ||
             usuario.role.toLowerCase().includes(searchLower)
         );
         const matchesRole = filters.role ? usuario.role === filters.role : true;
@@ -108,8 +108,8 @@ export default function Usuarios() {
                                             onChange={handleFilterChange}
                                         >
                                             <option value="">Todos</option>
-                                            <option value="Admin">Admin</option>
-                                            <option value="Empleado">Empleado</option>
+                                            <option value="admin">Admin</option>
+                                            <option value="archivero">Empleado</option>
                                         </select>
                                     </div>
                                 </div>
@@ -128,9 +128,9 @@ export default function Usuarios() {
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
-                                    <th>Apellido</th>
-                                    <th>Correo</th>
-                                    <th>Role</th>
+                                    <th>Email</th>
+                                    <th>Teléfono</th>
+                                    <th>Rol</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -138,8 +138,8 @@ export default function Usuarios() {
                                 {filteredUsuarios?.map((usuario, index) => (
                                     <tr key={index}>
                                         <td className="align-middle">{usuario.nombre}</td>
-                                        <td className="align-middle">{usuario.apellido}</td>
-                                        <td className="align-middle">{usuario.correo}</td>
+                                        <td className="align-middle">{usuario.email}</td>
+                                        <td className="align-middle">{usuario.telefono}</td>
                                         <td className="align-middle">{usuario.role}</td>
                                         {usuario.role === "Admin" ? (
                                             <td className="align-middle"></td>
