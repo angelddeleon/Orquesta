@@ -4,9 +4,6 @@ import Layout from "../../layout/layout";
 
 export default function Usuarios() {
     const [usuarios, setUsuarios] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(10);
-    const [totalPages, setTotalPages] = useState(0);
     const [searchTerm, setSearchTerm] = useState(""); // Estado para el término de búsqueda
     const [showFilters, setShowFilters] = useState(false); // Estado para mostrar/ocultar el panel de filtros
     const [filters, setFilters] = useState({
@@ -15,38 +12,19 @@ export default function Usuarios() {
 
     // Obtener datos del backend (simulado)
     useEffect(() => {
-
-        //Conexion con Backend
-         /*
+        // Conexion con Backend
         const fetchData = async () => {
             const response = await fetch(
-                `http://localhost:3000/api/usuarios?page=${currentPage}&limit=${itemsPerPage}`
+                `http://localhost:3000/api/usuarios/`
             );
-            const { data, total } = await response.json();
+            const data = await response.json();
             setUsuarios(data);
-            setTotalPages(Math.ceil(total / itemsPerPage));
         };
         fetchData();
-        */
-
-        const data = [
-            { id: 1, nombre: "Juan", apellido: "Pérez", correo: "juan@gmail.com", role: "Admin" },
-            { id: 2, nombre: "María", apellido: "López", correo: "maria@gmail.com", role: "Empleado" },
-            { id: 3, nombre: "Carlos", apellido: "Gómez", correo: "carlos@gmail.com", role: "Empleado" },
-            { id: 4, nombre: "Ana", apellido: "Martínez", correo: "ana@gmail.com", role: "Empleado" },
-            { id: 5, nombre: "Luis", apellido: "Rodríguez", correo: "luis@gmail.com", role: "Empleado" },
-            { id: 6, nombre: "Sofía", apellido: "Hernández", correo: "sofia@gmail.com", role: "Empleado" },
-            { id: 7, nombre: "Pedro", apellido: "Díaz", correo: "pedro@gmail.com", role: "Empleado" },
-            { id: 8, nombre: "Laura", apellido: "García", correo: "laura@gmail.com", role: "Empleado" },
-            { id: 9, nombre: "Diego", apellido: "Fernández", correo: "diego@gmail.com", role: "Empleado" },
-            { id: 10, nombre: "Marta", apellido: "Sánchez", correo: "marta@gmail.com", role: "Empleado" },
-        ];
-        setUsuarios(data);
-        setTotalPages(Math.ceil(data.length / itemsPerPage));
-    }, [itemsPerPage]);
+    }, []);
 
     // Función para filtrar usuarios
-    const filteredUsuarios = usuarios.filter((usuario) => {
+    const filteredUsuarios = usuarios?.filter((usuario) => {
         const searchLower = searchTerm.toLowerCase();
         const matchesSearch = (
             usuario.nombre.toLowerCase().includes(searchLower) ||
@@ -57,14 +35,6 @@ export default function Usuarios() {
         const matchesRole = filters.role ? usuario.role === filters.role : true;
         return matchesSearch && matchesRole;
     });
-
-    // Cambiar de página
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-    // Calcular los usuarios a mostrar en la página actual
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = filteredUsuarios.slice(indexOfFirstItem, indexOfLastItem);
 
     // Manejar cambios en los filtros
     const handleFilterChange = (e) => {
@@ -165,7 +135,7 @@ export default function Usuarios() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {currentItems.map((usuario, index) => (
+                                {filteredUsuarios?.map((usuario, index) => (
                                     <tr key={index}>
                                         <td className="align-middle">{usuario.nombre}</td>
                                         <td className="align-middle">{usuario.apellido}</td>
@@ -185,41 +155,6 @@ export default function Usuarios() {
                             </tbody>
                         </table>
                     </div>
-
-                    {/* Controles de paginación */}
-                    <nav>
-                        <ul className="pagination justify-content-center">
-                            <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                                <button
-                                    className="page-link"
-                                    onClick={() => paginate(currentPage - 1)}
-                                >
-                                    Anterior
-                                </button>
-                            </li>
-                            {[...Array(Math.ceil(filteredUsuarios.length / itemsPerPage)).keys()].map((number) => (
-                                <li
-                                    key={number + 1}
-                                    className={`page-item ${currentPage === number + 1 ? 'active' : ''}`}
-                                >
-                                    <button
-                                        className="page-link"
-                                        onClick={() => paginate(number + 1)}
-                                    >
-                                        {number + 1}
-                                    </button>
-                                </li>
-                            ))}
-                            <li className={`page-item ${currentPage === Math.ceil(filteredUsuarios.length / itemsPerPage) ? 'disabled' : ''}`}>
-                                <button
-                                    className="page-link"
-                                    onClick={() => paginate(currentPage + 1)}
-                                >
-                                    Siguiente
-                                </button>
-                            </li>
-                        </ul>
-                    </nav>
                 </div>
             </div>
         </Layout>
