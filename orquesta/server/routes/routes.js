@@ -1,7 +1,5 @@
 import { Router } from "express";
 
-import { loginTest } from "../controllers/login.controller.js";
-
 import partituraRouter from "./partituras/partituraRouter.js";
 
 import { obtenerInstrumentos } from "../controllers/instrumento.controller.js";
@@ -16,8 +14,6 @@ const router = Router();
 
 // USUARIO
 //Iniciar Sesion
-//Cambiar el loginTest por loginDB para probar con la base de datos
-router.post("/login", loginTest);
 
 // Rutas para partituras
 router.use("/partituras", partituraRouter);

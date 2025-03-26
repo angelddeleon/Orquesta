@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import Layout from '../../layout/layout';
-import { Link } from 'react-router-dom';
+import { Link ,useNavigate} from 'react-router-dom';
 
 export default function UserForm() {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         nombre: '',
         apellido: '',
@@ -19,10 +20,9 @@ export default function UserForm() {
         }));
     };
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Datos del formulario:', formData);
-
         // Enviar los datos al servidor
         const response = await fetch('http://localhost:3000/api/usuarios', {
             method: 'POST',
@@ -35,6 +35,7 @@ export default function UserForm() {
         const data = await response.json();
         if (response.ok) {
             alert('Usuario creado exitosamente');
+            navigate('/usuarios');
         } else {
             alert('Error: ' + data.error);
         }

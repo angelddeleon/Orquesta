@@ -23,6 +23,7 @@ export default function Usuarios() {
         fetchData();
     }, []);
 
+
     // Función para filtrar usuarios
     const filteredUsuarios = usuarios?.filter((usuario) => {
         const searchLower = searchTerm.toLowerCase();

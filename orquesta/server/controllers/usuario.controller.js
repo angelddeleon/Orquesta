@@ -11,6 +11,12 @@ export const crearUsuario = async (req, res) => {
   }
 
   try {
+    // Verificar si ya existe un usuario con ese correo
+    const usuarioExistente = await Usuario.findOne({ where: { email: correo } });
+    
+    if (usuarioExistente) {
+      return res.status(400).json({ error: "Ya existe un usuario registrado con este correo electrónico" });
+    }
     // Encriptar la contraseña
     const hashedPassword = await bcrypt.hash(contrasena, 10);
 
@@ -111,6 +117,7 @@ export const eliminarUsuario = async (req, res) => {
 // Verificar token
 export const verifyToken = (req, res) => {
   const token = req.cookies.token;
+
 
   if (!token) {
     return res.status(401).json({ error: "No hay token. Inicia sesión" });
