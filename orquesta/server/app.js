@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import routes from "./routes/routes.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import cors from "cors";
+import cookieParser from 'cookie-parser';
 
 dotenv.config(); // Cargar variables de entorno
 
@@ -18,6 +19,8 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 }));
+
+app.use(cookieParser()); // ¡Antes de las rutas!
 
 // Rutas
 app.use("/api", routes);
