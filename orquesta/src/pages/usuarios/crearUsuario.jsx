@@ -130,7 +130,7 @@ export default function UserForm() {
                                         required
                                     >
                                         <option value="archivero">Archivero</option>
-                                        <option value="administrador">Administrador</option>
+                                        <option value="admin">Administrador</option>
                                     </select>
                                 </div>
 

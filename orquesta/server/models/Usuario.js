@@ -27,8 +27,8 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.STRING,
   },
   role: {
-    type: DataTypes.ENUM('usuario', 'admin'),
-    defaultValue: 'usuario',
+    type: DataTypes.ENUM('archivero', 'admin'),
+    defaultValue: 'archivero',
   },
   isBlocked: {
     type: DataTypes.BOOLEAN,
