@@ -135,3 +135,69 @@ export const logout = (req, res) => {
     res.status(500).json({ error: "Error al cerrar sesión" });
   }
 };
+
+// Editar un usuario
+export const editarUsuario = async (req, res) => {
+  const { id } = req.params;
+  const { nombre, email, telefono, contraseña, role } = req.body;
+
+  try {
+    // Buscar el usuario por ID
+    const usuario = await Usuario.findByPk(id);
+    
+    if (!usuario) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    if(usuario.role === 'admin'){
+      return res.status(403).json({ error: "No tienes permisos para editar este usuario "});
+    }
+
+    // Actualizar los campos del usuario
+    usuario.nombre = nombre || usuario.nombre;
+    usuario.email = email || usuario.email;
+    usuario.telefono = telefono || usuario.telefono;
+    
+    // Solo actualizar la contraseña si se proporcionó una nueva
+    if (contraseña) {
+      usuario.contraseña = contraseña;
+    }
+    
+    usuario.role = role || usuario.role;
+
+    // Guardar los cambios
+    await usuario.save();
+
+    res.json({ 
+      message: "Usuario actualizado exitosamente",
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// Obtener un usuario por su ID
+export const obtenerUsuarioPorId = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const usuario = await Usuario.findByPk(id);
+    
+    if (!usuario) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    // Devuelve los datos del usuario sin información sensible
+    res.json({
+      id: usuario.id,
+      nombre: usuario.nombre,
+      email: usuario.email,
+      telefono: usuario.telefono,
+      codigoPais: usuario.codigoPais,
+      role: usuario.role
+    });
+    
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};

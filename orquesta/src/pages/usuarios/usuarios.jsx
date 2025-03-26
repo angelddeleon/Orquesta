@@ -141,7 +141,7 @@ export default function Usuarios() {
                                         <td className="align-middle">{usuario.email}</td>
                                         <td className="align-middle">{usuario.telefono}</td>
                                         <td className="align-middle">{usuario.role}</td>
-                                        {usuario.role === "Admin" ? (
+                                        {usuario.role === "admin" ? (
                                             <td className="align-middle"></td>
                                         ) : (
                                             <td className="align-middle">

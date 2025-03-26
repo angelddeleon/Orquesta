@@ -6,6 +6,8 @@ import {
   login,
   verifyToken,
   logout,
+  editarUsuario,
+  obtenerUsuarioPorId
 } from "../../controllers/usuario.controller.js";
 
 const router = express.Router();
@@ -16,5 +18,7 @@ router.post("/logout", logout); // Logout de usuario
 router.get("/", obtenerUsuarios); // Obtener todos los usuarios
 router.delete("/:id", eliminarUsuario); // Eliminar usuario
 router.get("/verificarToken", verifyToken); // Verificar token
+router.put("/:id", editarUsuario) // Editar usuario
+router.get("/:id", obtenerUsuarioPorId) // Obtener usuario por ID
 
 export default router;
