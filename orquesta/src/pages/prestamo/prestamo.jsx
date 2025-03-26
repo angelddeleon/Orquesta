@@ -11,89 +11,23 @@ export default function Prestamo() {
   const [filters, setFilters] = useState({
     obra: "",
     caja: "",
-    entregadoPor: "",
-    recibidoPor: "",
-    ubicacionActual: ""
+    entrego: "",
+    recibio: "",
+    actual: "",
+    estado: ""
   });
 
-  // Datos de prueba (simulando fetch)
-  const mockData = [
-    {
-      id: 1,
-      obra: "La Mona Lisa",
-      caja: "Caja 001",
-      entregadoPor: "Juan Pérez",
-      recibidoPor: "María García",
-      dia: "2023-05-15",
-      hora: "10:30",
-      ubicacionAnterior: "Almacén A",
-      ubicacionActual: "Sala de Exposición 1"
-    },
-    {
-      id: 2,
-      obra: "La Noche Estrellada",
-      caja: "Caja 002",
-      entregadoPor: "Carlos López",
-      recibidoPor: "Ana Martínez",
-      dia: "2023-05-16",
-      hora: "11:45",
-      ubicacionAnterior: "Almacén B",
-      ubicacionActual: "Sala de Restauración"
-    },
-    {
-      id: 3,
-      obra: "El Grito",
-      caja: "Caja 003",
-      entregadoPor: "Luisa Fernández",
-      recibidoPor: "Pedro Sánchez",
-      dia: "2023-05-17",
-      hora: "09:15",
-      ubicacionAnterior: "Almacén C",
-      ubicacionActual: "Sala de Exposición 2"
-    },
-    {
-      id: 4,
-      obra: "Guernica",
-      caja: "Caja 004",
-      entregadoPor: "Marta Rodríguez",
-      recibidoPor: "David González",
-      dia: "2023-05-18",
-      hora: "14:20",
-      ubicacionAnterior: "Almacén A",
-      ubicacionActual: "Sala de Exposición 3"
-    },
-    {
-      id: 5,
-      obra: "Las Meninas",
-      caja: "Caja 005",
-      entregadoPor: "Sofía Hernández",
-      recibidoPor: "Jorge Díaz",
-      dia: "2023-05-19",
-      hora: "16:00",
-      ubicacionAnterior: "Almacén B",
-      ubicacionActual: "Sala de Exposición 1"
-    },
-    {
-      id: 6,
-      obra: "La Última Cena",
-      caja: "Caja 006",
-      entregadoPor: "Elena Moreno",
-      recibidoPor: "Raúl Castro",
-      dia: "2023-05-20",
-      hora: "13:10",
-      ubicacionAnterior: "Almacén C",
-      ubicacionActual: "Sala de Restauración"
-    }
-  ];
-
-  // Simulamos un fetch a una API
+  // Obtener préstamos desde la API
   useEffect(() => {
     const fetchPrestamos = async () => {
       try {
         setLoading(true);
-        // Simulamos un retraso de red
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setPrestamos(mockData);
+        const response = await fetch('/api/prestamos');
+        if (!response.ok) {
+          throw new Error('Error al obtener los préstamos');
+        }
+        const data = await response.json();
+        setPrestamos(data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -104,14 +38,42 @@ export default function Prestamo() {
     fetchPrestamos();
   }, []);
 
+  // Función para marcar como devuelto
+  const marcarComoDevuelto = async (id) => {
+    try {
+      const response = await fetch(`/api/prestamos/${id}/estado`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ estado: 'devuelto' })
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al actualizar el estado');
+      }
+
+      // Actualizar el estado local en lugar de recargar la página
+      setPrestamos(prevPrestamos => 
+        prevPrestamos.map(prestamo => 
+          prestamo.id === id ? {...prestamo, estado: 'devuelto'} : prestamo
+        )
+      );
+    } catch (error) {
+      console.error("Error al marcar como devuelto:", error);
+      alert('Error al marcar como devuelto');
+    }
+  };
+
   // Filtrar préstamos
   const filteredPrestamos = prestamos.filter(prestamo => {
     return (
       prestamo.obra.toLowerCase().includes(filters.obra.toLowerCase()) &&
       prestamo.caja.toLowerCase().includes(filters.caja.toLowerCase()) &&
-      prestamo.entregadoPor.toLowerCase().includes(filters.entregadoPor.toLowerCase()) &&
-      prestamo.recibidoPor.toLowerCase().includes(filters.recibidoPor.toLowerCase()) &&
-      prestamo.ubicacionActual.toLowerCase().includes(filters.ubicacionActual.toLowerCase())
+      prestamo.entrego.toLowerCase().includes(filters.entrego.toLowerCase()) &&
+      prestamo.recibio.toLowerCase().includes(filters.recibio.toLowerCase()) &&
+      prestamo.actual.toLowerCase().includes(filters.actual.toLowerCase()) &&
+      (filters.estado === "" || prestamo.estado.toLowerCase() === filters.estado.toLowerCase())
     );
   });
 
@@ -121,14 +83,14 @@ export default function Prestamo() {
   const currentItems = filteredPrestamos.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredPrestamos.length / itemsPerPage);
 
-
   const clearFilters = () => {
     setFilters({
       obra: "",
       caja: "",
-      entregadoPor: "",
-      recibidoPor: "",
-      ubicacionActual: ""
+      entrego: "",
+      recibio: "",
+      actual: "",
+      estado: ""
     });
   };
 
@@ -233,9 +195,9 @@ export default function Prestamo() {
                   <input
                     type="text"
                     className="form-control"
-                    value={filters.entregadoPor}
+                    value={filters.entrego}
                     onChange={(e) =>
-                      setFilters({ ...filters, entregadoPor: e.target.value })
+                      setFilters({ ...filters, entrego: e.target.value })
                     }
                   />
                 </div>
@@ -246,9 +208,9 @@ export default function Prestamo() {
                   <input
                     type="text"
                     className="form-control"
-                    value={filters.recibidoPor}
+                    value={filters.recibio}
                     onChange={(e) =>
-                      setFilters({ ...filters, recibidoPor: e.target.value })
+                      setFilters({ ...filters, recibio: e.target.value })
                     }
                   />
                 </div>
@@ -259,11 +221,27 @@ export default function Prestamo() {
                   <input
                     type="text"
                     className="form-control"
-                    value={filters.ubicacionActual}
+                    value={filters.actual}
                     onChange={(e) =>
-                      setFilters({ ...filters, ubicacionActual: e.target.value })
+                      setFilters({ ...filters, actual: e.target.value })
                     }
                   />
+                </div>
+
+                {/* Estado */}
+                <div className="col-md-4 mb-3">
+                  <label>Estado</label>
+                  <select
+                    className="form-control"
+                    value={filters.estado}
+                    onChange={(e) =>
+                      setFilters({ ...filters, estado: e.target.value })
+                    }
+                  >
+                    <option value="">Todos</option>
+                    <option value="prestado">Prestado</option>
+                    <option value="devuelto">Devuelto</option>
+                  </select>
                 </div>
 
                 {/* Botón para limpiar filtros */}
@@ -304,6 +282,7 @@ export default function Prestamo() {
                         <th className="text-center">Hora</th>
                         <th className="text-center">Ubicación Anterior</th>
                         <th className="text-center">Ubicación Actual</th>
+                        <th className="text-center">Estado</th>
                         <th className="text-center">Acciones</th>
                       </tr>
                     </thead>
@@ -313,25 +292,41 @@ export default function Prestamo() {
                           <tr key={prestamo.id}>
                             <td className="text-center">{prestamo.obra}</td>
                             <td className="text-center">{prestamo.caja}</td>
-                            <td className="text-center">{prestamo.entregadoPor}</td>
-                            <td className="text-center">{prestamo.recibidoPor}</td>
+                            <td className="text-center">{prestamo.entrego}</td>
+                            <td className="text-center">{prestamo.recibio}</td>
                             <td className="text-center">{prestamo.dia}</td>
                             <td className="text-center">{prestamo.hora}</td>
-                            <td className="text-center">{prestamo.ubicacionAnterior}</td>
-                            <td className="text-center">{prestamo.ubicacionActual}</td>
+                            <td className="text-center">{prestamo.anterior}</td>
+                            <td className="text-center">{prestamo.actual}</td>
                             <td className="text-center">
-                              <Link 
-                                className="btn btn-sm btn-outline-primary"
-                                to={`/prestamo/editar_prestamo/${prestamo.id}`}
-                              >
-                                <i className="fa-solid fa-pen-to-square"></i> Editar
-                              </Link>
+                              <span className={`badge ${prestamo.estado === 'devuelto' ? 'bg-success' : 'bg-warning'}`}>
+                                {prestamo.estado === 'devuelto' ? 'Devuelto' : 'Prestado'}
+                              </span>
+                            </td>
+                            <td className="text-center">
+                              <div className="d-flex gap-2 justify-content-center">
+                                <Link 
+                                  className="btn btn-sm btn-outline-primary"
+                                  to={`/prestamo/editar_prestamo/${prestamo.id}`}
+                                >
+                                  <i className="fa-solid fa-pen-to-square"></i>
+                                </Link>
+                                {prestamo.estado !== 'devuelto' && (
+                                  <button
+                                    className="btn btn-sm btn-outline-success"
+                                    onClick={() => marcarComoDevuelto(prestamo.id)}
+                                    title="Marcar como devuelto"
+                                  >
+                                    <i className="fa-solid fa-check"></i>
+                                  </button>
+                                )}
+                              </div>
                             </td>
                           </tr>
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="9" className="text-center py-4">
+                          <td colSpan="10" className="text-center py-4">
                             No hay préstamos registrados
                           </td>
                         </tr>
