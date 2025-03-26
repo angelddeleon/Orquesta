@@ -23,21 +23,6 @@ export default function Usuarios() {
         fetchData();
     }, []);
 
-    
-    useEffect(() => {
-        const verifyToken = async () => {
-            const response = await fetch('http://localhost:3000/api/usuarios/verificarToken', {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-            });
-            alert(response.status);
-        };
-
-        verifyToken();
-    }, []);
-
     // Función para filtrar usuarios
     const filteredUsuarios = usuarios?.filter((usuario) => {
         const searchLower = searchTerm.toLowerCase();
