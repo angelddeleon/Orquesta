@@ -8,48 +8,54 @@ export default function EditarPrestamo() {
   const { id } = useParams();
   const navigate = useNavigate();
   
-  // Estados para el formulario
+  // Estados para el formulario con todos los campos necesarios
   const [prestamo, setPrestamo] = useState({
     obra: "",
     caja: "",
-    entregadoPor: "",
-    recibidoPor: "",
-    ubicacionAnterior: "",
-    ubicacionActual: "",
+    entrego: "", // Cambiado a entrego para coincidir con el listado
+    recibio: "", // Cambiado a recibio para coincidir con el listado
     dia: "",
-    hora: ""
+    hora: "",
+    anterior: "", // Cambiado a anterior para coincidir con el listado
+    actual: "", // Cambiado a actual para coincidir con el listado
+    estado: "prestado"
   });
   const [loading, setLoading] = useState(true);
 
-  // Simulación de fetch para obtener los datos del préstamo
+  // Obtener todos los datos del préstamo al cargar el componente
   useEffect(() => {
     const fetchPrestamo = async () => {
       try {
         setLoading(true);
-        // Simulamos un retraso de red
-        await new Promise(resolve => setTimeout(resolve, 800));
+        const response = await fetch(`/api/prestamos/${id}`);
         
-        // Datos mock para demostración - en una app real esto vendría de tu API
-        const mockData = {
-          id: id,
-          obra: "La Mona Lisa",
-          caja: "Caja 001",
-          entregadoPor: "Juan Pérez",
-          recibidoPor: "María García",
-          dia: "2023-05-15",
-          hora: "10:30",
-          ubicacionAnterior: "Almacén A",
-          ubicacionActual: "Sala de Exposición 1"
-        };
+        if (!response.ok) {
+          throw new Error('Error al cargar los datos del préstamo');
+        }
         
-        setPrestamo(mockData);
+        const data = await response.json();
+        
+        // Mapeamos los nombres de campos si es necesario
+        setPrestamo({
+          obra: data.obra || "",
+          caja: data.caja || "",
+          entrego: data.entrego || "",
+          recibio: data.recibio || "",
+          dia: data.dia || "",
+          hora: data.hora || "",
+          anterior: data.anterior || "",
+          actual: data.actual || "",
+          estado: data.estado || "prestado"
+        });
+        
       } catch (error) {
         toast.error(
           <ExpansiveToast
-            title="Error al cargar el préstamo"
+            title="Error al cargar datos"
             content={
               <>
                 <p className="mb-2 fs-6">{error.message}</p>
+                <p>Por favor, intente nuevamente más tarde.</p>
               </>
             }
           />,
@@ -62,6 +68,7 @@ export default function EditarPrestamo() {
             draggable: true,
           }
         );
+        console.error("Error fetching prestamo:", error);
       } finally {
         setLoading(false);
       }
@@ -80,32 +87,35 @@ export default function EditarPrestamo() {
   };
 
   // Manejador de envío del formulario
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Datos a actualizar:", prestamo);
-    updatePrestamo(prestamo);
-  };
-
-  // Función para actualizar el préstamo
-  const updatePrestamo = async (data) => {
+    
     try {
       setLoading(true);
-      // Aquí iría la llamada real a tu API
-      // Simulamos un retraso de red
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Simulación de éxito
-      toast.success("Préstamo actualizado con éxito", {
-        onClose: () => navigate("/prestamo"),
-        autoClose: 2000,
+      const response = await fetch(`/api/prestamos/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(prestamo)
       });
+      
+      if (!response.ok) {
+        throw new Error('Error al actualizar el préstamo');
+      }
+
+      console.log("Prestamo actualizado:", prestamo);
+
+      navigate("/prestamo");
+      
     } catch (error) {
       toast.error(
         <ExpansiveToast
-          title="Error al actualizar el préstamo"
+          title="Error al guardar cambios"
           content={
             <>
               <p className="mb-2 fs-6">{error.message}</p>
+              <p>Verifique los datos e intente nuevamente.</p>
             </>
           }
         />,
@@ -118,7 +128,6 @@ export default function EditarPrestamo() {
           draggable: true,
         }
       );
-      console.error("Error:", error);
     } finally {
       setLoading(false);
     }
@@ -131,6 +140,7 @@ export default function EditarPrestamo() {
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Cargando...</span>
           </div>
+          <p className="ms-3 mb-0">Cargando datos del préstamo...</p>
         </div>
       </Layout>
     );
@@ -152,7 +162,7 @@ export default function EditarPrestamo() {
                     Modifique los campos necesarios y guarde los cambios
                   </small>
                 </div>
-                <div className="">
+                <div className="card">
                   <div className="card-body">
                     <div className="p-4">
                       <div className="form-body">
@@ -176,7 +186,7 @@ export default function EditarPrestamo() {
                           {/* Caja */}
                           <div className="col-12">
                             <label htmlFor="caja" className="form-label">
-                              Caja
+                              Caja/Número
                             </label>
                             <input
                               type="text"
@@ -191,32 +201,32 @@ export default function EditarPrestamo() {
 
                           {/* Entregado por */}
                           <div className="col-12">
-                            <label htmlFor="entregadoPor" className="form-label">
+                            <label htmlFor="entrego" className="form-label">
                               Quién lo entregó
                             </label>
                             <input
                               type="text"
                               className="form-control"
-                              id="entregadoPor"
-                              name="entregadoPor"
+                              id="entrego"
+                              name="entrego"
                               required
-                              value={prestamo.entregadoPor}
+                              value={prestamo.entrego}
                               onChange={handleChange}
                             />
                           </div>
 
                           {/* Recibido por */}
                           <div className="col-12">
-                            <label htmlFor="recibidoPor" className="form-label">
+                            <label htmlFor="recibio" className="form-label">
                               Quién lo recibió
                             </label>
                             <input
                               type="text"
                               className="form-control"
-                              id="recibidoPor"
-                              name="recibidoPor"
+                              id="recibio"
+                              name="recibio"
                               required
-                              value={prestamo.recibidoPor}
+                              value={prestamo.recibio}
                               onChange={handleChange}
                             />
                           </div>
@@ -224,7 +234,7 @@ export default function EditarPrestamo() {
                           {/* Día */}
                           <div className="col-sm-6">
                             <label htmlFor="dia" className="form-label">
-                              Día
+                              Fecha
                             </label>
                             <input
                               type="date"
@@ -255,42 +265,55 @@ export default function EditarPrestamo() {
 
                           {/* Ubicación anterior */}
                           <div className="col-12">
-                            <label htmlFor="ubicacionAnterior" className="form-label">
+                            <label htmlFor="anterior" className="form-label">
                               Ubicación anterior
                             </label>
-                            <select
-                              className="form-select"
-                              id="ubicacionAnterior"
-                              name="ubicacionAnterior"
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="anterior"
+                              name="anterior"
                               required
-                              value={prestamo.ubicacionAnterior}
+                              value={prestamo.anterior}
                               onChange={handleChange}
-                            >
-                              <option value="">Seleccionar ubicación</option>
-                              <option value="UJAP">UJAP</option>
-                              <option value="Bolivar">Avenida Bolivar</option>
-                              <option value="Hesperia">Hesperia</option>
-                            </select>
+                            />
                           </div>
 
                           {/* Ubicación actual */}
                           <div className="col-12">
-                            <label htmlFor="ubicacionActual" className="form-label">
+                            <label htmlFor="actual" className="form-label">
                               Ubicación actual
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="actual"
+                              name="actual"
+                              required
+                              value={prestamo.actual}
+                              onChange={handleChange}
+                            />
+                          </div>
+
+                          {/* Estado */}
+                          <div className="col-12">
+                            <label htmlFor="estado" className="form-label">
+                              Estado del préstamo
                             </label>
                             <select
                               className="form-select"
-                              id="ubicacionActual"
-                              name="ubicacionActual"
+                              id="estado"
+                              name="estado"
                               required
-                              value={prestamo.ubicacionActual}
+                              value={prestamo.estado}
                               onChange={handleChange}
                             >
-                              <option value="">Seleccionar ubicación</option>
-                              <option value="UJAP">UJAP</option>
-                              <option value="Bolivar">Avenida Bolivar</option>
-                              <option value="Hesperia">Hesperia</option>
+                              <option value="prestado">Prestado</option>
+                              <option value="devuelto">Devuelto</option>
                             </select>
+                            <div className="form-text">
+                              Marque como "Devuelto" cuando el ítem haya sido retornado
+                            </div>
                           </div>
 
                           {/* Botones */}
@@ -301,6 +324,7 @@ export default function EditarPrestamo() {
                                 className="btn btn-secondary me-md-2"
                                 onClick={() => navigate("/prestamo")}
                               >
+                                <i className="fa-solid fa-times me-2"></i>
                                 Cancelar
                               </button>
                               <button 
@@ -315,7 +339,7 @@ export default function EditarPrestamo() {
                                   </>
                                 ) : (
                                   <>
-                                    <i className="bx bx-save me-2"></i>
+                                    <i className="fa-solid fa-save me-2"></i>
                                     Guardar Cambios
                                   </>
                                 )}

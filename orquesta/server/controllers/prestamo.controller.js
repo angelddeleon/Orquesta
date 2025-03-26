@@ -64,7 +64,7 @@ export const editarPrestamo = async (req, res) => {
 
     await prestamo.save();
 
-    res.json({ 
+    res.status(200).json({ 
       message: "Préstamo actualizado exitosamente",
       prestamo
     });

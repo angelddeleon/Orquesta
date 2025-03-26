@@ -239,7 +239,7 @@ export default function Prestamo() {
                     }
                   >
                     <option value="">Todos</option>
-                    <option value="prestado">Prestado</option>
+                    <option value="activo">Prestado</option>
                     <option value="devuelto">Devuelto</option>
                   </select>
                 </div>
