@@ -1,73 +1,66 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import Layout from "../../layout/layout";
-import ExpansiveToast from "../../components/ui/expansiveToast";
 import { useNavigate } from "react-router-dom";
 
 export default function NewPrestamo() {
   const navigate = useNavigate();
   
-  // Estados para el formulario
-  const [obra, setObra] = useState("");
-  const [caja, setCaja] = useState("");
-  const [entregadoPor, setEntregadoPor] = useState("");
-  const [recibidoPor, setRecibidoPor] = useState("");
-  const [ubicacionAnterior, setUbicacionAnterior] = useState("");
-  const [ubicacionActual, setUbicacionActual] = useState("");
-  const [dia, setDia] = useState("");
-  const [hora, setHora] = useState("");
+  // Estado inicial del formulario
+  const [prestamo, setPrestamo] = useState({
+    obra: "",
+    caja: "",
+    entrego: "",
+    recibio: "",
+    dia: new Date().toISOString().split('T')[0], // Fecha actual por defecto
+    hora: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+    anterior: "",
+    actual: "",
+    estado: "prestado"
+  });
 
-  // Manejador de envío del formulario
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    
-    const data = {
-      obra,
-      caja,
-      entregadoPor,
-      recibidoPor,
-      ubicacionAnterior,
-      ubicacionActual,
-      dia,
-      hora
-    };
-    
-    console.log(data);
-    sendForm(data);
+  const [loading, setLoading] = useState(false);
+
+  // Manejador de cambios en los inputs
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setPrestamo(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  // Función para enviar el formulario
-  const sendForm = async (data) => {
+  // Manejador de envío del formulario
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    
     try {
-      // Aquí iría la llamada real a tu API
-      // Simulamos un retraso de red
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      setLoading(true);
       
-      // Simulación de éxito
+      const response = await fetch('/api/prestamos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(prestamo)
+      });
+      
+      if (!response.ok) {
+        throw new Error('Error al crear el préstamo');
+      }
+
       toast.success("Préstamo creado con éxito", {
         onClose: () => navigate("/prestamo"),
         autoClose: 2000,
       });
     } catch (error) {
-      toast.error(
-        <ExpansiveToast
-          title="Error al crear el préstamo"
-          content={
-            <>
-              <p className="mb-2 fs-6">{error.message}</p>
-            </>
-          }
-        />,
-        {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-        }
-      );
+      toast.error(`Error al crear préstamo: ${error.message}`, {
+        position: "top-right",
+        autoClose: 5000,
+      });
       console.error("Error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -84,11 +77,10 @@ export default function NewPrestamo() {
                   </p>
                   <h1>Nuevo Préstamo</h1>
                   <small className="text-secondary">
-                    Rellene todo el siguiente formulario y una vez finalizado
-                    presione el botón
+                    Complete todos los campos para registrar un nuevo préstamo
                   </small>
                 </div>
-                <div className="">
+                <div className="card">
                   <div className="card-body">
                     <div className="p-4">
                       <div className="form-body">
@@ -96,137 +88,184 @@ export default function NewPrestamo() {
                           {/* Obra */}
                           <div className="col-12">
                             <label htmlFor="obra" className="form-label">
-                              Obra
+                              <i className="fa-solid fa-book me-2"></i>
+                              Obra/Material
                             </label>
                             <input
                               type="text"
                               className="form-control"
                               id="obra"
+                              name="obra"
                               required
-                              value={obra}
-                              onChange={(e) => setObra(e.target.value)}
+                              value={prestamo.obra}
+                              onChange={handleChange}
+                              placeholder="Ej: Sinfonía No. 5"
                             />
                           </div>
 
-                          {/* Caja */}
+                          {/* Caja/Número */}
                           <div className="col-12">
                             <label htmlFor="caja" className="form-label">
-                              Caja
+                              <i className="fa-solid fa-box me-2"></i>
+                              Caja/Número/Identificador
                             </label>
                             <input
                               type="text"
                               className="form-control"
                               id="caja"
+                              name="caja"
                               required
-                              value={caja}
-                              onChange={(e) => setCaja(e.target.value)}
+                              value={prestamo.caja}
+                              onChange={handleChange}
+                              placeholder="Ej: Caja 001, Partitura A25"
                             />
                           </div>
 
                           {/* Entregado por */}
                           <div className="col-12">
-                            <label htmlFor="entregadoPor" className="form-label">
-                              Quién lo entregó
+                            <label htmlFor="entrego" className="form-label">
+                              <i className="fa-solid fa-user-tie me-2"></i>
+                              Quién lo entrega
                             </label>
                             <input
                               type="text"
                               className="form-control"
-                              id="entregadoPor"
+                              id="entrego"
+                              name="entrego"
                               required
-                              value={entregadoPor}
-                              onChange={(e) => setEntregadoPor(e.target.value)}
+                              value={prestamo.entrego}
+                              onChange={handleChange}
+                              placeholder="Nombre de quien entrega el material"
                             />
                           </div>
 
                           {/* Recibido por */}
                           <div className="col-12">
-                            <label htmlFor="recibidoPor" className="form-label">
-                              Quién lo recibió
+                            <label htmlFor="recibio" className="form-label">
+                              <i className="fa-solid fa-user-check me-2"></i>
+                              Quién lo recibe
                             </label>
                             <input
                               type="text"
                               className="form-control"
-                              id="recibidoPor"
+                              id="recibio"
+                              name="recibio"
                               required
-                              value={recibidoPor}
-                              onChange={(e) => setRecibidoPor(e.target.value)}
+                              value={prestamo.recibio}
+                              onChange={handleChange}
+                              placeholder="Nombre de quien recibe el material"
                             />
                           </div>
 
-                          {/* Día */}
+                          {/* Fecha */}
                           <div className="col-sm-6">
                             <label htmlFor="dia" className="form-label">
-                              Día
+                              <i className="fa-solid fa-calendar-day me-2"></i>
+                              Fecha del préstamo
                             </label>
                             <input
                               type="date"
                               className="form-control"
                               id="dia"
+                              name="dia"
                               required
-                              value={dia}
-                              onChange={(e) => setDia(e.target.value)}
+                              value={prestamo.dia}
+                              onChange={handleChange}
                             />
                           </div>
 
                           {/* Hora */}
                           <div className="col-sm-6">
                             <label htmlFor="hora" className="form-label">
-                              Hora
+                              <i className="fa-solid fa-clock me-2"></i>
+                              Hora del préstamo
                             </label>
                             <input
                               type="time"
                               className="form-control"
                               id="hora"
+                              name="hora"
                               required
-                              value={hora}
-                              onChange={(e) => setHora(e.target.value)}
+                              value={prestamo.hora}
+                              onChange={handleChange}
                             />
                           </div>
 
                           {/* Ubicación anterior */}
                           <div className="col-12">
-                            <label htmlFor="ubicacionAnterior" className="form-label">
+                            <label htmlFor="anterior" className="form-label">
+                              <i className="fa-solid fa-map-marker-alt me-2"></i>
                               Ubicación anterior
                             </label>
                             <select
                               className="form-select"
-                              id="ubicacionAnterior"
+                              id="anterior"
+                              name="anterior"
                               required
-                              value={ubicacionAnterior}
-                              onChange={(e) => setUbicacionAnterior(e.target.value)}
+                              value={prestamo.anterior}
+                              onChange={handleChange}
                             >
-                              <option value="">Seleccionar ubicación</option>
-                              <option value="UJAP">UJAP</option>
-                              <option value="Bolivar">Avenida Bolivar</option>
-                              <option value="Hesperia">Hesperia</option>
+                              <option value="">Seleccione ubicación...</option>
+                              <option value="Almacén Principal">Almacén Principal</option>
+                              <option value="Oficina de Música">Oficina de Música</option>
+                              <option value="Sala de Ensayos">Sala de Ensayos</option>
+                              <option value="Archivo Histórico">Archivo Histórico</option>
                             </select>
                           </div>
 
                           {/* Ubicación actual */}
                           <div className="col-12">
-                            <label htmlFor="ubicacionActual" className="form-label">
-                              Ubicación actual
+                            <label htmlFor="actual" className="form-label">
+                              <i className="fa-solid fa-exchange-alt me-2"></i>
+                              Ubicación actual (destino)
                             </label>
                             <select
                               className="form-select"
-                              id="ubicacionActual"
+                              id="actual"
+                              name="actual"
                               required
-                              value={ubicacionActual}
-                              onChange={(e) => setUbicacionActual(e.target.value)}
+                              value={prestamo.actual}
+                              onChange={handleChange}
                             >
-                              <option value="">Seleccionar ubicación</option>
-                              <option value="UJAP">UJAP</option>
-                              <option value="Bolivar">Avenida Bolivar</option>
-                              <option value="Hesperia">Hesperia</option>
+                              <option value="">Seleccione ubicación...</option>
+                              <option value="En préstamo externo">En préstamo externo</option>
+                              <option value="Sala de Conciertos">Sala de Conciertos</option>
+                              <option value="Sala de Ensayos">Sala de Ensayos</option>
+                              <option value="Oficina de Dirección">Oficina de Dirección</option>
                             </select>
                           </div>
 
-                          {/* Botón de envío */}
+                          {/* Estado (oculto ya que siempre será "prestado" al crear) */}
+                          <input type="hidden" name="estado" value="prestado" />
+
+                          {/* Botones */}
                           <div className="col-12">
-                            <div className="d-grid">
-                              <button className="btn btn-primary">
-                                <i className="bx bx-save"></i>
-                                Crear Préstamo
+                            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                              <button 
+                                type="button" 
+                                className="btn btn-secondary me-md-2"
+                                onClick={() => navigate("/prestamo")}
+                                disabled={loading}
+                              >
+                                <i className="fa-solid fa-times me-2"></i>
+                                Cancelar
+                              </button>
+                              <button 
+                                type="submit" 
+                                className="btn btn-primary"
+                                disabled={loading}
+                              >
+                                {loading ? (
+                                  <>
+                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    Registrando...
+                                  </>
+                                ) : (
+                                  <>
+                                    <i className="fa-solid fa-save me-2"></i>
+                                    Registrar Préstamo
+                                  </>
+                                )}
                               </button>
                             </div>
                           </div>
