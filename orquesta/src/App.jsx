@@ -11,21 +11,24 @@ import EditarPartitura from './pages/partituras/editarPartitura'
 import NotFound from './pages/404'
 import NewPrestamo from './pages/prestamo/newPrestamo'
 import EditarPrestamo from './pages/prestamo/editarPrestamo'
+import ProtectedRoute from './components/security/ProtectedRoute'
 
 function App() {
     return (
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Login />} />
-                <Route path="/new_partitura" element={<NewPartitura />} />
-                <Route path="/menu" element={<Menu />} />
-                <Route path="/editar_partitura/:id" element={<EditarPartitura />} />
-                <Route path="/usuarios" element={<Usuarios />} />
-                <Route path="/crear_usuario" element={<CrearUsuario />} />
-                <Route path="/editar_usuario/:id" element={<EditarUsuario />} />
-                <Route path="/prestamo" element={<Prestamo />} />
-                <Route path="/prestamo/nuevo_prestamo" element={<NewPrestamo />} />
-                <Route path="/prestamo/editar_prestamo/:id" element={<EditarPrestamo />} />
+                <Route element={<ProtectedRoute />}>
+                    <Route path="/new_partitura" element={<NewPartitura />} />
+                    <Route path="/menu" element={<Menu />} />
+                    <Route path="/editar_partitura/:id" element={<EditarPartitura />} />
+                    <Route path="/usuarios" element={<Usuarios />} />
+                    <Route path="/crear_usuario" element={<CrearUsuario />} />
+                    <Route path="/editar_usuario/:id" element={<EditarUsuario />} />
+                    <Route path="/prestamo" element={<Prestamo />} />
+                    <Route path="/prestamo/nuevo_prestamo" element={<NewPrestamo />} />
+                    <Route path="/prestamo/editar_prestamo/:id" element={<EditarPrestamo />} />
+                </Route>
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>

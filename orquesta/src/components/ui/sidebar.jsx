@@ -1,10 +1,25 @@
 import { useState, useEffect } from 'react'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import './css/sidebar.css'
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [isMobile, setIsMobile] = useState(false)
+    const navigate = useNavigate()
+
+    const handleExit = async () => {
+        const response = await fetch('http://localhost:3000/api/usuarios/logout', {
+            method: 'POST',
+            credentials: 'include', // Para enviar cookies
+        });
+        
+        const data = response.status === 200 ? true : false;
+
+        if (data) {
+            navigate('/')
+            return
+        }
+    }
 
     useEffect(() => {
         const handleResize = () => {
@@ -69,7 +84,7 @@ const Sidebar = () => {
                         </Link>
                     </div>
 
-                    <Link to="/" className="text-danger text-decoration-none py-2 border-top">
+                    <Link onClick={handleExit} className="text-danger text-decoration-none py-2 border-top">
                         <i className="fa fa-sign-out mx-2"></i>
                         Cerrar Sesión
                     </Link>
@@ -106,7 +121,7 @@ const Sidebar = () => {
                         Usuarios
                     </Link>
                 </div>
-                <Link to="/" className="d-block text-danger text-decoration-none px-4 py-4 border-top mt-auto">
+                <Link onClick={handleExit} className="d-block text-danger text-decoration-none px-4 py-4 border-top mt-auto">
                     <i className="fa fa-sign-out mx-2"></i>
                     Cerrar Sesión
                 </Link>

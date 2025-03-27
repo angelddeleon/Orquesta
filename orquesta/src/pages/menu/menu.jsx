@@ -51,7 +51,7 @@ export default function Menu() {
           `http://localhost:3000/api/partituras?${queryParams.toString()}`
         );
         const data = await response.json();
-        console.log(data);
+
         setPartituras(data.partituras);
         setTotalPages(data.paginas);
       } catch (error) {

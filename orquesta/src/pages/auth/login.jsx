@@ -52,7 +52,6 @@ export default function Login() {
                 }
 
                 const data = await response.json();
-                console.log(data); // Verifica si la respuesta contiene el token
 
                 // Guardar el token en el localStorage
                 if (data.user) {
