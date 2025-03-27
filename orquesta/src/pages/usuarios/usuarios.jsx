@@ -15,7 +15,7 @@ export default function Usuarios() {
         // Conexion con Backend
         const fetchData = async () => {
             const response = await fetch(
-                `http://localhost:3000/api/usuarios/`
+                `http://localhost:3000/api/usuarios/`,{credentials: 'include'}
             );
             const data = await response.json();
             setUsuarios(data);

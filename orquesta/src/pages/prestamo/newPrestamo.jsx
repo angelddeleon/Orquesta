@@ -42,6 +42,7 @@ export default function NewPrestamo() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(prestamo)
       });
       

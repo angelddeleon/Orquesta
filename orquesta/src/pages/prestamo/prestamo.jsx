@@ -22,7 +22,7 @@ export default function Prestamo() {
     const fetchPrestamos = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/prestamos');
+        const response = await fetch('/api/prestamos',{credentials: 'include'});
         if (!response.ok) {
           throw new Error('Error al obtener los préstamos');
         }
@@ -46,6 +46,7 @@ export default function Prestamo() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({ estado: 'devuelto' })
       });
 

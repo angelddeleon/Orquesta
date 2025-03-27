@@ -48,7 +48,10 @@ export default function Menu() {
         });
 
         const response = await fetch(
-          `http://localhost:3000/api/partituras?${queryParams.toString()}`
+          `http://localhost:3000/api/partituras?${queryParams.toString()}`,
+          {
+            credentials: "include",
+          }
         );
         const data = await response.json();
 

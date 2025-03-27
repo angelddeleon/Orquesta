@@ -165,7 +165,11 @@ export default function NewPartitura() {
   useEffect(() => {
     const fetchInstruments = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/instrumentos");
+        const response = await fetch("http://localhost:3000/api/instrumentos", 
+          {
+            credentials: 'include', // Para enviar cookies
+          }
+        );
         const data = await response.json();
         // Supongamos que el endpoint retorna un arreglo de objetos con { id, nombre }
         // Agregamos "Nuevo..." manualmente al final de la lista, si lo necesitas.
@@ -189,6 +193,7 @@ export default function NewPartitura() {
           "Content-Type": "application/json",
           // 'Authorization': `Bearer ${localStorage.getItem('token')}` // Si usas autenticación
         },
+        credentials: 'include', // Para enviar cookies
         body: JSON.stringify(data),
       });
 
@@ -227,7 +232,9 @@ export default function NewPartitura() {
   useEffect(() => {
     const fetchInstruments = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/instrumentos");
+        const response = await fetch("http://localhost:3000/api/instrumentos",{
+          credentials: 'include', // Para enviar cookies
+        });
         const data = await response.json();
         // Supongamos que el endpoint retorna un arreglo de objetos con { id, nombre }
         // Agregamos "Nuevo..." manualmente al final de la lista, si lo necesitas.
@@ -242,7 +249,9 @@ export default function NewPartitura() {
   useEffect(() => {
     const fetchInstruments = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/instrumentos");
+        const response = await fetch("http://localhost:3000/api/instrumentos", {
+          credentials: 'include', // Para enviar cookies
+        });
         const data = await response.json();
         // Supongamos que el endpoint retorna un arreglo de objetos con { id, nombre }
         // Agregamos "Nuevo..." manualmente al final de la lista, si lo necesitas.

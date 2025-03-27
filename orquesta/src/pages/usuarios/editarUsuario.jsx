@@ -18,7 +18,7 @@ export default function EditarUsuario() {
     useEffect(() => {
         const fetchUsuario = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/usuarios/${id}`);
+                const response = await fetch(`http://localhost:3000/api/usuarios/${id}`,{credentials: 'include'});
                 
                 if (!response.ok) {
                     throw new Error('Usuario no encontrado');
@@ -61,6 +61,7 @@ export default function EditarUsuario() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify(formData)
             });
 

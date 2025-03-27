@@ -27,7 +27,9 @@ export default function EditarPrestamo() {
     const fetchPrestamo = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/prestamos/${id}`);
+        const response = await fetch(`/api/prestamos/${id}`,{
+          credentials: "include"
+        });
         
         if (!response.ok) {
           throw new Error('Error al cargar los datos del préstamo');
@@ -97,6 +99,7 @@ export default function EditarPrestamo() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: "include",
         body: JSON.stringify(prestamo)
       });
       
