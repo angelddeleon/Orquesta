@@ -10,15 +10,17 @@ import {
   obtenerUsuarioPorId
 } from "../../controllers/usuario.controller.js";
 
+import { verifyToken as Verify } from "../../middlewares/verifyToken.js";
+
 const router = express.Router();
 
-router.post("/", crearUsuario); // Registrar usuario
+router.post("/",Verify, crearUsuario); // Registrar usuario
 router.post("/login", login); // Login de usuario
-router.post("/logout", logout); // Logout de usuario
-router.get("/", obtenerUsuarios); // Obtener todos los usuarios
-router.delete("/:id", eliminarUsuario); // Eliminar usuario
-router.get("/verificarToken", verifyToken); // Verificar token
-router.put("/:id", editarUsuario) // Editar usuario
-router.get("/:id", obtenerUsuarioPorId) // Obtener usuario por ID
+router.post("/logout",Verify, logout); // Logout de usuario
+router.get("/",Verify, obtenerUsuarios); // Obtener todos los usuarios
+router.delete("/:id",Verify, eliminarUsuario); // Eliminar usuario
+router.get("/verificarToken",Verify, verifyToken); // Verificar token
+router.put("/:id",Verify, editarUsuario) // Editar usuario
+router.get("/:id",Verify, obtenerUsuarioPorId) // Obtener usuario por ID
 
 export default router;
