@@ -19,7 +19,6 @@ export const obtenerPartituras = async (req, res) => {
     const pageSize = parseInt(req.query.pageSize) || 10;
     const offset = (page - 1) * pageSize;
 
-    console.log(req.query);
     // Filtros básicos
     const { obra, archivero, categoria, score, observaciones, caja } =
       req.query;
@@ -120,7 +119,6 @@ export const obtenerPartituras = async (req, res) => {
       paginaActual: page,
       partituras: formatted,
     });
-    console.log(formatted);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });
@@ -204,7 +202,6 @@ export const crearPartitura = async (req, res) => {
   const transaction = await db.transaction();
   try {
     const { body } = req;
-    console.log(body);
     // Crear la partitura
     const nuevaPartitura = await Partitura.create(
       {
@@ -225,8 +222,6 @@ export const crearPartitura = async (req, res) => {
 
     // Procesar instrumentos
     const procesarInstrumentos = async (instrumentos, tipo) => {
-      console.log(instrumentos);
-      console.log(tipo);
       for (const instrumento of instrumentos) {
         const [inst] = await Instrumento.findOrCreate({
           where: { nombre: instrumento.Nombre },
@@ -236,7 +231,6 @@ export const crearPartitura = async (req, res) => {
 
         const model =
           tipo === "Original" ? Instrumento_Original : Instrumento_Copia;
-        console.log(model);
         await model.create(
           {
             id_instrumento: inst.id,
@@ -278,7 +272,6 @@ export const modificarPartitura = async (req, res) => {
   try {
     const { id } = req.params;
     const { body } = req;
-    console.log(body);
     // Buscar partitura
     const partitura = await Partitura.findByPk(id, { transaction });
     if (!partitura)
@@ -366,5 +359,17 @@ export const modificarPartitura = async (req, res) => {
     console.log(error);
     await transaction.rollback();
     res.status(400).json({ error: error.message });
+  }
+};
+
+export const obtenerTodasLasPartituras = async (req, res) => {
+  try {
+    /*
+      PARA EL PDF Y OBTENER TODAS LAS PARTITURAS
+    */
+    res.status(200).json(await Partitura.findAll());
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
   }
 };
