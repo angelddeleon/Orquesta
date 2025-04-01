@@ -27,6 +27,7 @@ export default function Menu() {
     score: "",
     observaciones: "",
   });
+  
 
   useEffect(() => {
     const fetchData = async () => {
