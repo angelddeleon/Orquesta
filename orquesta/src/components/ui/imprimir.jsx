@@ -18,17 +18,14 @@ export default function Imprimir() {
 
     const generatePDF = async (partituras) => {
         try {
-            // Importación dinámica
             const { jsPDF } = await import("jspdf");
             const autoTable = (await import("jspdf-autotable")).default;
-            
-            // Crear PDF en formato A4 (por defecto es portrait)
+
             const doc = new jsPDF({
                 unit: 'mm',
                 format: 'a4'
             });
 
-            // Agregar logo (ajusta la ruta según tu estructura de archivos)
             const logoUrl = '/brand/logo.webp';
             const logoResponse = await fetch(logoUrl);
             const logoBlob = await logoResponse.blob();
@@ -38,23 +35,19 @@ export default function Imprimir() {
                 reader.readAsDataURL(logoBlob);
             });
 
-            // Tamaño del logo (ajustar según necesidad)
-            const logoWidth = 50; // ancho en mm
-            const logoHeight = 50; // alto en mm
-            const logoX = (doc.internal.pageSize.getWidth() - logoWidth) / 2; // Centrado
+            const logoSize = 50; // Tamaño cuadrado para el logo
+            const logoX = (doc.internal.pageSize.getWidth() - logoSize) / 2; // Centrado
 
-            doc.addImage(logoDataUrl, 'WEBP', logoX, 10, logoWidth, logoHeight);
+            doc.addImage(logoDataUrl, 'WEBP', logoX, 10, logoSize, logoSize);
 
-            // Título del documento
             doc.setFont("helvetica", "bold");
             doc.setFontSize(16);
-            doc.text("Listado de Partituras", 105, 40, { align: 'center' });
+            doc.text("Listado de Partituras", 105, 70, { align: 'center' }); // Ajustar Y para evitar superposición
             
             doc.setFont("helvetica", "normal");
             doc.setFontSize(10);
-            doc.text(`Generado el: ${new Date().toLocaleDateString()}`, 105, 45, { align: 'center' });
+            doc.text(`Generado el: ${new Date().toLocaleDateString()}`, 105, 75, { align: 'center' }); // Ajustar Y para evitar superposición
 
-            // Encabezados de la tabla
             const headers = [
                 "Obra", 
                 "Caja", 
@@ -68,7 +61,6 @@ export default function Imprimir() {
                 "Archivero"
             ];
 
-            // Datos de la tabla (simplificamos columnas para A4)
             const body = partituras.map(partitura => [
                 partitura.obra || '-',
                 partitura.caja || '-',
@@ -82,29 +74,27 @@ export default function Imprimir() {
                 partitura.archivero || '-'
             ]);
 
-            // Configuración de la tabla al 100% del ancho
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const margin = 10; // margen izquierdo y derecho
-            const tableWidth = pageWidth - (margin * 2);
+            const margin = 10; 
+            const tableWidth = doc.internal.pageSize.getWidth() - (margin * 2); // Ancho de la tabla
 
-            // Generar la tabla
             autoTable(doc, {
-                startY: 50, // Posición después del logo y título
+                startY: 80, // Ajustar Y para evitar superposición
                 head: [headers],
                 body: body,
                 margin: { left: margin, right: margin },
-                tableWidth: 'auto',
+                tableWidth: tableWidth, // Usar el ancho calculado
                 styles: {
                     fontSize: 8,
                     cellPadding: 3,
                     overflow: 'linebreak',
                     font: 'helvetica',
-                    valign: 'middle'
+                    valign: 'middle',
+                    halign: 'center' // Alineación horizontal centrada
                 },
                 headStyles: {
-                    fillColor: [22, 160, 133], // Verde
+                    fillColor: [199, 174, 31], // Color #C7AE1F
                     textColor: 255,
-                    fontSize: 9,
+                    fontSize: 8, // Reducir tamaño de fuente
                     fontStyle: 'bold',
                     halign: 'center'
                 },
@@ -125,7 +115,6 @@ export default function Imprimir() {
                     9: { cellWidth: 'auto' }
                 },
                 didDrawPage: function(data) {
-                    // Footer en cada página
                     doc.setFontSize(8);
                     doc.setTextColor(100);
                     doc.text(
@@ -136,7 +125,6 @@ export default function Imprimir() {
                 }
             });
 
-            // Guardar el PDF
             doc.save(`partituras_${new Date().toISOString().slice(0,10)}.pdf`);
 
         } catch (error) {
