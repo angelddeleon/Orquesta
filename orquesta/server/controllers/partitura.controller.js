@@ -375,7 +375,26 @@ export const obtenerTodasLasPartituras = async (req, res) => {
 };
 
 export const obtenerTodasPartiturasConInstrumentos = async (req, res) => {
+
+  const opciones = req.body;
+
   try {
+
+    if(!opciones || Object.keys(opciones).length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'No se han proporcionado opciones para filtrar las partituras.'
+      });
+    }
+
+    // Validar que las opciones sean un objeto
+    if (typeof opciones !== 'object') {
+      return res.status(400).json({
+        success: false,
+        error: 'Las opciones deben ser un objeto.'
+      });
+    }
+
     // Obtener todas las partituras con sus relaciones
     const partituras = await Partitura.findAll({
       include: [

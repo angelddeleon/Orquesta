@@ -141,6 +141,9 @@ export default function Imprimir() {
                 headers: {
                     "Content-Type": "application/json",
                 },
+                body: JSON.stringify({
+                    ...selectedOptions,
+                }),
                 credentials: 'include',
             });
 
