@@ -25,7 +25,4 @@ partituraRouter.put("/:id", modificarPartitura);
 // GET /partituras/all
 partituraRouter.get("/all", obtenerTodasPartiturasConInstrumentos);
 
-// GET /partituras/all
-//partituraRouter.get("/all", obtenerTodasLasPartituras);
-
 export default partituraRouter;

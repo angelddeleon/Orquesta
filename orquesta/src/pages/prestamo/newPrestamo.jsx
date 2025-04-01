@@ -207,10 +207,9 @@ export default function NewPrestamo() {
                               onChange={handleChange}
                             >
                               <option value="">Seleccione ubicación...</option>
-                              <option value="Almacén Principal">Almacén Principal</option>
-                              <option value="Oficina de Música">Oficina de Música</option>
-                              <option value="Sala de Ensayos">Sala de Ensayos</option>
-                              <option value="Archivo Histórico">Archivo Histórico</option>
+                              <option value="ujap">U.J.A.P</option>
+                              <option value="bolivar">Av. Bolivar</option>
+                              <option value="hesperia">Hesperia</option>
                             </select>
                           </div>
 
@@ -229,10 +228,9 @@ export default function NewPrestamo() {
                               onChange={handleChange}
                             >
                               <option value="">Seleccione ubicación...</option>
-                              <option value="En préstamo externo">En préstamo externo</option>
-                              <option value="Sala de Conciertos">Sala de Conciertos</option>
-                              <option value="Sala de Ensayos">Sala de Ensayos</option>
-                              <option value="Oficina de Dirección">Oficina de Dirección</option>
+                              <option value="Ujap">U.J.A.P</option>
+                              <option value="Nolivar">Av. Bolivar</option>
+                              <option value="Hesperia">Hesperia</option>
                             </select>
                           </div>
 

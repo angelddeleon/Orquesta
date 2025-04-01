@@ -22,12 +22,11 @@ export default function Imprimir() {
     // Función para enviar la solicitud de impresión
     const handleImprimir = async () => {
         try {
-            const response = await fetch("/api/imprimir", {
-                method: "POST",
+            const response = await fetch("http://localhost:3000/api/partituras/all", {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(selectedOptions),
+                credentials: 'include', // Para enviar cookies
             });
 
             if (!response.ok) {

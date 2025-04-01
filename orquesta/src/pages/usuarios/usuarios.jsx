@@ -12,13 +12,19 @@ export default function Usuarios() {
 
     // Obtener datos del backend (simulado)
     useEffect(() => {
-        // Conexion con Backend
         const fetchData = async () => {
+
+            //Cambiar por verificacion dr role
+            if (JSON.parse(localStorage.getItem("user")).role !== "admin") {
+                window.location.href = "/";
+            }
+
+            // Conexion con Backend
             const response = await fetch(
-                `http://localhost:3000/api/usuarios/`,{credentials: 'include'}
+                `http://localhost:3000/api/usuarios/`, { credentials: 'include' }
             );
-            const data = await response.json();
-            setUsuarios(data);
+            const usuariosData = await response.json();
+            setUsuarios(usuariosData);
         };
         fetchData();
     }, []);

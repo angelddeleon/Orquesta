@@ -74,14 +74,22 @@ const Sidebar = () => {
                             <i className="fa-solid fa-music mx-2 "></i>
                             Partituras
                         </Link>
-                        <Link to="/prestamo" className="d-block text-dark text-decoration-none py-2">
-                            <i className="fa-solid fa-chart-column mx-2"></i>
-                            Prestamo
-                        </Link>
-                        <Link to="/usuarios" className="d-block text-dark text-decoration-none py-2">
+
+                        {
+                            JSON.parse(localStorage.getItem('user')).role === 'admin' ? 
+                            <Link to="/prestamo" className="d-block text-dark text-decoration-none py-2">
+                                <i className="fa-solid fa-chart-column mx-2"></i>
+                                Prestamo
+                            </Link> : null
+                        }
+                        {
+                            JSON.parse(localStorage.getItem('user')).role === 'admin' ? 
+                            <Link to="/usuarios" className="d-block text-dark text-decoration-none py-2">
                             <i className="fa-solid fa-users mx-2"></i>
                             Usuarios
-                        </Link>
+                            </Link>
+                            : null    
+                        }
                     </div>
 
                     <Link onClick={handleExit} className="text-danger text-decoration-none py-2 border-top">
@@ -112,14 +120,21 @@ const Sidebar = () => {
                         <i className="fa-solid fa-music mx-2 "></i>
                         Partituras
                     </Link>
-                    <Link to="/reportes" className="d-block text-dark text-decoration-none px-4 py-3 border-top mt-auto">
-                        <i className="fa-solid fa-chart-column mx-2"></i>
-                        Reportes
-                    </Link>
-                    <Link to="/usuarios" className="d-block text-dark text-decoration-none px-4 py-3 border-top mt-auto">
-                        <i className="fa-solid fa-users mx-2"></i>
-                        Usuarios
-                    </Link>
+                    {
+                            JSON.parse(localStorage.getItem('user')).role === 'admin' ? 
+                            <Link to="/prestamo" className="d-block text-dark text-decoration-none py-2">
+                                <i className="fa-solid fa-chart-column mx-2"></i>
+                                Prestamo
+                            </Link> : null
+                        }
+                    {
+                            JSON.parse(localStorage.getItem('user')).role === 'admin' ? 
+                            <Link to="/usuarios" className="d-block text-dark text-decoration-none py-2">
+                            <i className="fa-solid fa-users mx-2"></i>
+                            Usuarios
+                            </Link>
+                            : null    
+                        }
                 </div>
                 <Link onClick={handleExit} className="d-block text-danger text-decoration-none px-4 py-4 border-top mt-auto">
                     <i className="fa fa-sign-out mx-2"></i>

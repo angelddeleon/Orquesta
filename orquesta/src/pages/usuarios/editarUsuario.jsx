@@ -14,8 +14,16 @@ export default function EditarUsuario() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    useEffect(() => {
+        //Cambiar por verificacion dr role
+        if (JSON.parse(localStorage.getItem("user")).role !== "admin") {
+            window.location.href = "/";
+        }
+    }, []);
+
     // Obtener datos del usuario al cargar el componente
     useEffect(() => {
+
         const fetchUsuario = async () => {
             try {
                 const response = await fetch(`http://localhost:3000/api/usuarios/${id}`,{credentials: 'include'});

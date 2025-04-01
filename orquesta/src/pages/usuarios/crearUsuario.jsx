@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../../layout/layout';
 import { Link ,useNavigate} from 'react-router-dom';
 
@@ -19,6 +19,13 @@ export default function UserForm() {
             [name]: value,
         }));
     };
+
+    useEffect(() => {
+        //Cambiar por verificacion dr role
+        if (JSON.parse(localStorage.getItem("user")).role !== "admin") {
+            window.location.href = "/";
+        }
+    }, []);
 
 
     const handleSubmit = async (e) => {
