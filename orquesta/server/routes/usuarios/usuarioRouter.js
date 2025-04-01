@@ -7,7 +7,8 @@ import {
   verifyToken,
   logout,
   editarUsuario,
-  obtenerUsuarioPorId
+  obtenerUsuarioPorId,
+  //verifyRole
 } from "../../controllers/usuario.controller.js";
 
 import { verifyToken as Verify } from "../../middlewares/verifyToken.js";
@@ -22,5 +23,6 @@ router.delete("/:id",Verify, eliminarUsuario); // Eliminar usuario
 router.get("/verificarToken",Verify, verifyToken); // Verificar token
 router.put("/:id",Verify, editarUsuario) // Editar usuario
 router.get("/:id",Verify, obtenerUsuarioPorId) // Obtener usuario por ID
+//router.get("/verificarRol",Verify, verifyRole) // Verificar rol de usuario
 
 export default router;

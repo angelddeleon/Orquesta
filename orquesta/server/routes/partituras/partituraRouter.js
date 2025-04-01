@@ -5,7 +5,7 @@ import {
   crearPartitura,
   obtenerPartituraPorId,
   modificarPartitura,
-  //obtenerTodasLasPartituras
+  obtenerTodasPartiturasConInstrumentos
 } from "../../controllers/partitura.controller.js";
 
 const partituraRouter = express.Router();
@@ -21,6 +21,9 @@ partituraRouter.post("/", crearPartitura);
 
 // PUT /partituras/:id
 partituraRouter.put("/:id", modificarPartitura);
+
+// GET /partituras/all
+partituraRouter.get("/all", obtenerTodasPartiturasConInstrumentos);
 
 // GET /partituras/all
 //partituraRouter.get("/all", obtenerTodasLasPartituras);

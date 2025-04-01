@@ -373,3 +373,81 @@ export const obtenerTodasLasPartituras = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const obtenerTodasPartiturasConInstrumentos = async (req, res) => {
+  try {
+    // Obtener todas las partituras con sus relaciones
+    const partituras = await Partitura.findAll({
+      include: [
+        {
+          model: Instrumento_Original,
+          as: "instrumentos_originales",
+          include: [{ 
+            model: Instrumento, 
+            as: "instrumento",
+            attributes: ['id', 'nombre'] 
+          }],
+          attributes: ['id', 'cantidad']
+        },
+        {
+          model: Instrumento_Copia,
+          as: "instrumentos_copias",
+          include: [{ 
+            model: Instrumento, 
+            as: "instrumento",
+            attributes: ['id', 'nombre'] 
+          }],
+          attributes: ['id', 'cantidad']
+        }
+      ],
+      order: [['obra', 'ASC']] // Ordenar alfabéticamente por nombre de obra
+    });
+
+    // Formatear la respuesta para simplificar la estructura
+    const partiturasFormateadas = partituras.map(partitura => {
+      const partituraPlain = partitura.get({ plain: true });
+      
+      return {
+        id: partituraPlain.id,
+        obra: partituraPlain.obra,
+        archivero: partituraPlain.archivero,
+        caja: partituraPlain.caja,
+        sede: partituraPlain.sede,
+        compositores: partituraPlain.compositor ? partituraPlain.compositor.split('; ') : [],
+        arreglistas: partituraPlain.arreglista ? partituraPlain.arreglista.split('; ') : [],
+        orquestacion: partituraPlain.orquestacion ? partituraPlain.orquestacion.split('; ') : [],
+        formato: partituraPlain.formato,
+        categoria: partituraPlain.categoria,
+        score: partituraPlain.score,
+        observaciones: partituraPlain.observaciones,
+        instrumentos: {
+          originales: partituraPlain.instrumentos_originales.map(io => ({
+            id: io.instrumento.id,
+            nombre: io.instrumento.nombre,
+            cantidad: io.cantidad
+          })),
+          copias: partituraPlain.instrumentos_copias.map(ic => ({
+            id: ic.instrumento.id,
+            nombre: ic.instrumento.nombre,
+            cantidad: ic.cantidad
+          }))
+        },
+        createdAt: partituraPlain.createdAt,
+        updatedAt: partituraPlain.updatedAt
+      };
+    });
+
+    res.json({
+      success: true,
+      count: partiturasFormateadas.length,
+      data: partiturasFormateadas
+    });
+  } catch (error) {
+    console.error('Error al obtener partituras con instrumentos:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error al obtener las partituras',
+      details: error.message
+    });
+  }
+};
