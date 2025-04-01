@@ -8,6 +8,8 @@ const verifyToken = (req, res, next) => {
         return res.status(401).json({ error: 'No hay token. Inicia sesión' });
     }
 
+    
+
     jwt.verify(token, 'secreto', (err, decoded) => {
         if (err) {
             res.clearCookie('token', {
@@ -24,6 +26,8 @@ const verifyToken = (req, res, next) => {
         }
     
         req.user = decoded;
+    
+        
         next();
     });
 };
