@@ -378,6 +378,9 @@ export const obtenerTodasPartiturasConInstrumentos = async (req, res) => {
 
   const opciones = req.body;
 
+  console.log(opciones)
+
+
   try {
 
     if(!opciones || Object.keys(opciones).length === 0) {
@@ -395,8 +398,9 @@ export const obtenerTodasPartiturasConInstrumentos = async (req, res) => {
       });
     }
 
+
     // Obtener todas las partituras con sus relaciones
-    const partituras = await Partitura.findAll({
+    let partituras = await Partitura.findAll({
       include: [
         {
           model: Instrumento_Original,
@@ -421,6 +425,19 @@ export const obtenerTodasPartiturasConInstrumentos = async (req, res) => {
       ],
       order: [['obra', 'ASC']] // Ordenar alfabéticamente por nombre de obra
     });
+
+    const sedesSeleccionadas = [];
+    if (opciones['U.J.A.P'] === 'Todas') sedesSeleccionadas.push('U.J.A.P');
+    if (opciones['Av. Bolivar'] === 'Todas') sedesSeleccionadas.push('Av. Bolivar');
+    if (opciones['Hesperia'] === 'Todas') sedesSeleccionadas.push('Hesperia');
+    
+    if (sedesSeleccionadas.length > 0) {
+      partituras = partituras.filter((partitura) => 
+        sedesSeleccionadas.includes(partitura.sede)
+      );
+    }
+    
+    console.log(partituras); // Muestra partituras que coincidan con al menos una sede seleccionada
 
     // Formatear la respuesta para simplificar la estructura
     const partiturasFormateadas = partituras.map(partitura => {
