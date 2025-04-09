@@ -4,22 +4,20 @@ import Layout from "../../layout/layout";
 
 export default function Usuarios() {
     const [usuarios, setUsuarios] = useState([]);
-    const [searchTerm, setSearchTerm] = useState(""); // Estado para el término de búsqueda
-    const [showFilters, setShowFilters] = useState(false); // Estado para mostrar/ocultar el panel de filtros
+    const [searchTerm, setSearchTerm] = useState("");
+    const [showFilters, setShowFilters] = useState(false);
     const [filters, setFilters] = useState({
         role: "",
-    }); // Estado para almacenar los filtros
+    });
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 15;
 
-    // Obtener datos del backend (simulado)
     useEffect(() => {
         const fetchData = async () => {
-
-            //Cambiar por verificacion dr role
             if (JSON.parse(localStorage.getItem("user")).role !== "admin") {
                 window.location.href = "/";
             }
 
-            // Conexion con Backend
             const response = await fetch(
                 `http://localhost:3000/api/usuarios/`, { credentials: 'include' }
             );
@@ -29,7 +27,26 @@ export default function Usuarios() {
         fetchData();
     }, []);
 
-    // Función para filtrar usuarios
+    const handleDelete = async (userId) => {
+        if (window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+            try {
+                const response = await fetch(`http://localhost:3000/api/usuarios/${userId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    setUsuarios(usuarios.filter(usuario => usuario.id !== userId));
+                } else {
+                    alert('Error al eliminar el usuario');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al eliminar el usuario');
+            }
+        }
+    };
+
     const filteredUsuarios = usuarios?.filter((usuario) => {
         const searchLower = searchTerm.toLowerCase();
         const matchesSearch = (
@@ -42,28 +59,34 @@ export default function Usuarios() {
         return matchesSearch && matchesRole;
     });
 
-    // Manejar cambios en los filtros
+    // Calcular paginación
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredUsuarios?.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredUsuarios?.length / itemsPerPage);
+
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
         setFilters((prev) => ({
             ...prev,
             [name]: value,
         }));
+        setCurrentPage(1); // Resetear a la primera página al cambiar filtros
     };
 
-    // Limpiar filtros
     const clearFilters = () => {
         setFilters({
             role: "",
         });
+        setCurrentPage(1);
     };
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
         <Layout>
             <div className="d-flex vh-100">
-                {/* Contenido principal - 80% del ancho */}
                 <div className="main-content flex-grow-1 p-4" style={{ width: "80%" }}>
-                    {/* Header con título y botones */}
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <h1>Usuarios</h1>
                         <div className="d-flex gap-2">
@@ -73,7 +96,6 @@ export default function Usuarios() {
                         </div>
                     </div>
 
-                    {/* Barra de búsqueda y filtro */}
                     <div className="d-flex justify-content-between mb-4">
                         <div className="input-group" style={{ maxWidth: "400px" }}>
                             <span className="input-group-text">
@@ -96,7 +118,6 @@ export default function Usuarios() {
                         </button>
                     </div>
 
-                    {/* Panel de filtros */}
                     {showFilters && (
                         <div className="card mb-4">
                             <div className="card-body">
@@ -115,7 +136,7 @@ export default function Usuarios() {
                                         >
                                             <option value="">Todos</option>
                                             <option value="admin">Admin</option>
-                                            <option value="archivero">Empleado</option>
+                                            <option value="archivista">Empleado</option>
                                         </select>
                                     </div>
                                 </div>
@@ -128,7 +149,6 @@ export default function Usuarios() {
                         </div>
                     )}
 
-                    {/* Tabla de usuarios */}
                     <div className="table-responsive">
                         <table className="table table-striped table-hover">
                             <thead>
@@ -141,26 +161,57 @@ export default function Usuarios() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredUsuarios?.map((usuario, index) => (
+                                {currentItems?.map((usuario, index) => (
                                     <tr key={index}>
                                         <td className="align-middle">{usuario.nombre}</td>
                                         <td className="align-middle">{usuario.email}</td>
                                         <td className="align-middle">{usuario.telefono}</td>
                                         <td className="align-middle">{usuario.role}</td>
-                                        {usuario.role === "admin" ? (
-                                            <td className="align-middle"></td>
-                                        ) : (
-                                            <td className="align-middle">
-                                                <Link to={`/editar_usuario/${usuario.id}`} className="btn btn-sm btn-primary">
-                                                    Editar
-                                                </Link>
-                                            </td>
-                                        )}
+                                        <td className="align-middle">
+                                            {usuario.role === "admin" ? (
+                                                <span className="text-muted">No disponible</span>
+                                            ) : (
+                                                <div className="d-flex gap-2">
+                                                    <Link to={`/editar_usuario/${usuario.id}`} className="btn btn-sm btn-primary">
+                                                        Editar
+                                                    </Link>
+                                                    <button 
+                                                        className="btn btn-sm btn-danger"
+                                                        onClick={() => handleDelete(usuario.id)}
+                                                    >
+                                                        Eliminar
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
+
+                    {/* Paginación */}
+                    <nav className="mt-4">
+                        <ul className="pagination justify-content-center">
+                            <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                                <button className="page-link" onClick={() => paginate(currentPage - 1)}>
+                                    Anterior
+                                </button>
+                            </li>
+                            {[...Array(totalPages)].map((_, index) => (
+                                <li key={index} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
+                                    <button className="page-link" onClick={() => paginate(index + 1)}>
+                                        {index + 1}
+                                    </button>
+                                </li>
+                            ))}
+                            <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                                <button className="page-link" onClick={() => paginate(currentPage + 1)}>
+                                    Siguiente
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </Layout>

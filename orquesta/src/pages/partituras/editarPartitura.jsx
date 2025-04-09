@@ -15,7 +15,7 @@ export default function EditarPartitura() {
   const [obra, setObra] = useState("");
   const [sede, setSede] = useState("");
   const [formato, setFormato] = useState("");
-  const [archivero, setArchivero] = useState("");
+  const [archivista, setArchivista] = useState("");
   const [caja, setCaja] = useState("");
   const [Compositor, setCompositor] = useState([""]);
   const [arrangers, setArrangers] = useState([""]);
@@ -58,7 +58,7 @@ export default function EditarPartitura() {
         setObra(data.obra || "");
         setSede(data.sede || "");
         setFormato(data.formato || "");
-        setArchivero(data.archivero || "");
+        setArchivista(data.archivista || "");
         setCaja(data.caja || "");
         setCompositor(
           data.Compositores?.length > 0 ? data.Compositores : ["N/A"]
@@ -167,7 +167,7 @@ export default function EditarPartitura() {
 
     const formData = {
       Obra: obra,
-      Archivero: archivero,
+      Archivista: archivista,
       Caja: caja,
       Sede: sede,
       Compositores: Compositor.filter((c) => c.trim() !== ""),
@@ -238,19 +238,6 @@ export default function EditarPartitura() {
       </Layout>
     );
 
-  const formatCaja = (input) => {
-    if (input === "") return "";
-
-    // Convertir primer carácter a mayúscula y validar que sea letra
-    const firstChar = input[0].toUpperCase();
-    if (!/[A-Z]/.test(firstChar)) return "";
-
-    // Filtrar solo números en el resto del input
-    const remaining = input.slice(1);
-    const numbers = remaining.replace(/[^0-9]/g, "");
-
-    return numbers ? `${firstChar}-${numbers}` : `${firstChar}-`;
-  };
   return (
     <Layout>
       <div className="wrapper overflow-hidden px-4 py-2">
@@ -273,15 +260,16 @@ export default function EditarPartitura() {
                   <div className="p-4">
                     <form className="row g-3" onSubmit={handleSubmit}>
                       <div className="col-sm-6">
-                        <label htmlFor="archivero" className="form-label">
-                          Archivero
+                        <label htmlFor="archivista" className="form-label">
+                          Archivista
                         </label>
                         <input
                           type="text"
+                          placeholder="Jose"
                           className="form-control"
-                          id="archivero"
-                          value={archivero}
-                          onChange={(e) => setArchivero(e.target.value)}
+                          id="archivista"
+                          value={archivista}
+                          onChange={(e) => setArchivista(e.target.value)}
                         />
                       </div>
 
@@ -294,11 +282,8 @@ export default function EditarPartitura() {
                           className="form-control"
                           id="caja"
                           value={caja}
-                          onChange={(e) => {
-                            const formattedValue = formatCaja(e.target.value);
-                            setCaja(formattedValue);
-                          }}
-                          placeholder="Ej: A-123"
+                          onChange={(e) => setCaja(e.target.value)}
+                          placeholder="Caja"
                         />
                       </div>
 
@@ -368,7 +353,7 @@ export default function EditarPartitura() {
                           <option value="">Seleccionar sede</option>
                           <option value="Hesperia">Hesperia</option>
                           <option value="Av. Bolivar">Av. Bolivar</option>
-                          <option value="Univ. José Antonio Páez">
+                          <option value="U.J.A.P">
                             Univ. José Antonio Páez
                           </option>
                         </select>

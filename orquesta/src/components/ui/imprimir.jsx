@@ -58,7 +58,7 @@ export default function Imprimir() {
                 "Instrumentos Originales",
                 "Instrumentos Copias",
                 "Categoría",
-                "Archivero"
+                "Archivista"
             ];
 
             const body = partituras.map(partitura => [
@@ -71,7 +71,7 @@ export default function Imprimir() {
                 partitura.instrumentos?.originales?.map(i => `${i.nombre} (${i.cantidad})`).join(", ") || '-',
                 partitura.instrumentos?.copias?.map(i => `${i.nombre} (${i.cantidad})`).join(", ") || '-',
                 partitura.categoria || '-',
-                partitura.archivero || '-'
+                partitura.archivista || '-'
             ]);
 
             const margin = 10; 
@@ -180,25 +180,25 @@ export default function Imprimir() {
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        {["U.J.A.P", "Av. Bolivar", "Hesperia"].map((title) => (
+                    {["U.J.A.P", "Av. Bolivar", "Hesperia"].map((title) => (
                             <div key={title} className="d-flex justify-content-between align-items-center mb-3">
                                 <strong>{title}</strong>
                                 <div>
-                                    {["Propiedad", "Prestadas", "Todas"].map((option) => (
-                                        <Form.Check
-                                            key={option}
-                                            type="radio"
-                                            inline
-                                            label={option}
-                                            name={title}
-                                            value={option}
-                                            checked={selectedOptions[title] === option}
-                                            onChange={() => handleOptionChange(title, option)}
-                                        />
-                                    ))}
+                                {["Todas", "Ninguna"].map((option) => (  // Añadida opción "Ninguna"
+                                    <Form.Check
+                                    key={option}
+                                    type="radio"
+                                    inline
+                                    label={option}
+                                    name={title}
+                                    value={option}
+                                    checked={selectedOptions[title] === option}
+                                    onChange={() => handleOptionChange(title, option)}
+                                    />
+                                ))}
                                 </div>
                             </div>
-                        ))}
+                            ))}
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>

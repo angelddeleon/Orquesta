@@ -18,7 +18,7 @@ export default function Menu() {
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     obra: "",
-    archivero: "",
+    archivista: "",
     caja: "",
     compositores: [""],
     arreglistas: [""],
@@ -37,7 +37,7 @@ export default function Menu() {
           page: currentPage,
           pageSize: itemsPerPage,
           obra: filters.obra,
-          archivero: filters.archivero,
+          archivista: filters.archivista,
           categoria: filters.categoria,
           score: filters.score,
           observaciones: filters.observaciones,
@@ -86,7 +86,7 @@ export default function Menu() {
   const clearFilters = () => {
     setFilters({
       obra: "",
-      archivero: "",
+      archivista: "",
       caja: "",
       compositores: [""],
       arreglistas: [""],
@@ -95,21 +95,6 @@ export default function Menu() {
       score: "",
       observaciones: "",
     });
-  };
-
-  // Función para formatear el valor de caja
-  const formatCaja = (input) => {
-    if (input === "") return "";
-
-    const firstChar = input[0].toUpperCase();
-    if (!/[A-Z]/.test(firstChar)) {
-      return "";
-    }
-
-    const remaining = input.slice(1);
-    const numbers = remaining.replace(/[^0-9]/g, "");
-
-    return numbers.length > 0 ? `${firstChar}-${numbers}` : `${firstChar}-`;
   };
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -327,21 +312,18 @@ export default function Menu() {
                 {/* Caja */}
                 <div className="col-md-4 mb-3">
                   <label>Caja</label>
-                  <div className="d-flex gap-2">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Ej: A-123"
-                      value={filters.caja}
-                      onChange={(e) => {
-                        const formattedValue = formatCaja(e.target.value);
-                        setFilters((prev) => ({
-                          ...prev,
-                          caja: formattedValue,
-                        }));
-                      }}
-                    />
-                  </div>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Caja"
+                    value={filters.caja}
+                    onChange={(e) => {
+                      setFilters((prev) => ({
+                        ...prev,
+                        caja: e.target.value,
+                      }));
+                    }}
+                  />
                 </div>
 
                 {/* Observaciones */}
@@ -399,7 +381,7 @@ export default function Menu() {
             <thead className="sticky-top bg-white">
               <tr>
                 <th style={{ minWidth: "180px" }}>Obra</th>
-                <th style={{ minWidth: "120px" }}>Archivero</th>
+                <th style={{ minWidth: "120px" }}>Archivista</th>
                 <th style={{ minWidth: "80px" }}>Caja</th>
                 <th style={{ minWidth: "150px" }}>Compositor</th>
                 <th style={{ minWidth: "150px" }}>Arreglista</th>
@@ -426,7 +408,7 @@ export default function Menu() {
                     {partitura.obra}
                   </td>
                   <td className="text-truncate" style={{ maxWidth: "120px" }}>
-                    {partitura.archivero}
+                    {partitura.archivista}
                   </td>
                   <td>{partitura.caja}</td>
                   <td

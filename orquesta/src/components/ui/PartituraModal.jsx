@@ -26,8 +26,8 @@ const PartituraModal = ({ partitura, onClose }) => {
             <div className="row mb-4">
               <div className="col-md-6">
                 <dl className="row">
-                  <dt className="col-sm-4">Archivero:</dt>
-                  <dd className="col-sm-8">{partitura.archivero}</dd>
+                  <dt className="col-sm-4">Archivista:</dt>
+                  <dd className="col-sm-8">{partitura.archivista}</dd>
 
                   <dt className="col-sm-4">Caja:</dt>
                   <dd className="col-sm-8">{partitura.caja}</dd>

@@ -1,6 +1,6 @@
 [
     {
-        "archivero": "Juan Pérez",
+        "archivista": "Juan Pérez",
         "caja": "Caja 1",
         "compositor": "Ludwig van Beethoven",
         "arreglista": "John Doe",
@@ -13,7 +13,7 @@
         "observaciones": "En buen estado"
     },
     {
-        "archivero": "María García",
+        "archivista": "María García",
         "caja": "Caja 2",
         "compositor": "Wolfgang Amadeus Mozart",
         "arreglista": "Jane Smith",
@@ -26,7 +26,7 @@
         "observaciones": "Falta una página"
     },
     {
-        "archivero": "Carlos López",
+        "archivista": "Carlos López",
         "caja": "Caja 3",
         "compositor": "Johann Sebastian Bach",
         "arreglista": "Alice Johnson",
@@ -39,7 +39,7 @@
         "observaciones": "Completo"
     },
     {
-        "archivero": "Ana Martínez",
+        "archivista": "Ana Martínez",
         "caja": "Caja 4",
         "compositor": "Franz Schubert",
         "arreglista": "Robert Brown",
@@ -52,7 +52,7 @@
         "observaciones": "Perfecto estado"
     },
     {
-        "archivero": "Pedro Sánchez",
+        "archivista": "Pedro Sánchez",
         "caja": "Caja 5",
         "compositor": "Antonio Vivaldi",
         "arreglista": "Emily Davis",
@@ -65,7 +65,7 @@
         "observaciones": "Algunas notas faltantes"
     },
     {
-        "archivero": "Laura Fernández",
+        "archivista": "Laura Fernández",
         "caja": "Caja 6",
         "compositor": "Claude Debussy",
         "arreglista": "Michael Wilson",
@@ -78,7 +78,7 @@
         "observaciones": "En buen estado"
     },
     {
-        "archivero": "Sofía Rodríguez",
+        "archivista": "Sofía Rodríguez",
         "caja": "Caja 7",
         "compositor": "Igor Stravinsky",
         "arreglista": "Sarah Miller",
@@ -91,7 +91,7 @@
         "observaciones": "Completo"
     },
     {
-        "archivero": "Miguel Torres",
+        "archivista": "Miguel Torres",
         "caja": "Caja 8",
         "compositor": "Richard Wagner",
         "arreglista": "David Moore",
@@ -104,7 +104,7 @@
         "observaciones": "En buen estado"
     },
     {
-        "archivero": "Elena Gómez",
+        "archivista": "Elena Gómez",
         "caja": "Caja 9",
         "compositor": "Johannes Brahms",
         "arreglista": "Laura Taylor",
@@ -117,7 +117,7 @@
         "observaciones": "Falta una página"
     },
     {
-        "archivero": "Javier Ruiz",
+        "archivista": "Javier Ruiz",
         "caja": "Caja 10",
         "compositor": "Pyotr Ilyich Tchaikovsky",
         "arreglista": "James Anderson",
@@ -130,7 +130,7 @@
         "observaciones": "Completo"
     },
     {
-        "archivero": "Carmen López",
+        "archivista": "Carmen López",
         "caja": "Caja 11",
         "compositor": "Gustav Mahler",
         "arreglista": "Emma Thomas",
@@ -143,7 +143,7 @@
         "observaciones": "En buen estado"
     },
     {
-        "archivero": "Daniel Sánchez",
+        "archivista": "Daniel Sánchez",
         "caja": "Caja 12",
         "compositor": "Felix Mendelssohn",
         "arreglista": "Olivia Jackson",
@@ -156,7 +156,7 @@
         "observaciones": "Completo"
     },
     {
-        "archivero": "Patricia Díaz",
+        "archivista": "Patricia Díaz",
         "caja": "Caja 13",
         "compositor": "Franz Liszt",
         "arreglista": "Noah White",
@@ -169,7 +169,7 @@
         "observaciones": "En buen estado"
     },
     {
-        "archivero": "Alejandro Martínez",
+        "archivista": "Alejandro Martínez",
         "caja": "Caja 14",
         "compositor": "Giuseppe Verdi",
         "arreglista": "Sophia Harris",
@@ -182,7 +182,7 @@
         "observaciones": "Completo"
     },
     {
-        "archivero": "Isabel García",
+        "archivista": "Isabel García",
         "caja": "Caja 15",
         "compositor": "Richard Strauss",
         "arreglista": "Liam Martin",
@@ -195,7 +195,7 @@
         "observaciones": "En buen estado"
     },
     {
-        "archivero": "Manuel Ruiz",
+        "archivista": "Manuel Ruiz",
         "caja": "Caja 16",
         "compositor": "Claudio Monteverdi",
         "arreglista": "Mia Thompson",
@@ -208,7 +208,7 @@
         "observaciones": "Falta una página"
     },
     {
-        "archivero": "Lucía Fernández",
+        "archivista": "Lucía Fernández",
         "caja": "Caja 17",
         "compositor": "Georg Friedrich Händel",
         "arreglista": "Ethan Garcia",
@@ -221,7 +221,7 @@
         "observaciones": "Completo"
     },
     {
-        "archivero": "Raúl Gómez",
+        "archivista": "Raúl Gómez",
         "caja": "Caja 18",
         "compositor": "Jean Sibelius",
         "arreglista": "Ava Martinez",
@@ -234,7 +234,7 @@
         "observaciones": "En buen estado"
     },
     {
-        "archivero": "Sara Torres",
+        "archivista": "Sara Torres",
         "caja": "Caja 19",
         "compositor": "Antonín Dvořák",
         "arreglista": "Logan Robinson",
@@ -247,7 +247,7 @@
         "observaciones": "Completo"
     },
     {
-        "archivero": "Pablo Díaz",
+        "archivista": "Pablo Díaz",
         "caja": "Caja 20",
         "compositor": "Sergei Rachmaninoff",
         "arreglista": "Chloe Clark",
@@ -260,7 +260,7 @@
         "observaciones": "En buen estado"
     },
     {
-        "archivero": "Eva Sánchez",
+        "archivista": "Eva Sánchez",
         "caja": "Caja 21",
         "compositor": "Camille Saint-Saëns",
         "arreglista": "Mason Rodriguez",
@@ -273,7 +273,7 @@
         "observaciones": "Completo"
     },
     {
-        "archivero": "Adrián López",
+        "archivista": "Adrián López",
         "caja": "Caja 22",
         "compositor": "Maurice Ravel",
         "arreglista": "Ella Lewis",
@@ -286,7 +286,7 @@
         "observaciones": "En buen estado"
     },
     {
-        "archivero": "Natalia Martínez",
+        "archivista": "Natalia Martínez",
         "caja": "Caja 23",
         "compositor": "Gioachino Rossini",
         "arreglista": "Carter Walker",
@@ -299,7 +299,7 @@
         "observaciones": "Completo"
     },
     {
-        "archivero": "Héctor García",
+        "archivista": "Héctor García",
         "caja": "Caja 24",
         "compositor": "Georges Bizet",
         "arreglista": "Grace Hall",
@@ -312,7 +312,7 @@
         "observaciones": "En buen estado"
     },
     {
-        "archivero": "Clara Ruiz",
+        "archivista": "Clara Ruiz",
         "caja": "Caja 25",
         "compositor": "Giacomo Puccini",
         "arreglista": "Lucas Young",

@@ -13,7 +13,7 @@ const Partitura = sequelize.define("partitura", {
     allowNull: false,
   },
 
-  archivero: {
+  archivista: {
     type: DataTypes.STRING,
     allowNull: false,
   },

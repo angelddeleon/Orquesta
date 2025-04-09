@@ -198,19 +198,16 @@ export default function NewPrestamo() {
                               <i className="fa-solid fa-map-marker-alt me-2"></i>
                               Ubicación anterior
                             </label>
-                            <select
-                              className="form-select"
+                            <input
+                              type="text"
+                              className="form-control"
                               id="anterior"
                               name="anterior"
                               required
                               value={prestamo.anterior}
                               onChange={handleChange}
-                            >
-                              <option value="">Seleccione ubicación...</option>
-                              <option value="ujap">U.J.A.P</option>
-                              <option value="bolivar">Av. Bolivar</option>
-                              <option value="hesperia">Hesperia</option>
-                            </select>
+                              placeholder="Ej: UJAP, Av. Bolívar, Hesperia, etc."
+                            />
                           </div>
 
                           {/* Ubicación actual */}
@@ -219,19 +216,16 @@ export default function NewPrestamo() {
                               <i className="fa-solid fa-exchange-alt me-2"></i>
                               Ubicación actual (destino)
                             </label>
-                            <select
-                              className="form-select"
+                            <input
+                              type="text"
+                              className="form-control"
                               id="actual"
                               name="actual"
                               required
                               value={prestamo.actual}
                               onChange={handleChange}
-                            >
-                              <option value="">Seleccione ubicación...</option>
-                              <option value="Ujap">U.J.A.P</option>
-                              <option value="Nolivar">Av. Bolivar</option>
-                              <option value="Hesperia">Hesperia</option>
-                            </select>
+                              placeholder="Ej: UJAP, Av. Bolívar, Hesperia, etc."
+                            />
                           </div>
 
                           {/* Estado (oculto ya que siempre será "prestado" al crear) */}

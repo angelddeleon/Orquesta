@@ -123,7 +123,7 @@ export default function NewPartitura() {
     event.preventDefault();
     const data = {
       Obra: obra,
-      Archivero: event.target.archivero.value,
+      Archivista: event.target.archivista.value,
       Caja: caja,
       Sede: sede,
       Compositores: compositor,
@@ -149,19 +149,7 @@ export default function NewPartitura() {
     console.log(data);
     sendForm(data);
   };
-  const formatCaja = (input) => {
-    if (input === "") return "";
 
-    // Convertir primer carácter a mayúscula y validar que sea letra
-    const firstChar = input[0].toUpperCase();
-    if (!/[A-Z]/.test(firstChar)) return "";
-
-    // Filtrar solo números en el resto del input
-    const remaining = input.slice(1);
-    const numbers = remaining.replace(/[^0-9]/g, "");
-
-    return numbers ? `${firstChar}-${numbers}` : `${firstChar}-`;
-  };
   useEffect(() => {
     const fetchInstruments = async () => {
       try {
@@ -229,40 +217,6 @@ export default function NewPartitura() {
       console.error("Error:", error);
     }
   };
-  useEffect(() => {
-    const fetchInstruments = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/api/instrumentos",{
-          credentials: 'include', // Para enviar cookies
-        });
-        const data = await response.json();
-        // Supongamos que el endpoint retorna un arreglo de objetos con { id, nombre }
-        // Agregamos "Nuevo..." manualmente al final de la lista, si lo necesitas.
-        setInstrumentOptions([...data.map((inst) => inst.nombre), "Nuevo..."]);
-      } catch (error) {
-        console.error("Error fetching instruments:", error);
-      }
-    };
-
-    fetchInstruments();
-  }, []);
-  useEffect(() => {
-    const fetchInstruments = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/api/instrumentos", {
-          credentials: 'include', // Para enviar cookies
-        });
-        const data = await response.json();
-        // Supongamos que el endpoint retorna un arreglo de objetos con { id, nombre }
-        // Agregamos "Nuevo..." manualmente al final de la lista, si lo necesitas.
-        setInstrumentOptions([...data.map((inst) => inst.nombre), "Nuevo..."]);
-      } catch (error) {
-        console.error("Error fetching instruments:", error);
-      }
-    };
-
-    fetchInstruments();
-  }, []);
 
   return (
     <Layout>
@@ -288,14 +242,14 @@ export default function NewPartitura() {
                         <div className="form-body">
                           <form className="row g-3" onSubmit={handleSubmit}>
                             <div className="col-sm-6">
-                              <label htmlFor="archivero" className="form-label">
-                                Archivero
+                              <label htmlFor="archivista" className="form-label">
+                                Archivista
                               </label>
                               <input
                                 type="text"
                                 className="form-control"
-                                id="archivero"
-                                placeholder="A"
+                                id="archivista"
+                                placeholder="Jose"
                               />
                             </div>
                             <div className="col-sm-6">
@@ -307,13 +261,8 @@ export default function NewPartitura() {
                                 className="form-control"
                                 id="caja"
                                 value={caja}
-                                onChange={(e) => {
-                                  const formattedValue = formatCaja(
-                                    e.target.value
-                                  );
-                                  setCaja(formattedValue);
-                                }}
-                                placeholder="Ej: A-123"
+                                onChange={(e) => setCaja(e.target.value)}
+                                placeholder="Caja"
                               />
                             </div>
 
@@ -387,7 +336,7 @@ export default function NewPartitura() {
                                 <option value="">Seleccionar sede</option>
                                 <option value="Hesperia">Hesperia</option>
                                 <option value="Av. Bolivar">Av. Bolivar</option>
-                                <option value="Univ. José Antonio Páez">
+                                <option value="U.J.A.P">
                                   Univ. José Antonio Páez
                                 </option>
                               </select>

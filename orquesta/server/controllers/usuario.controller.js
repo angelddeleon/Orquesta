@@ -4,7 +4,7 @@ import Usuario from "../models/Usuario.js";
 import process from "process";
 
 export const crearUsuario = async (req, res) => {
-  const { nombre, apellido, correo, contrasena, role = "archivero" } = req.body;
+  const { nombre, email, contrasena, role = "archivista", telefono, codigoPais } = req.body;
 
   if (!contrasena) {
     return res.status(400).json({ error: "La contraseña es obligatoria" });
@@ -12,7 +12,7 @@ export const crearUsuario = async (req, res) => {
 
   try {
     // Verificar si ya existe un usuario con ese correo
-    const usuarioExistente = await Usuario.findOne({ where: { email: correo } });
+    const usuarioExistente = await Usuario.findOne({ where: { email } });
     
     if (usuarioExistente) {
       return res.status(400).json({ error: "Ya existe un usuario registrado con este correo electrónico" });
@@ -23,10 +23,11 @@ export const crearUsuario = async (req, res) => {
     // Crear el nuevo usuario en la base de datos usando Sequelize
     const newUser = await Usuario.create({
       nombre,
-      apellido, // Guardamos el apellido también
-      email: correo,
+      email,
       contraseña: hashedPassword,
-      role, // Guardamos el rol enviado desde el frontend
+      role,
+      telefono,
+      codigoPais
     });
 
     // Respuesta exitosa con el token
@@ -35,9 +36,10 @@ export const crearUsuario = async (req, res) => {
       user: {
         id: newUser.id,
         nombre: newUser.nombre,
-        apellido: newUser.apellido,
         email: newUser.email,
         role: newUser.role,
+        telefono: newUser.telefono,
+        codigoPais: newUser.codigoPais
       },
     });
   } catch (error) {

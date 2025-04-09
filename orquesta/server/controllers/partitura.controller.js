@@ -20,7 +20,7 @@ export const obtenerPartituras = async (req, res) => {
     const offset = (page - 1) * pageSize;
 
     // Filtros básicos
-    const { obra, archivero, categoria, score, observaciones, caja } =
+    const { obra, archivista, categoria, score, observaciones, caja } =
       req.query;
 
     const compositores = req.query.compositores
@@ -38,8 +38,8 @@ export const obtenerPartituras = async (req, res) => {
     if (obra) {
       whereClause.obra = { [Op.like]: `%${obra.toLowerCase()}%` }; // Usar toLowerCase() si es necesario
     }
-    if (archivero) {
-      whereClause.archivero = { [Op.like]: `%${archivero.toLowerCase()}%` };
+    if (archivista) {
+      whereClause.archivista = { [Op.like]: `%${archivista.toLowerCase()}%` };
     }
     if (categoria) {
       whereClause.categoria = categoria;
@@ -206,7 +206,7 @@ export const crearPartitura = async (req, res) => {
     const nuevaPartitura = await Partitura.create(
       {
         obra: body.Obra,
-        archivero: body.Archivero,
+        archivista: body.Archivista,
         caja: body.Caja,
         sede: body.Sede,
         compositor: processArray(body.Compositores),
@@ -280,7 +280,7 @@ export const modificarPartitura = async (req, res) => {
     // Actualizar campos permitidos
     const camposPermitidos = [
       "Obra",
-      "Archivero",
+      "Archivista",
       "Caja",
       "Sede",
       "Formato",
@@ -446,7 +446,7 @@ export const obtenerTodasPartiturasConInstrumentos = async (req, res) => {
       return {
         id: partituraPlain.id,
         obra: partituraPlain.obra,
-        archivero: partituraPlain.archivero,
+        archivista: partituraPlain.archivista,
         caja: partituraPlain.caja,
         sede: partituraPlain.sede,
         compositores: partituraPlain.compositor ? partituraPlain.compositor.split('; ') : [],
