@@ -1,0 +1,37 @@
+.text-dark:hover {
+    color: #C7AE1F !important;
+    transition: all 0.3s ease;
+}
+
+.text-danger:hover {
+    color: #b62a38 !important;
+    transition: all 0.3s ease;
+}
+.body-no-scroll {
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+/* Ajustar ancho del offcanvas móvil */
+
+@media (max-width: 767px) {
+    .offcanvas-start {
+        width: 250px !important;
+        /* Puedes ajustar este valor según necesites */
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .offcanvas-start.show {
+        transform: translateX(0);
+    }
+
+    /* Ajustar padding del contenido */
+    .offcanvas-header,
+    .offcanvas-body {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}

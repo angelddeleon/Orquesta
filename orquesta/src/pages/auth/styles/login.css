@@ -1,0 +1,13 @@
+
+#loginBackground {
+    background: url('/resources/loginBackground.webp');
+    background-size: cover;
+    background-position: 100%;
+}
+
+@media (max-width: 992px) { /* Pantallas grandes (lg) */
+
+    #loginBackground {
+        display: none;
+    }
+}

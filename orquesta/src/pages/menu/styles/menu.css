@@ -1,0 +1,81 @@
+/* menu.css */
+.sidebar {
+    border-right: 1px solid #dee2e6;
+    min-height: 100vh;
+}
+
+/* .main-content {
+    background-color: #f8f9fa;
+} */
+
+/* Estilos para la tabla */
+.table th {
+    font-weight: normal;
+    color: #7d6c6c;
+    white-space: nowrap;
+}
+
+.table td {
+    font-weight: normal;
+}
+
+/* Botón azul personalizado */
+.btn-blue {
+    background-color: #4094F7;
+    color: #ffffff;
+    border-color: #4094F7;
+}
+
+.btn-blue:hover {
+    background-color: #2b7cd9;
+    border-color: #2b7cd9;
+    color: #ffffff;
+}
+
+/* Botones de la sidebar */
+.sidebar .btn-outline-secondary {
+    border-color: #dee2e6;
+    color: #495057;
+    transition: all 0.3s ease;
+}
+
+.sidebar .btn-outline-secondary:hover {
+    background-color: #e9ecef;
+    color: #495057;
+    transform: translateX(6px) scale(1.02);
+}
+
+/* Estilos para el buscador */
+.input-group:focus-within {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    border-radius: 0.375rem;
+}
+
+.input-group:focus-within .input-group-text {
+    border-color: #86b7fe;
+}
+
+.input-group-text {
+    background-color: #fff;
+    border-right: none;
+    transition: border-color 0.15s ease-in-out;
+}
+
+.input-group input {
+    border-left: none;
+    transition: border-color 0.15s ease-in-out;
+}
+
+.input-group input:focus {
+    box-shadow: none;
+}
+
+.sidebar .btn-outline-secondary {
+    padding: 1rem 1.75rem;
+    font-size: 1.05rem;
+}
+
+/* Ajuste para mantener la proporción del ícono */
+.sidebar .btn-outline-secondary i {
+    font-size: 1.1em;
+}
