@@ -1,12 +1,12 @@
-import express from "express";
-import {
+const express = require("express");
+const {
     obtenerPrestamos,
     crearPrestamo,
     editarPrestamo,
     obtenerPrestamoPorId,
     eliminarPrestamo,
     cambiarEstadoPrestamo
-} from "../../controllers/prestamo.controller.js";
+} = require("../../controllers/prestamo.controller.js");
 
 const router = express.Router();
 
@@ -17,4 +17,4 @@ router.get("/:id", obtenerPrestamoPorId);
 router.delete("/:id", eliminarPrestamo);
 router.put("/:id/estado", cambiarEstadoPrestamo);
 
-export default router;
+module.exports = router;

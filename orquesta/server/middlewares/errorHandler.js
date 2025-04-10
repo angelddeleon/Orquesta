@@ -4,4 +4,4 @@ const errorHandler = (err, req, res, next) => {
     res.status(500).json({ message: "Algo salió mal en el servidor" });
 };
 
-export default errorHandler;
+module.exports = errorHandler;

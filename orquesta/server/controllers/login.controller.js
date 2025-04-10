@@ -1,7 +1,6 @@
+const db = require("../config/db.js");
 
-import db from "../config/db.js";
-
-export const loginDB = async (req, res) => {
+const loginDB = async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -19,4 +18,8 @@ export const loginDB = async (req, res) => {
         console.error("Error en el login:", error);
         res.status(500).json({ message: "Error en el servidor" });
     }
+};
+
+module.exports = {
+    loginDB
 };

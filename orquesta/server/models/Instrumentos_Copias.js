@@ -1,5 +1,5 @@
-import { DataTypes } from "sequelize";
-import sequelize from "../config/db.js";
+const  DataTypes = require("sequelize");
+const sequelize = require("../config/db.js");
 
 //Copias de instrumentos asociados a una partitura
 const Instrumento_Copia = sequelize.define("instrumento_copia", {
@@ -39,4 +39,5 @@ Instrumento_Copia.associate = (models) => {
     as: "partitura",
   });
 };
-export default Instrumento_Copia;
+
+module.exports = Instrumento_Copia;

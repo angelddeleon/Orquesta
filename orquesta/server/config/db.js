@@ -1,7 +1,7 @@
 // import mysql from "mysql2/promise";
-import dotenv from "dotenv";
-import process from "process";
-import { Sequelize } from "sequelize";
+const dotenv = require("dotenv");
+const process = require("process");
+const { Sequelize } = require("sequelize");
 
 dotenv.config();
 
@@ -29,4 +29,4 @@ db.authenticate()
   .then(() => db.sync({ alter: true }), console.log("✅ Conexión a BD exitosa"))
   .catch((error) => console.error("❌ Error de conexión:", error));
 
-export default db;
+module.exports = db;

@@ -1,7 +1,7 @@
-import Prestamo from "../models/Prestamo.js";
+const Prestamo = require("../models/Prestamo.js");
 
 // Obtener todos los préstamos
-export const obtenerPrestamos = async (req, res) => {
+const obtenerPrestamos = async (req, res) => {
   try {
     const prestamos = await Prestamo.findAll({
       order: [['createdAt', 'DESC']] // Ordenar por fecha de creación (más recientes primero)
@@ -13,7 +13,7 @@ export const obtenerPrestamos = async (req, res) => {
 };
 
 // Crear un nuevo préstamo
-export const crearPrestamo = async (req, res) => {
+const crearPrestamo = async (req, res) => {
   const { obra, caja, entrego, recibio, anterior, actual, observaciones } = req.body;
 
   try {
@@ -41,7 +41,7 @@ export const crearPrestamo = async (req, res) => {
 };
 
 // Editar un préstamo existente
-export const editarPrestamo = async (req, res) => {
+const editarPrestamo = async (req, res) => {
   const { id } = req.params;
   const { obra, caja, entrego, recibio, anterior, actual, observaciones, estado } = req.body;
 
@@ -74,7 +74,7 @@ export const editarPrestamo = async (req, res) => {
 };
 
 // Obtener un préstamo por su ID
-export const obtenerPrestamoPorId = async (req, res) => {
+const obtenerPrestamoPorId = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -91,7 +91,7 @@ export const obtenerPrestamoPorId = async (req, res) => {
 };
 
 // Eliminar un préstamo (borrado lógico si tienes paranoid: true)
-export const eliminarPrestamo = async (req, res) => {
+const eliminarPrestamo = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -109,7 +109,7 @@ export const eliminarPrestamo = async (req, res) => {
 };
 
 // Cambiar estado de un préstamo (ej: marcar como devuelto)
-export const cambiarEstadoPrestamo = async (req, res) => {
+const cambiarEstadoPrestamo = async (req, res) => {
   const { id } = req.params;
   const { estado } = req.body;
 
@@ -130,4 +130,13 @@ export const cambiarEstadoPrestamo = async (req, res) => {
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
+};
+
+module.exports = {
+  obtenerPrestamos,
+  crearPrestamo,
+  editarPrestamo,
+  obtenerPrestamoPorId,
+  eliminarPrestamo,
+  cambiarEstadoPrestamo
 };

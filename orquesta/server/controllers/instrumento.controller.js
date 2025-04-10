@@ -1,9 +1,8 @@
-import db from "../config/db.js";
-
-import models from "../models/index.js"; // Ruta correcta a tu index de modelos
+const db = require("../config/db.js");
+const models = require("../models/index.js"); // Ruta correcta a tu index de modelos
 const { Instrumento } = models;
 
-export const obtenerInstrumentos = async (_req, res) => {
+const obtenerInstrumentos = async (_req, res) => {
   try {
     const instrumentos = await Instrumento.findAll();
     res.json(instrumentos);
@@ -13,4 +12,8 @@ export const obtenerInstrumentos = async (_req, res) => {
       message: "Error en el servidor",
     });
   }
+};
+
+module.exports = {
+  obtenerInstrumentos
 };
