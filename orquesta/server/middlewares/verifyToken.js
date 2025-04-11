@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 
 const verifyToken = (req, res, next) => {
     // Obtener el token de la cookie llamada 'token'
@@ -7,8 +7,6 @@ const verifyToken = (req, res, next) => {
     if (!token) {
         return res.status(401).json({ error: 'No hay token. Inicia sesión' });
     }
-
-    
 
     jwt.verify(token, 'secreto', (err, decoded) => {
         if (err) {
@@ -27,9 +25,8 @@ const verifyToken = (req, res, next) => {
     
         req.user = decoded;
     
-        
         next();
     });
 };
 
-export { verifyToken };
+module.exports = { verifyToken };

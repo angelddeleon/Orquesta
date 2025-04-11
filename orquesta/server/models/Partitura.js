@@ -1,5 +1,5 @@
-import { DataTypes } from "sequelize";
-import sequelize from "../config/db.js";
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/db.js");
 
 const Partitura = sequelize.define("partitura", {
   id: {
@@ -100,4 +100,4 @@ Partitura.associate = (models) => {
   });
 };
 
-export default Partitura;
+module.exports = Partitura;

@@ -1,12 +1,12 @@
 // routes/partituraRoutes.js
-import express from "express";
-import {
+const express = require("express");
+const {
   obtenerPartituras,
   crearPartitura,
   obtenerPartituraPorId,
   modificarPartitura,
   obtenerTodasPartiturasConInstrumentos
-} from "../../controllers/partitura.controller.js";
+} = require("../../controllers/partitura.controller.js");
 
 const partituraRouter = express.Router();
 
@@ -25,4 +25,4 @@ partituraRouter.put("/:id", modificarPartitura);
 // GET /partituras/all
 partituraRouter.patch("/all", obtenerTodasPartiturasConInstrumentos);
 
-export default partituraRouter;
+module.exports = partituraRouter;

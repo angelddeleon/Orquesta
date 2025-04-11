@@ -1,8 +1,7 @@
-import db from "../config/db.js";
-import { Op } from "sequelize";
-import models from "../models/index.js"; // Ruta correcta a tu index de modelos
-const { Partitura, Instrumento, Instrumento_Original, Instrumento_Copia } =
-  models;
+const db = require("../config/db.js");
+const { Op } = require("sequelize");
+const models = require("../models/index.js"); // Ruta correcta a tu index de modelos
+const { Partitura, Instrumento, Instrumento_Original, Instrumento_Copia } = models;
 
 // Helper para procesar arrays
 const processArray = (arr) => arr?.join("; ") || null;
@@ -13,7 +12,7 @@ const normalizarNombre = (nombre) => {
   return nombre.trim().toLowerCase();
 };
 
-export const obtenerPartituras = async (req, res) => {
+const obtenerPartituras = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 10;
@@ -125,7 +124,7 @@ export const obtenerPartituras = async (req, res) => {
   }
 };
 
-export const obtenerPartituraPorId = async (req, res) => {
+const obtenerPartituraPorId = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -198,7 +197,7 @@ export const obtenerPartituraPorId = async (req, res) => {
   }
 };
 
-export const crearPartitura = async (req, res) => {
+const crearPartitura = async (req, res) => {
   const transaction = await db.transaction();
   try {
     const { body } = req;
@@ -267,7 +266,7 @@ export const crearPartitura = async (req, res) => {
   }
 };
 
-export const modificarPartitura = async (req, res) => {
+const modificarPartitura = async (req, res) => {
   const transaction = await db.transaction();
   try {
     const { id } = req.params;
@@ -362,7 +361,7 @@ export const modificarPartitura = async (req, res) => {
   }
 };
 
-export const obtenerTodasLasPartituras = async (req, res) => {
+const obtenerTodasLasPartituras = async (req, res) => {
   try {
     /*
       PARA EL PDF Y OBTENER TODAS LAS PARTITURAS
@@ -374,7 +373,7 @@ export const obtenerTodasLasPartituras = async (req, res) => {
   }
 };
 
-export const obtenerTodasPartiturasConInstrumentos = async (req, res) => {
+const obtenerTodasPartiturasConInstrumentos = async (req, res) => {
 
   const opciones = req.body;
 
@@ -486,4 +485,13 @@ export const obtenerTodasPartiturasConInstrumentos = async (req, res) => {
       details: error.message
     });
   }
+};
+
+module.exports = {
+  obtenerPartituras,
+  obtenerPartituraPorId,
+  crearPartitura,
+  modificarPartitura,
+  obtenerTodasLasPartituras,
+  obtenerTodasPartiturasConInstrumentos
 };

@@ -1,5 +1,5 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/db.js';
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/db.js');
 
 const Prestamo = sequelize.define('Prestamo', {
   id: {
@@ -69,4 +69,4 @@ const Prestamo = sequelize.define('Prestamo', {
   ]
 });
 
-export default Prestamo;
+module.exports = Prestamo;

@@ -1,9 +1,9 @@
-import express from "express";
-import dotenv from "dotenv";
-import routes from "./routes/routes.js";
-import errorHandler from "./middlewares/errorHandler.js";
-import cors from "cors";
-import cookieParser from 'cookie-parser';
+const express = require("express");
+const dotenv = require("dotenv");
+const routes = require("./routes/routes.js");
+const errorHandler = require("./middlewares/errorHandler.js");
+const cors = require("cors");
+const cookieParser = require('cookie-parser');
 
 dotenv.config(); // Cargar variables de entorno
 
@@ -33,4 +33,4 @@ app.use((req, res) => {
     res.status(404).json({ message: "Ruta no encontrada" });
 });
 
-export default app;
+module.exports = app;

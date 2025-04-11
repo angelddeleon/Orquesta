@@ -89,15 +89,13 @@ export default function Usuarios() {
                 <div className="main-content flex-grow-1 p-4" style={{ width: "80%" }}>
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <h1>Usuarios</h1>
-                        <div className="d-flex gap-2">
-                            <Link to="/crear_usuario" className="btn btn-blue">
-                                + Crear Usuario
-                            </Link>
-                        </div>
+                        <Link to="/crear_usuario" className="btn btn-blue">
+                            + Crear Usuario
+                        </Link>
                     </div>
 
-                    <div className="d-flex justify-content-between mb-4">
-                        <div className="input-group" style={{ maxWidth: "400px" }}>
+                    <div className="d-flex justify-content-between align-items-center mb-4">
+                        <div className="input-group" style={{ maxWidth: "300px" }}>
                             <span className="input-group-text">
                                 <i className="fa-solid fa-magnifying-glass"></i>
                             </span>

@@ -1,7 +1,7 @@
-import db from "../config/db.js";
+const db = require("../config/db.js");
 
 // Obtener todos los registros (con paginación)
-export const getRegistros = async (req, res) => {
+const getRegistros = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
@@ -26,7 +26,7 @@ export const getRegistros = async (req, res) => {
 };
 
 // Obtener un registro por ID
-export const getRegistroById = async (req, res) => {
+const getRegistroById = async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -47,7 +47,7 @@ export const getRegistroById = async (req, res) => {
 };
 
 // Crear un nuevo registro
-export const createRegistro = async (req, res) => {
+const createRegistro = async (req, res) => {
     const { nombre, descripcion } = req.body;
 
     if (!nombre || !descripcion) {
@@ -68,7 +68,7 @@ export const createRegistro = async (req, res) => {
 };
 
 // Actualizar un registro
-export const updateRegistro = async (req, res) => {
+const updateRegistro = async (req, res) => {
     const { id } = req.params;
     const { nombre, descripcion } = req.body;
 
@@ -90,7 +90,7 @@ export const updateRegistro = async (req, res) => {
 };
 
 // Eliminar un registro
-export const deleteRegistro = async (req, res) => {
+const deleteRegistro = async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -100,4 +100,12 @@ export const deleteRegistro = async (req, res) => {
         console.log(error)
         res.status(500).json({ message: "Error al eliminar el registro" });
     }
+};
+
+module.exports = {
+  getRegistros,
+  getRegistroById,
+  createRegistro,
+  updateRegistro,
+  deleteRegistro
 };

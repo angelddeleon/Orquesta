@@ -116,27 +116,26 @@ const Sidebar = () => {
                 </div>
 
                 <div className="offcanvas-body p-0">
-                    <Link to="/menu" className="d-block text-dark text-decoration-none px-4 py-3 border-top mt-auto">
-                        <i className="fa-solid fa-music mx-2 "></i>
+                    <Link to="/menu" className="d-block text-dark text-decoration-none px-4 py-3">
+                        <i className="fa-solid fa-music mx-2"></i>
                         Partituras
                     </Link>
                     {
-                            JSON.parse(localStorage.getItem('user')).role === 'admin' ? 
-                            <Link to="/prestamo" className="d-block text-dark text-decoration-none py-2">
-                                <i className="fa-solid fa-chart-column mx-2"></i>
-                                Prestamo
-                            </Link> : null
-                        }
+                        JSON.parse(localStorage.getItem('user')).role === 'admin' ? 
+                        <Link to="/prestamo" className="d-block text-dark text-decoration-none px-4 py-3">
+                            <i className="fa-solid fa-chart-column mx-2"></i>
+                            Prestamo
+                        </Link> : null
+                    }
                     {
-                            JSON.parse(localStorage.getItem('user')).role === 'admin' ? 
-                            <Link to="/usuarios" className="d-block text-dark text-decoration-none py-2">
+                        JSON.parse(localStorage.getItem('user')).role === 'admin' ? 
+                        <Link to="/usuarios" className="d-block text-dark text-decoration-none px-4 py-3">
                             <i className="fa-solid fa-users mx-2"></i>
                             Usuarios
-                            </Link>
-                            : null    
-                        }
+                        </Link> : null    
+                    }
                 </div>
-                <Link onClick={handleExit} className="d-block text-danger text-decoration-none px-4 py-4 border-top mt-auto">
+                <Link onClick={handleExit} className="d-block text-danger text-decoration-none px-4 py-3">
                     <i className="fa fa-sign-out mx-2"></i>
                     Cerrar Sesión
                 </Link>

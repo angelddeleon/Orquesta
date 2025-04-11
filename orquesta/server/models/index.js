@@ -1,9 +1,9 @@
-import sequelize from "../config/db.js";
-import Partitura from "./Partitura.js";
-import Instrumento from "./Instrumentos.js"; // Nombre en singular
-import Instrumento_Original from "./Instrumentos_Originales.js";
-import Instrumento_Copia from "./Instrumentos_Copias.js";
-import Prestamo from "./Prestamo.js";
+const sequelize = require("../config/db.js");
+const Partitura = require("./Partitura.js");
+const Instrumento = require("./Instrumentos.js"); // Nombre en singular
+const Instrumento_Original = require("./Instrumentos_Originales.js");
+const Instrumento_Copia = require("./Instrumentos_Copias.js");
+const Prestamo = require("./Prestamo.js");
 
 // Configurar asociaciones
 const setupAssociations = () => {
@@ -44,4 +44,4 @@ const models = {
   Prestamo
 };
 
-export default models;
+module.exports = models;

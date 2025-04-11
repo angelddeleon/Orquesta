@@ -1,9 +1,9 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import Usuario from "../models/Usuario.js";
-import process from "process";
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const Usuario = require("../models/Usuario.js");
+const process = require("process");
 
-export const crearUsuario = async (req, res) => {
+const crearUsuario = async (req, res) => {
   const { nombre, email, contrasena, role = "archivista", telefono, codigoPais } = req.body;
 
   if (!contrasena) {
@@ -49,7 +49,7 @@ export const crearUsuario = async (req, res) => {
 };
 
 // Login de usuario
-export const login = async (req, res) => {
+const login = async (req, res) => {
   const { email, contraseña } = req.body;
 
   try {
@@ -95,7 +95,7 @@ export const login = async (req, res) => {
 };
 
 // Obtener todos los usuarios
-export const obtenerUsuarios = async (req, res) => {
+const obtenerUsuarios = async (req, res) => {
   try {
     const usuarios = await Usuario.findAll();
     res.json(usuarios);
@@ -105,7 +105,7 @@ export const obtenerUsuarios = async (req, res) => {
 };
 
 // Eliminar un usuario
-export const eliminarUsuario = async (req, res) => {
+const eliminarUsuario = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -117,7 +117,7 @@ export const eliminarUsuario = async (req, res) => {
 };
 
 // Verificar token
-export const verifyToken = (req, res) => {
+const verifyToken = (req, res) => {
   const token = req.cookies.token;
 
   console.log(token);
@@ -137,17 +137,17 @@ export const verifyToken = (req, res) => {
 };
 
 // Logout
-export const logout = (req, res) => {
+const logout = (req, res) => {
   try {
     res.clearCookie("token");
     res.json({ message: "Sesión cerrada correctamente" });
-  } catch (error) {
+  } catch (err) {
     res.status(500).json({ error: "Error al cerrar sesión" });
   }
 };
 
 // Editar un usuario
-export const editarUsuario = async (req, res) => {
+const editarUsuario = async (req, res) => {
   const { id } = req.params;
   const { nombre, email, telefono, contraseña, role } = req.body;
 
@@ -187,7 +187,7 @@ export const editarUsuario = async (req, res) => {
 };
 
 // Obtener un usuario por su ID
-export const obtenerUsuarioPorId = async (req, res) => {
+const obtenerUsuarioPorId = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -210,4 +210,15 @@ export const obtenerUsuarioPorId = async (req, res) => {
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
+};
+
+module.exports = {
+  crearUsuario,
+  login,
+  obtenerUsuarios,
+  eliminarUsuario,
+  verifyToken,
+  logout,
+  editarUsuario,
+  obtenerUsuarioPorId
 };
