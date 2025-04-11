@@ -106,7 +106,7 @@ export default function Menu() {
         {/* Header con título y botones */}
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h1>Partituras</h1>
-          <div className="d-flex gap-2">
+          <div className="d-flex gap-2 d-none d-md-flex">
             <Imprimir />
             <button className="btn btn-blue">
               <Link
@@ -148,7 +148,24 @@ export default function Menu() {
               {showFilters ? "Ocultar filtros" : "Filtrar"}
             </button>
 
-            {/* Mantener el selector de items por página siempre visible */}
+            <select
+              className="form-select form-select-sm d-none d-md-block"
+              value={itemsPerPage}
+              onChange={(e) => {
+                setItemsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+            >
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={30}>30</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Botones de acción y selector de páginas para móvil */}
+        <div className="d-flex flex-column gap-2 mb-4 d-md-none">
+          <div className="d-flex justify-content-between align-items-center">
             <select
               className="form-select form-select-sm"
               value={itemsPerPage}
@@ -162,7 +179,19 @@ export default function Menu() {
               <option value={30}>30</option>
             </select>
           </div>
+          <div className="d-flex gap-2">
+            <Imprimir />
+            <button className="btn btn-blue flex-grow-1">
+              <Link
+                to="/new_partitura"
+                className="text-white text-decoration-none"
+              >
+                + Crear Partitura
+              </Link>
+            </button>
+          </div>
         </div>
+
         {/* Panel de filtros */}
         {showFilters && (
           <div className="card mb-4">
