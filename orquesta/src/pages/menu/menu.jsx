@@ -499,6 +499,7 @@ export default function Menu() {
                       >
                         <i className="fa-solid fa-pen-to-square"></i>
                       </Link>
+                      <Imprimir partitura={partitura} />
                     </div>
                   </td>
                 </tr>

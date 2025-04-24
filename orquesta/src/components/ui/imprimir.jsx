@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 
-export default function Imprimir() {
+export default function Imprimir({ partitura = null }) {
     const [showModal, setShowModal] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState({});
     const [loading, setLoading] = useState(false);
@@ -35,18 +35,18 @@ export default function Imprimir() {
                 reader.readAsDataURL(logoBlob);
             });
 
-            const logoSize = 50; // Tamaño cuadrado para el logo
-            const logoX = (doc.internal.pageSize.getWidth() - logoSize) / 2; // Centrado
+            const logoSize = 50;
+            const logoX = (doc.internal.pageSize.getWidth() - logoSize) / 2;
 
             doc.addImage(logoDataUrl, 'WEBP', logoX, 10, logoSize, logoSize);
 
             doc.setFont("helvetica", "bold");
             doc.setFontSize(16);
-            doc.text("Listado de Partituras", 105, 70, { align: 'center' }); // Ajustar Y para evitar superposición
+            doc.text("Listado de Partituras", 105, 70, { align: 'center' });
             
             doc.setFont("helvetica", "normal");
             doc.setFontSize(10);
-            doc.text(`Generado el: ${new Date().toLocaleDateString()}`, 105, 75, { align: 'center' }); // Ajustar Y para evitar superposición
+            doc.text(`Generado el: ${new Date().toLocaleDateString()}`, 105, 75, { align: 'center' });
 
             const headers = [
                 "Obra", 
@@ -119,7 +119,7 @@ export default function Imprimir() {
                     doc.setFontSize(7);
                     doc.setTextColor(100);
                     doc.text(
-                        `Página ${data.pageNumber}`,
+                        `Página ${data.pageNumber} de ${data.pageCount}`,
                         data.settings.margin.left,
                         doc.internal.pageSize.getHeight() - 10
                     );
@@ -137,28 +137,38 @@ export default function Imprimir() {
     const handleImprimir = async () => {
         try {
             setLoading(true);
-            const response = await fetch("http://localhost:3000/api/partituras/all", {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    ...selectedOptions,
-                }),
-                credentials: 'include',
-            });
+            let partiturasData;
 
-            if (!response.ok) {
-                throw new Error("Error al obtener las partituras");
+            if (partitura) {
+                // Si hay una partitura específica, usamos solo esa
+                partiturasData = [partitura];
+            } else {
+                // Si no hay partitura específica, obtenemos todas según los filtros
+                const response = await fetch("http://localhost:3000/api/partituras/all", {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        ...selectedOptions,
+                    }),
+                    credentials: 'include',
+                });
+
+                if (!response.ok) {
+                    throw new Error("Error al obtener las partituras");
+                }
+
+                const { data } = await response.json();
+                
+                if (!data || !Array.isArray(data)) {
+                    throw new Error("Formato de datos incorrecto");
+                }
+
+                partiturasData = data;
             }
 
-            const { data } = await response.json();
-            
-            if (!data || !Array.isArray(data)) {
-                throw new Error("Formato de datos incorrecto");
-            }
-
-            await generatePDF(data);
+            await generatePDF(partiturasData);
             handleCloseModal();
         } catch (error) {
             console.error("Error:", error);
@@ -168,6 +178,20 @@ export default function Imprimir() {
         }
     };
 
+    // Si se pasa una partitura específica, mostramos directamente el botón de imprimir
+    if (partitura) {
+        return (
+            <Button 
+                className="btn btn-primary btn-sm" 
+                onClick={handleImprimir}
+                disabled={loading}
+            >
+                <i className="fa-solid fa-print"></i>
+            </Button>
+        );
+    }
+
+    // Si no hay partitura específica, mostramos el modal con las opciones de filtrado
     return (
         <>
             <Button className="btn btn-primary" onClick={handleOpenModal}>
@@ -181,25 +205,25 @@ export default function Imprimir() {
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                    {["U.J.A.P", "Av. Bolivar", "Hesperia"].map((title) => (
+                        {["U.J.A.P", "Av. Bolivar", "Hesperia"].map((title) => (
                             <div key={title} className="d-flex justify-content-between align-items-center mb-3">
                                 <strong>{title}</strong>
                                 <div>
-                                {["Todas", "Ninguna"].map((option) => (  // Añadida opción "Ninguna"
-                                    <Form.Check
-                                    key={option}
-                                    type="radio"
-                                    inline
-                                    label={option}
-                                    name={title}
-                                    value={option}
-                                    checked={selectedOptions[title] === option}
-                                    onChange={() => handleOptionChange(title, option)}
-                                    />
-                                ))}
+                                    {["Todas", "Ninguna"].map((option) => (
+                                        <Form.Check
+                                            key={option}
+                                            type="radio"
+                                            inline
+                                            label={option}
+                                            name={title}
+                                            value={option}
+                                            checked={selectedOptions[title] === option}
+                                            onChange={() => handleOptionChange(title, option)}
+                                        />
+                                    ))}
                                 </div>
                             </div>
-                            ))}
+                        ))}
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
