@@ -1,0 +1,16 @@
+[
+  {
+    "CAJA": "Violin I (5); Vidin II (5); Viola (6);Cello (10); Contrabajo (4);Oboe (2); Oboe Ⅱ (2); Flauta I (4); Flauta II (3); Fagor  I (2); Fagor II (2); Clarinete I (3); Clarinete II (4);  Corno 1(1); Corno Ⅱ (1); Corno III (1); Trompeta  I (2); Trompeta Ⅱ (3); Trompeta III(2); Timpani (1); Percusion (3) ; Bajo electrico (4)\"",
+    "Autor": "X",
+    "Arreglista": "",
+    "Orquestacion": "SI",
+    "Obra": "",
+    "Cantidad (Original)": "",
+    "Cantidad (Copia)": "",
+    "Score": "",
+    "Original": "",
+    "Copia": "",
+    "Observacion": "",
+    "error": "Data too long for column 'caja' at row 1"
+  }
+]

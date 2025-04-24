@@ -58,72 +58,147 @@ const withRetries = async (fn, context, maxRetries = MAX_RETRIES) => {
   }
 };
 
+// Función para guardar partituras fallidas
+const saveFailedPartituras = (failedPartituras) => {
+  const filePath = path.join(__dirname, '../data/faltantes.json');
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(failedPartituras, null, 2));
+    console.log(`📝 Se guardaron ${failedPartituras.length} partituras fallidas en faltantes.json`);
+  } catch (error) {
+    console.error('❌ Error al guardar partituras fallidas:', error);
+  }
+};
+
 // Carga principal de datos
 const loadInitialData = async () => {
+  const failedPartituras = [];
+  let totalProcessed = 0;
+  let totalFailed = 0;
+  
   try {
     const filePath = path.join(__dirname, '../data/partituras.json');
     const rawData = fs.readFileSync(filePath, 'utf8');
     const partiturasData = JSON.parse(rawData);
+    const totalPartituras = partiturasData.length;
+
+    console.log(`📚 Iniciando procesamiento de ${totalPartituras} partituras...`);
 
     // Procesar partituras en serie con manejo individual
     for (const partituraData of partiturasData) {
-      await withRetries(async () => {
-        const transaction = await sequelize.transaction();
-        
-        try {
-          // Crear partitura
-          const [partitura, created] = await Partitura.findOrCreate({
-            where: { obra: partituraData.Obra },
-            defaults: {
-              obra: partituraData.Obra,
-              caja: partituraData.CAJA,
-              compositor: partituraData.Author !== 'N/A' ? partituraData.Author : null,
-              arreglista: partituraData.Arreglista !== 'N/A' ? partituraData.Arreglista : null,
-              orquestacion: partituraData.Orquestacion !== 'N/A' ? partituraData.Orquestacion : null,
-              score: partituraData.Score === 'YES',
-              observaciones: partituraData.Observacion !== 'N/A' ? partituraData.Observacion : null,
-              archivista: 'Sistema',
-              sede: 'Principal',
-              categoria: 'Orquestal',
-              formato: 'Papel'
-            },
-            transaction
-          });
-
-          // Procesar instrumentos originales
-          if (partituraData['Cantidad (Original)'] && partituraData['Cantidad (Original)'] !== 'N/A') {
-            await processInstruments(
-              partituraData['Cantidad (Original)'],
-              partitura,
-              Instrumento_Original,
+      try {
+        await withRetries(async () => {
+          const transaction = await sequelize.transaction();
+          
+          try {
+            // Verificar si la partitura ya existe
+            const existingPartitura = await Partitura.findOne({
+              where: { obra: partituraData.Obra },
               transaction
-            );
-          }
-
-          // Procesar instrumentos copia
-          if (partituraData['Cantidad (Copia)'] && partituraData['Cantidad (Copia)'] !== 'N/A') {
-            await processInstruments(
-              partituraData['Cantidad (Copia)'],
-              partitura,
-              Instrumento_Copia,
-              transaction
-            );
-          }
-
-          await transaction.commit();
-          console.log(`✅ Partitura "${partituraData.Obra}" procesada correctamente`);
-        } catch (error) {
-          if (transaction.finished !== 'commit') {
-            await transaction.rollback().catch(e => {
-              console.error('⚠️ Error en rollback:', e.message);
             });
+
+            if (existingPartitura) {
+              console.log(`ℹ️ Partitura "${partituraData.Obra}" ya existe, actualizando...`);
+              
+              // Actualizar datos de la partitura existente
+              await existingPartitura.update({
+                caja: partituraData.CAJA,
+                compositor: partituraData.Author !== 'N/A' ? partituraData.Author : null,
+                arreglista: partituraData.Arreglista !== 'N/A' ? partituraData.Arreglista : null,
+                orquestacion: partituraData.Orquestacion !== 'N/A' ? partituraData.Orquestacion : null,
+                score: partituraData.Score === 'YES',
+                observaciones: partituraData.Observacion !== 'N/A' ? partituraData.Observacion : null,
+                archivista: 'Sistema',
+                sede: 'Principal',
+                categoria: 'Orquestal',
+                formato: 'Papel'
+              }, { transaction });
+
+              // Eliminar instrumentos existentes
+              await Instrumento_Original.destroy({
+                where: { id_partitura: existingPartitura.id },
+                transaction
+              });
+              await Instrumento_Copia.destroy({
+                where: { id_partitura: existingPartitura.id },
+                transaction
+              });
+            } else {
+              // Crear nueva partitura
+              await Partitura.create({
+                obra: partituraData.Obra,
+                caja: partituraData.CAJA,
+                compositor: partituraData.Author !== 'N/A' ? partituraData.Author : null,
+                arreglista: partituraData.Arreglista !== 'N/A' ? partituraData.Arreglista : null,
+                orquestacion: partituraData.Orquestacion !== 'N/A' ? partituraData.Orquestacion : null,
+                score: partituraData.Score === 'YES',
+                observaciones: partituraData.Observacion !== 'N/A' ? partituraData.Observacion : null,
+                archivista: 'Sistema',
+                sede: 'Principal',
+                categoria: 'Orquestal',
+                formato: 'Papel'
+              }, { transaction });
+            }
+
+            // Obtener la partitura (nueva o existente)
+            const partitura = await Partitura.findOne({
+              where: { obra: partituraData.Obra },
+              transaction
+            });
+
+            // Procesar instrumentos originales
+            if (partituraData['Cantidad (Original)'] && partituraData['Cantidad (Original)'] !== 'N/A') {
+              await processInstruments(
+                partituraData['Cantidad (Original)'],
+                partitura,
+                Instrumento_Original,
+                transaction
+              );
+            }
+
+            // Procesar instrumentos copia
+            if (partituraData['Cantidad (Copia)'] && partituraData['Cantidad (Copia)'] !== 'N/A') {
+              await processInstruments(
+                partituraData['Cantidad (Copia)'],
+                partitura,
+                Instrumento_Copia,
+                transaction
+              );
+            }
+
+            await transaction.commit();
+            totalProcessed++;
+            console.log(`✅ Partitura "${partituraData.Obra}" procesada correctamente (${totalProcessed}/${totalPartituras})`);
+          } catch (error) {
+            if (transaction.finished !== 'commit') {
+              await transaction.rollback().catch(e => {
+                console.error('⚠️ Error en rollback:', e.message);
+              });
+            }
+            throw error;
           }
-          throw error;
-        }
-      }, `procesando partitura "${partituraData.Obra}"`);
+        }, `procesando partitura "${partituraData.Obra}"`);
+      } catch (error) {
+        console.error(`❌ Error procesando partitura "${partituraData.Obra}":`, error.message);
+        failedPartituras.push({
+          ...partituraData,
+          error: error.message
+        });
+        totalFailed++;
+      }
     }
 
-    console.log('🎉 Todos los datos cargados exitosamente');
+    // Guardar partituras fallidas
+    if (failedPartituras.length > 0) {
+      saveFailedPartituras(failedPartituras);
+    }
+
+    console.log('🎉 Procesamiento completado:');
+    console.log(`   - Total partituras: ${totalPartituras}`);
+    console.log(`   - Procesadas exitosamente: ${totalProcessed}`);
+    console.log(`   - Fallidas: ${totalFailed}`);
+    if (totalFailed > 0) {
+      console.log(`   - Las partituras fallidas se guardaron en faltantes.json`);
+    }
   } catch (error) {
     console.error('❌ Error fatal en carga inicial:', error);
     throw error;
