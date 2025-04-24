@@ -509,12 +509,10 @@ export default function Menu() {
 
         {/* Controles de paginación */}
         <nav className="mt-4">
-          <div className="d-flex justify-content-center align-items-center">
-            <ul className="pagination justify-content-center m-0">
-              {/* Botones de paginación existentes */}
-              <li
-                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
-              >
+          <div className="d-flex justify-content-center">
+            <ul className="pagination m-0">
+              {/* Botón Anterior */}
+              <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
                 <button
                   className="page-link"
                   onClick={() => paginate(currentPage - 1)}
@@ -522,21 +520,70 @@ export default function Menu() {
                   Anterior
                 </button>
               </li>
-              {[...Array(totalPages).keys()].map((number) => (
+
+              {/* Primera página */}
+              <li className={`page-item ${currentPage === 1 ? "active" : ""}`}>
+                <button className="page-link" onClick={() => paginate(1)}>
+                  1
+                </button>
+              </li>
+
+              {/* Puntos suspensivos después de la primera página */}
+              {currentPage > 3 && (
+                <li className="page-item disabled">
+                  <span className="page-link">...</span>
+                </li>
+              )}
+
+              {/* Páginas alrededor de la actual */}
+              {[...Array(totalPages).keys()]
+                .map((number) => number + 1)
+                .filter(
+                  (number) =>
+                    number > 1 &&
+                    number < totalPages &&
+                    Math.abs(number - currentPage) <= 1
+                )
+                .map((number) => (
+                  <li
+                    key={number}
+                    className={`page-item ${
+                      currentPage === number ? "active" : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link"
+                      onClick={() => paginate(number)}
+                    >
+                      {number}
+                    </button>
+                  </li>
+                ))}
+
+              {/* Puntos suspensivos antes de la última página */}
+              {currentPage < totalPages - 2 && (
+                <li className="page-item disabled">
+                  <span className="page-link">...</span>
+                </li>
+              )}
+
+              {/* Última página */}
+              {totalPages > 1 && (
                 <li
-                  key={number + 1}
                   className={`page-item ${
-                    currentPage === number + 1 ? "active" : ""
+                    currentPage === totalPages ? "active" : ""
                   }`}
                 >
                   <button
                     className="page-link"
-                    onClick={() => paginate(number + 1)}
+                    onClick={() => paginate(totalPages)}
                   >
-                    {number + 1}
+                    {totalPages}
                   </button>
                 </li>
-              ))}
+              )}
+
+              {/* Botón Siguiente */}
               <li
                 className={`page-item ${
                   currentPage === totalPages ? "disabled" : ""
