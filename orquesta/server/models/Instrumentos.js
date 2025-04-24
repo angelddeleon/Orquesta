@@ -10,7 +10,7 @@ const Instrumento = sequelize.define("instrumento", {
   },
 
   nombre: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
 });
