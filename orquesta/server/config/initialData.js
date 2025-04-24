@@ -108,7 +108,7 @@ const loadInitialData = async () => {
                 score: partituraData.Score === 'YES',
                 observaciones: partituraData.Observacion !== 'N/A' ? partituraData.Observacion : null,
                 archivista: 'Sistema',
-                sede: 'Principal',
+                sede: 'Av. Bolivar',
                 categoria: 'Orquestal',
                 formato: 'Papel'
               }, { transaction });
@@ -133,7 +133,7 @@ const loadInitialData = async () => {
                 score: partituraData.Score === 'YES',
                 observaciones: partituraData.Observacion !== 'N/A' ? partituraData.Observacion : null,
                 archivista: 'Sistema',
-                sede: 'Principal',
+                sede: 'Av. Bolivar',
                 categoria: 'Orquestal',
                 formato: 'Papel'
               }, { transaction });

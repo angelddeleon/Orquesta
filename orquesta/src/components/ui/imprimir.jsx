@@ -74,51 +74,52 @@ export default function Imprimir() {
                 partitura.archivista || '-'
             ]);
 
-            const margin = 10; 
-            const tableWidth = doc.internal.pageSize.getWidth() - (margin * 2); // Ancho de la tabla
+            const margin = 5;
+            const tableWidth = doc.internal.pageSize.getWidth() - (margin * 2);
 
             autoTable(doc, {
-                startY: 80, // Ajustar Y para evitar superposición
+                startY: 80,
                 head: [headers],
                 body: body,
                 margin: { left: margin, right: margin },
-                tableWidth: tableWidth, // Usar el ancho calculado
+                tableWidth: tableWidth,
                 styles: {
-                    fontSize: 8,
-                    cellPadding: 3,
+                    fontSize: 7,
+                    cellPadding: 1,
                     overflow: 'linebreak',
                     font: 'helvetica',
                     valign: 'middle',
-                    halign: 'center' // Alineación horizontal centrada
+                    halign: 'center'
                 },
                 headStyles: {
-                    fillColor: [199, 174, 31], // Color #C7AE1F
+                    fillColor: [199, 174, 31],
                     textColor: 255,
-                    fontSize: 8, // Reducir tamaño de fuente
+                    fontSize: 7,
                     fontStyle: 'bold',
                     halign: 'center'
                 },
                 bodyStyles: {
                     halign: 'left',
-                    valign: 'middle'
+                    valign: 'middle',
+                    fontSize: 7
                 },
                 columnStyles: {
-                    0: { cellWidth: 'auto' },
-                    1: { cellWidth: 'auto' },
-                    2: { cellWidth: 'auto' },
-                    3: { cellWidth: 'auto' },
-                    4: { cellWidth: 'auto' },
-                    5: { cellWidth: 'auto' },
-                    6: { cellWidth: 'auto' },
-                    7: { cellWidth: 'auto' },
-                    8: { cellWidth: 'auto' },
-                    9: { cellWidth: 'auto' }
+                    0: { cellWidth: 25 },  // Obra
+                    1: { cellWidth: 10 },  // Caja
+                    2: { cellWidth: 10 },  // Sede
+                    3: { cellWidth: 20 },  // Compositores
+                    4: { cellWidth: 15 },  // Arreglistas
+                    5: { cellWidth: 20 },  // Orquestación
+                    6: { cellWidth: 35 },  // Instrumentos Originales
+                    7: { cellWidth: 40 },  // Instrumentos Copias
+                    8: { cellWidth: 10 },  // Categoría
+                    9: { cellWidth: 15 }   // Archivista
                 },
                 didDrawPage: function(data) {
-                    doc.setFontSize(8);
+                    doc.setFontSize(7);
                     doc.setTextColor(100);
                     doc.text(
-                        `Página ${data.pageCount}`,
+                        `Página ${data.pageNumber}`,
                         data.settings.margin.left,
                         doc.internal.pageSize.getHeight() - 10
                     );
