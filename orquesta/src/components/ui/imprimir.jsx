@@ -119,7 +119,7 @@ export default function Imprimir({ partitura = null }) {
                     doc.setFontSize(7);
                     doc.setTextColor(100);
                     doc.text(
-                        `Página ${data.pageNumber} de ${data.pageCount}`,
+                        `Página ${data.pageNumber}`,
                         data.settings.margin.left,
                         doc.internal.pageSize.getHeight() - 10
                     );
