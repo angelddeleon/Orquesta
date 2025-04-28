@@ -120,8 +120,6 @@ const eliminarUsuario = async (req, res) => {
 const verifyToken = (req, res) => {
   const token = req.cookies.token;
 
-  console.log(token);
-
   if (!token) {
     return res.status(401).json({ error: "No hay token. Inicia sesión" });
   }

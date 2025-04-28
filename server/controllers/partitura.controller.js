@@ -377,7 +377,6 @@ const obtenerTodasPartiturasConInstrumentos = async (req, res) => {
 
   const opciones = req.body;
 
-  console.log(opciones)
 
 
   try {
@@ -436,7 +435,6 @@ const obtenerTodasPartiturasConInstrumentos = async (req, res) => {
       );
     }
     
-    console.log(partituras); // Muestra partituras que coincidan con al menos una sede seleccionada
 
     // Formatear la respuesta para simplificar la estructura
     const partiturasFormateadas = partituras.map(partitura => {
