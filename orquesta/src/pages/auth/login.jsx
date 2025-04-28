@@ -71,7 +71,6 @@ export default function Login() {
                     throw new Error('Usuario no recibido');
                 }
 
-                console.log('Inicio de sesión exitoso:', data);
             } catch (error) {
                 console.error('Error:', error);
                 setErrors({ submit: error.message });

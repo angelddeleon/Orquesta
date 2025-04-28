@@ -107,8 +107,6 @@ export default function EditarPrestamo() {
         throw new Error('Error al actualizar el préstamo');
       }
 
-      console.log("Prestamo actualizado:", prestamo);
-
       navigate("/prestamo");
       
     } catch (error) {
