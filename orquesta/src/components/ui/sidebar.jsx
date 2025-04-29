@@ -8,7 +8,7 @@ const Sidebar = () => {
     const navigate = useNavigate()
 
     const handleExit = async () => {
-        const response = await fetch('http://backend.sinfocarabobo.com//api/usuarios/logout', {
+        const response = await fetch('https://backend.sinfocarabobo.com/api/usuarios/logout', {
             method: 'POST',
             credentials: 'include', // Para enviar cookies
         });
