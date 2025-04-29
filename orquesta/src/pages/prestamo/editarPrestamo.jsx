@@ -27,7 +27,7 @@ export default function EditarPrestamo() {
     const fetchPrestamo = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/prestamos/${id}`,{
+        const response = await fetch(`https://backend.sinfocarabobo.com/api/prestamos/${id}`,{
           credentials: "include"
         });
         

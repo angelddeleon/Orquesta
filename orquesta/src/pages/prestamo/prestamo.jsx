@@ -22,7 +22,7 @@ export default function Prestamo() {
     const fetchPrestamos = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/prestamos',{credentials: 'include'});
+        const response = await fetch('https://backend.sinfocarabobo.com/api/prestamos',{credentials: 'include'});
         if (!response.ok) {
           throw new Error('Error al obtener los préstamos');
         }
