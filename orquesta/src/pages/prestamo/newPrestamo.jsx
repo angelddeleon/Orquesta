@@ -37,7 +37,7 @@ export default function NewPrestamo() {
     try {
       setLoading(true);
       
-      const response = await fetch('/api/prestamos', {
+      const response = await fetch('https://backend.sinfocarabobo.com/api/prestamos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

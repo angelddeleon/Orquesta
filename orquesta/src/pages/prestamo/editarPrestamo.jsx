@@ -94,7 +94,7 @@ export default function EditarPrestamo() {
     
     try {
       setLoading(true);
-      const response = await fetch(`/api/prestamos/${id}`, {
+      const response = await fetch(`https://backend.sinfocarabobo.com/api/prestamos/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

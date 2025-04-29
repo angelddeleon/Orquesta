@@ -41,7 +41,7 @@ export default function Prestamo() {
   // Función para marcar como devuelto
   const marcarComoDevuelto = async (id) => {
     try {
-      const response = await fetch(`/api/prestamos/${id}/estado`, {
+      const response = await fetch(`https://backend.sinfocarabobo.com/api/prestamos/${id}/estado`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
