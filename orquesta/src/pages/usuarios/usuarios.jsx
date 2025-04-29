@@ -19,7 +19,7 @@ export default function Usuarios() {
             }
 
             const response = await fetch(
-                `http://localhost:3000/api/usuarios/`, { credentials: 'include' }
+                `https://backend.sinfocarabobo.com/api/usuarios/`, { credentials: 'include' }
             );
             const usuariosData = await response.json();
             setUsuarios(usuariosData);
@@ -30,7 +30,7 @@ export default function Usuarios() {
     const handleDelete = async (userId) => {
         if (window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
             try {
-                const response = await fetch(`http://localhost:3000/api/usuarios/${userId}`, {
+                const response = await fetch(`https://backend.sinfocarabobo.com/api/usuarios/${userId}`, {
                     method: 'DELETE',
                     credentials: 'include'
                 });
@@ -89,9 +89,9 @@ export default function Usuarios() {
                 <div className="main-content flex-grow-1 p-4" style={{ width: "80%" }}>
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <h1>Usuarios</h1>
-                        <Link to="/crear_usuario" className="btn btn-blue">
-                            + Crear Usuario
-                        </Link>
+                            <Link to="/crear_usuario" className="btn btn-blue">
+                                + Crear Usuario
+                            </Link>
                     </div>
 
                     <div className="d-flex justify-content-between align-items-center mb-4">
@@ -166,13 +166,13 @@ export default function Usuarios() {
                                         <td className="align-middle">{usuario.telefono}</td>
                                         <td className="align-middle">{usuario.role}</td>
                                         <td className="align-middle">
-                                            {usuario.role === "admin" ? (
+                                        {usuario.role === "admin" ? (
                                                 <span className="text-muted">No disponible</span>
-                                            ) : (
+                                        ) : (
                                                 <div className="d-flex gap-2">
-                                                    <Link to={`/editar_usuario/${usuario.id}`} className="btn btn-sm btn-primary">
-                                                        Editar
-                                                    </Link>
+                                                <Link to={`/editar_usuario/${usuario.id}`} className="btn btn-sm btn-primary">
+                                                    Editar
+                                                </Link>
                                                     <button 
                                                         className="btn btn-sm btn-danger"
                                                         onClick={() => handleDelete(usuario.id)}
@@ -181,7 +181,7 @@ export default function Usuarios() {
                                                     </button>
                                                 </div>
                                             )}
-                                        </td>
+                                            </td>
                                     </tr>
                                 ))}
                             </tbody>

@@ -49,7 +49,7 @@ export default function Menu() {
         });
 
         const response = await fetch(
-          `http://localhost:3000/api/partituras?${queryParams.toString()}`,
+          `https://backend.sinfocarabobo.com/api/partituras?${queryParams.toString()}`,
           {
             credentials: "include",
           }

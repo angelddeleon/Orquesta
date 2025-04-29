@@ -26,7 +26,7 @@ export default function EditarUsuario() {
 
         const fetchUsuario = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/usuarios/${id}`,{credentials: 'include'});
+                const response = await fetch(`https://backend.sinfocarabobo.com/api/usuarios/${id}`,{credentials: 'include'});
                 
                 if (!response.ok) {
                     throw new Error('Usuario no encontrado');
@@ -64,7 +64,7 @@ export default function EditarUsuario() {
         e.preventDefault();
         
         try {
-            const response = await fetch(`http://localhost:3000/api/usuarios/${id}`, {
+            const response = await fetch(`https://backend.sinfocarabobo.com/api/usuarios/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

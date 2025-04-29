@@ -30,13 +30,13 @@ export default function EditarPartitura() {
     const fetchPartitura = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/partituras/${id}`,
+          `https://backend.sinfocarabobo.com/api/partituras/${id}`,
           {
             credentials: "include",
           }
-
         );
         const data = await response.json();
+        console.log(data);
         if (!response.ok)
           throw new Error(data.message || "Error cargando partitura");
 
@@ -83,7 +83,7 @@ export default function EditarPartitura() {
   useEffect(() => {
     const fetchInstruments = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/instrumentos",{
+        const response = await fetch("https://backend.sinfocarabobo.com/api/instrumentos",{
           credentials: "include",
         });
         const data = await response.json();
@@ -190,7 +190,7 @@ export default function EditarPartitura() {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/partituras/${id}`,
+        `https://backend.sinfocarabobo.com/api/partituras/${id}`,
         {
           method: "PUT",
           headers: {

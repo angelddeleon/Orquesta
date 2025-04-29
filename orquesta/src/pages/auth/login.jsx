@@ -37,7 +37,7 @@ export default function Login() {
         if (validateForm()) {
             try {
                 // Enviar los datos al backend
-                const response = await fetch('http://localhost:3000/api/usuarios/login', {
+                const response = await fetch('https://backend.sinfocarabobo.com/api/usuarios/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

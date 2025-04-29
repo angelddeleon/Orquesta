@@ -1,0 +1,3 @@
+const response = await fetch("https://backend.sinfocarabobo.com/api/instrumentos", {
+  // ... existing code ...
+}); 

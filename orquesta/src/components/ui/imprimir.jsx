@@ -144,7 +144,7 @@ export default function Imprimir({ partitura = null }) {
                 partiturasData = [partitura];
             } else {
                 // Si no hay partitura específica, obtenemos todas según los filtros
-                const response = await fetch("http://localhost:3000/api/partituras/all", {
+                const response = await fetch("https://backend.sinfocarabobo.com/api/partituras/all", {
                     method: "PATCH",
                     headers: {
                         "Content-Type": "application/json",

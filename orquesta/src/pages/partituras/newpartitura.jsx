@@ -146,13 +146,14 @@ export default function NewPartitura() {
       Score: event.target.score.value === "si",
       Observaciones: event.target.observaciones.value,
     };
+    console.log(data);
     sendForm(data);
   };
 
   useEffect(() => {
     const fetchInstruments = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/instrumentos", 
+        const response = await fetch("https://backend.sinfocarabobo.com/api/instrumentos", 
           {
             credentials: 'include', // Para enviar cookies
           }
@@ -172,7 +173,8 @@ export default function NewPartitura() {
   // Función sendForm actualizada
   const sendForm = async (data) => {
     try {
-      const response = await fetch("http://localhost:3000/api/partituras", {
+      console.log(data);
+      const response = await fetch("https://backend.sinfocarabobo.com/api/partituras", {
         // Ajusta la URL según tu API
         method: "POST",
         headers: {

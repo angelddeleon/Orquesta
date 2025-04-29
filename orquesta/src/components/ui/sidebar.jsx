@@ -8,7 +8,7 @@ const Sidebar = () => {
     const navigate = useNavigate()
 
     const handleExit = async () => {
-        const response = await fetch('http://localhost:3000/api/usuarios/logout', {
+        const response = await fetch('http://backend.sinfocarabobo.com//api/usuarios/logout', {
             method: 'POST',
             credentials: 'include', // Para enviar cookies
         });
@@ -121,19 +121,19 @@ const Sidebar = () => {
                         Partituras
                     </Link>
                     {
-                        JSON.parse(localStorage.getItem('user')).role === 'admin' ? 
+                            JSON.parse(localStorage.getItem('user')).role === 'admin' ? 
                         <Link to="/prestamo" className="d-block text-dark text-decoration-none px-4 py-3">
-                            <i className="fa-solid fa-chart-column mx-2"></i>
-                            Prestamo
-                        </Link> : null
-                    }
+                                <i className="fa-solid fa-chart-column mx-2"></i>
+                                Prestamo
+                            </Link> : null
+                        }
                     {
-                        JSON.parse(localStorage.getItem('user')).role === 'admin' ? 
+                            JSON.parse(localStorage.getItem('user')).role === 'admin' ? 
                         <Link to="/usuarios" className="d-block text-dark text-decoration-none px-4 py-3">
                             <i className="fa-solid fa-users mx-2"></i>
                             Usuarios
                         </Link> : null    
-                    }
+                        }
                 </div>
                 <Link onClick={handleExit} className="d-block text-danger text-decoration-none px-4 py-3">
                     <i className="fa fa-sign-out mx-2"></i>
