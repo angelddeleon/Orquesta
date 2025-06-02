@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const XLSX = require('xlsx');
 const { Partitura, Instrumento, Instrumento_Original, Instrumento_Copia } = require('../models');
 const sequelize = require('./db.js');
 
@@ -69,19 +70,30 @@ const saveFailedPartituras = (failedPartituras) => {
   }
 };
 
+// Función para validar y normalizar el nombre del compositor
+const normalizeComposerName = (composer) => {
+  if (!composer || composer === 'N/A' || composer === '') {
+    return 'N/A';
+  }
+  return composer.trim();
+};
+
 // Carga principal de datos
 const loadInitialData = async () => {
   const failedPartituras = [];
   let totalProcessed = 0;
   let totalFailed = 0;
+  const composers = new Set();
   
   try {
-    const filePath = path.join(__dirname, '../data/partituras.json');
-    const rawData = fs.readFileSync(filePath, 'utf8');
-    const partiturasData = JSON.parse(rawData);
+    const filePath = path.join(__dirname, '../data/partituras.xlsx');
+    const workbook = XLSX.readFile(filePath);
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const partiturasData = XLSX.utils.sheet_to_json(worksheet);
     const totalPartituras = partiturasData.length;
 
-    console.log(`📚 Iniciando procesamiento de ${totalPartituras} partituras...`);
+    console.log(`\n📚 Iniciando procesamiento de ${totalPartituras} partituras desde Excel...\n`);
 
     // Procesar partituras en serie con manejo individual
     for (const partituraData of partiturasData) {
@@ -90,28 +102,35 @@ const loadInitialData = async () => {
           const transaction = await sequelize.transaction();
           
           try {
+            const composerName = normalizeComposerName(partituraData.Autor);
+            composers.add(composerName);
+
             // Verificar si la partitura ya existe
             const existingPartitura = await Partitura.findOne({
               where: { obra: partituraData.Obra },
               transaction
             });
 
+            const partituraInfo = {
+              obra: partituraData.Obra,
+              caja: partituraData.CAJA,
+              compositor: composerName,
+              arreglista: partituraData.Arreglista !== 'N/A' ? partituraData.Arreglista : null,
+              orquestacion: partituraData.Orquestacion !== 'N/A' ? partituraData.Orquestacion : null,
+              score: partituraData.Score === 'YES',
+              observaciones: partituraData.Observacion !== 'N/A' ? partituraData.Observacion : null,
+              archivista: 'Sistema',
+              sede: 'Av. Bolivar',
+              categoria: 'Orquestal',
+              formato: 'Papel'
+            };
+
             if (existingPartitura) {
-              console.log(`ℹ️ Partitura "${partituraData.Obra}" ya existe, actualizando...`);
+              console.log(`📝 Actualizando partitura: "${partituraData.Obra}"`);
+              console.log(`   Compositor: ${composerName}`);
               
               // Actualizar datos de la partitura existente
-              await existingPartitura.update({
-                caja: partituraData.CAJA,
-                compositor: partituraData.Author !== 'N/A' ? partituraData.Author : null,
-                arreglista: partituraData.Arreglista !== 'N/A' ? partituraData.Arreglista : null,
-                orquestacion: partituraData.Orquestacion !== 'N/A' ? partituraData.Orquestacion : null,
-                score: partituraData.Score === 'YES',
-                observaciones: partituraData.Observacion !== 'N/A' ? partituraData.Observacion : null,
-                archivista: 'Sistema',
-                sede: 'Av. Bolivar',
-                categoria: 'Orquestal',
-                formato: 'Papel'
-              }, { transaction });
+              await existingPartitura.update(partituraInfo, { transaction });
 
               // Eliminar instrumentos existentes
               await Instrumento_Original.destroy({
@@ -123,20 +142,11 @@ const loadInitialData = async () => {
                 transaction
               });
             } else {
+              console.log(`➕ Nueva partitura: "${partituraData.Obra}"`);
+              console.log(`   Compositor: ${composerName}`);
+              
               // Crear nueva partitura
-              await Partitura.create({
-                obra: partituraData.Obra,
-                caja: partituraData.CAJA,
-                compositor: partituraData.Author !== 'N/A' ? partituraData.Author : null,
-                arreglista: partituraData.Arreglista !== 'N/A' ? partituraData.Arreglista : null,
-                orquestacion: partituraData.Orquestacion !== 'N/A' ? partituraData.Orquestacion : null,
-                score: partituraData.Score === 'YES',
-                observaciones: partituraData.Observacion !== 'N/A' ? partituraData.Observacion : null,
-                archivista: 'Sistema',
-                sede: 'Av. Bolivar',
-                categoria: 'Orquestal',
-                formato: 'Papel'
-              }, { transaction });
+              await Partitura.create(partituraInfo, { transaction });
             }
 
             // Obtener la partitura (nueva o existente)
@@ -167,7 +177,7 @@ const loadInitialData = async () => {
 
             await transaction.commit();
             totalProcessed++;
-            console.log(`✅ Partitura "${partituraData.Obra}" procesada correctamente (${totalProcessed}/${totalPartituras})`);
+            console.log(`✅ Procesada correctamente (${totalProcessed}/${totalPartituras})\n`);
           } catch (error) {
             if (transaction.finished !== 'commit') {
               await transaction.rollback().catch(e => {
@@ -192,7 +202,12 @@ const loadInitialData = async () => {
       saveFailedPartituras(failedPartituras);
     }
 
-    console.log('🎉 Procesamiento completado:');
+    console.log('\n🎼 Resumen de Compositores:');
+    console.log('------------------------');
+    Array.from(composers).sort().forEach(composer => {
+      console.log(`• ${composer}`);
+    });
+    console.log('\n🎉 Procesamiento completado:');
     console.log(`   - Total partituras: ${totalPartituras}`);
     console.log(`   - Procesadas exitosamente: ${totalProcessed}`);
     console.log(`   - Fallidas: ${totalFailed}`);

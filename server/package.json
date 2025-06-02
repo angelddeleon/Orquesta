@@ -20,7 +20,8 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.6.0",
-    "sequelize": "^6.37.6"
+    "sequelize": "^6.37.6",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

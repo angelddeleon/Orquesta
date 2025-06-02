@@ -1,16 +1,25 @@
 [
   {
-    "CAJA": "Violin I (5); Vidin II (5); Viola (6);Cello (10); Contrabajo (4);Oboe (2); Oboe Ⅱ (2); Flauta I (4); Flauta II (3); Fagor  I (2); Fagor II (2); Clarinete I (3); Clarinete II (4);  Corno 1(1); Corno Ⅱ (1); Corno III (1); Trompeta  I (2); Trompeta Ⅱ (3); Trompeta III(2); Timpani (1); Percusion (3) ; Bajo electrico (4)\"",
-    "Autor": "X",
-    "Arreglista": "",
-    "Orquestacion": "SI",
-    "Obra": "",
-    "Cantidad (Original)": "",
-    "Cantidad (Copia)": "",
-    "Score": "",
-    "Original": "",
-    "Copia": "",
-    "Observacion": "",
-    "error": "Data too long for column 'caja' at row 1"
+    "CAJA": "B-003",
+    "Autor": "Bach, Johann Sebastian",
+    "Arreglista": "N/A",
+    "Orquestacion": "N/A",
+    "Cantidad (Original)": "Violin I (3); Violin II (2); Viola (Violoncello (2); Contínuo (1 incompleta)",
+    "Cantidad (Copia)": "N/A",
+    "error": "WHERE parameter \"obra\" has invalid \"undefined\" value"
+  },
+  {
+    "CAJA": "O007",
+    "Cantidad (Original)": "French Horn I (3); French Horn II (3); French Horn III (3); French Horn Iv (3); Oboe I (3); Oboe II (3); Oboe 3 (3); Flute I (3); Flute II (3); Basson II(3);Clarinet I (3); Clarinet II (3); Clarinet III(3); Trumpet I (3); Trumpet II (3); Trumpet III (3); Trumpet Iv (3); Trombone I (3); Trombone II (3); Trombone III(3); Bass Trombone (3); Tuba (3); Timpani (3); Percusion (3); Percusion II (3);Percusion III (3);Percusion Iv (3)",
+    "error": "WHERE parameter \"obra\" has invalid \"undefined\" value"
+  },
+  {
+    "CAJA": "R033",
+    "Autor": "Joaquín Rodrigo",
+    "Arreglista": "N/A",
+    "Orquestacion": "N/A",
+    "Cantidad (Original)": "Violín I (7); Violín II (5); Viola (4); Violincello (4); Contrabajo; Flauta I (2); Flauta II (2); Oboe I (1); Oboe II (1); Clarinete I (1); Clarinete II (1); Faggot I (2); Fagott II (1); Corno I (1); Corno III (2); Trombo I (1); Trombo II (1).",
+    "Cantidad (Copia)": 0,
+    "error": "WHERE parameter \"obra\" has invalid \"undefined\" value"
   }
 ]
