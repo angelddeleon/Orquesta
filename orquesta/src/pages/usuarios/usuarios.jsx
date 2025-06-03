@@ -111,7 +111,7 @@ export default function Usuarios() {
                 <div className="main-content flex-grow-1 p-4" style={{ width: "80%" }}>
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <h1>Usuarios</h1>
-                        {currentUserRole === "master" || currentUserRole === "admin" && (
+                        {(currentUserRole === "master" || currentUserRole === "admin") && (
                             <Link to="/crear_usuario" className="btn btn-blue">
                                 + Crear Usuario
                             </Link>
