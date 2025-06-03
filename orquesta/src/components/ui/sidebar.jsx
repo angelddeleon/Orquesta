@@ -76,14 +76,14 @@ const Sidebar = () => {
                         </Link>
 
                         {
-                            JSON.parse(localStorage.getItem('user')).role === 'admin' ? 
+                            JSON.parse(localStorage.getItem('user')).role === 'admin' || JSON.parse(localStorage.getItem('user')).role === 'master' ? 
                             <Link to="/prestamo" className="d-block text-dark text-decoration-none py-2">
                                 <i className="fa-solid fa-chart-column mx-2"></i>
                                 Prestamo
                             </Link> : null
                         }
                         {
-                            JSON.parse(localStorage.getItem('user')).role === 'admin' ? 
+                            JSON.parse(localStorage.getItem('user')).role === 'admin' || JSON.parse(localStorage.getItem('user')).role === 'master' ? 
                             <Link to="/usuarios" className="d-block text-dark text-decoration-none py-2">
                             <i className="fa-solid fa-users mx-2"></i>
                             Usuarios
@@ -121,14 +121,14 @@ const Sidebar = () => {
                         Partituras
                     </Link>
                     {
-                            JSON.parse(localStorage.getItem('user')).role === 'admin' ? 
+                            JSON.parse(localStorage.getItem('user')).role === 'admin' || JSON.parse(localStorage.getItem('user')).role === 'master' ? 
                         <Link to="/prestamo" className="d-block text-dark text-decoration-none px-4 py-3">
                                 <i className="fa-solid fa-chart-column mx-2"></i>
                                 Prestamo
                             </Link> : null
                         }
                     {
-                            JSON.parse(localStorage.getItem('user')).role === 'admin' ? 
+                            JSON.parse(localStorage.getItem('user')).role === 'admin' || JSON.parse(localStorage.getItem('user')).role === 'master' ? 
                         <Link to="/usuarios" className="d-block text-dark text-decoration-none px-4 py-3">
                             <i className="fa-solid fa-users mx-2"></i>
                             Usuarios

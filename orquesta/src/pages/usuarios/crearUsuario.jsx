@@ -22,7 +22,8 @@ export default function UserForm() {
     };
 
     useEffect(() => {
-        if (JSON.parse(localStorage.getItem("user")).role !== "admin") {
+        if (JSON.parse(localStorage.getItem("user")).role !== "admin"  && JSON.parse(localStorage.getItem('user')).role !== 'master') {
+            console.log(JSON.parse(localStorage.getItem("user")).role !== "admin")
             window.location.href = "/";
         }
     }, []);

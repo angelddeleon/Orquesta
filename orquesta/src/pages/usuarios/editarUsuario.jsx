@@ -9,14 +9,15 @@ export default function EditarUsuario() {
         nombre: '',
         email: '',
         telefono: '',
-        codigoPais: '+58'
+        codigoPais: '+58',
+        contraseña: '' // Campo de contraseña con 'ñ'
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         //Cambiar por verificacion dr role
-        if (JSON.parse(localStorage.getItem("user")).role !== "admin") {
+        if (JSON.parse(localStorage.getItem("user")).role !== "admin" && JSON.parse(localStorage.getItem("user")).role !== "master") {
             window.location.href = "/";
         }
     }, []);
@@ -34,12 +35,13 @@ export default function EditarUsuario() {
 
                 const data = await response.json();
                 
-                setFormData({
+                setFormData(prev => ({ // Usar una actualización funcional para asegurar el último estado
+                    ...prev, // Mantener el campo de contraseña vacío (no se rellena por seguridad)
                     nombre: data.nombre || '',
                     email: data.email || '',
                     telefono: data.telefono || '',
                     codigoPais: data.codigoPais || '+58'
-                });
+                }));
                 
                 setLoading(false);
             } catch (err) {
@@ -64,13 +66,19 @@ export default function EditarUsuario() {
         e.preventDefault();
         
         try {
+            // Solo enviar 'contraseña' si no está vacío
+            const dataToSend = { ...formData };
+            if (dataToSend.contraseña === '') {
+                delete dataToSend.contraseña; 
+            }
+
             const response = await fetch(`https://backend.sinfocarabobo.com/api/usuarios/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 credentials: 'include',
-                body: JSON.stringify(formData)
+                body: JSON.stringify(dataToSend) // Enviar dataToSend en lugar de formData directamente
             });
 
             if (!response.ok) {
@@ -187,6 +195,22 @@ export default function EditarUsuario() {
                                             maxLength={7}
                                         />
                                     </div>
+                                </div>
+
+                                {/* Nuevo campo de contraseña */}
+                                <div className="mb-3">
+                                    <label htmlFor="contraseña" className="form-label">
+                                        Contraseña (dejar en blanco para no cambiar)
+                                    </label>
+                                    <input
+                                        type="password"
+                                        className="form-control"
+                                        id="contraseña"
+                                        name="contraseña" // Nombre del campo para el estado
+                                        value={formData.contraseña}
+                                        onChange={handleChange}
+                                        placeholder="Ingrese nueva contraseña si desea cambiarla"
+                                    />
                                 </div>
 
                                 <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-4">

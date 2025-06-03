@@ -147,7 +147,8 @@ const logout = (req, res) => {
 // Editar un usuario
 const editarUsuario = async (req, res) => {
   const { id } = req.params;
-  const { nombre, email, telefono, contraseña, role } = req.body;
+  // Asegúrate de que 'contraseña' se extrae del body
+  const { nombre, email, telefono, contraseña, role } = req.body; 
 
   try {
     // Buscar el usuario por ID
@@ -157,29 +158,54 @@ const editarUsuario = async (req, res) => {
       return res.status(404).json({ error: "Usuario no encontrado" });
     }
 
-    if(usuario.role === 'admin'){
-      return res.status(403).json({ error: "No tienes permisos para editar este usuario "});
+    // Permiso: Un 'master' no puede ser editado por un 'admin'
+    // Asumo que tu lógica de roles ya maneja quién puede editar a quién.
+    // Si el usuario actual es un 'admin' y el usuario a editar es 'master', denegar.
+    // Esto es un ejemplo, ajusta según tu control de acceso.
+    if (usuario.role === 'master' && req.user.role !== 'master') { // req.user.role vendría del middleware de autenticación
+        return res.status(403).json({ error: "No tienes permisos para editar este usuario." });
     }
+    // Si el usuario a editar es el mismo que el usuario autenticado (si tienes esa lógica)
+    // y quieres impedir la auto-edición de ciertos campos, puedes añadirla aquí.
 
     // Actualizar los campos del usuario
     usuario.nombre = nombre || usuario.nombre;
     usuario.email = email || usuario.email;
     usuario.telefono = telefono || usuario.telefono;
     
-    // Solo actualizar la contraseña si se proporcionó una nueva
-    if (contraseña) {
-      usuario.contraseña = contraseña;
+    // *** CAMBIO CLAVE AQUÍ: Hashear la contraseña si se proporcionó una nueva ***
+    if (contraseña) { // Solo si se envió una contraseña en la solicitud
+      const hashedPassword = await bcrypt.hash(contraseña, 10);
+      usuario.contraseña = hashedPassword;
     }
     
-    usuario.role = role || usuario.role;
+    // Solo actualizar el rol si se envió y si el usuario autenticado tiene permiso para cambiar roles
+    // Por ejemplo, solo un 'master' podría cambiar roles.
+    if (role && (req.user && req.user.role === 'master')) { // Asumiendo que req.user tiene el rol del usuario autenticado
+        usuario.role = role;
+    } else if (role && usuario.role !== role) { // Si el rol es diferente y no es master, quizás denegar
+        // Opcional: Manejar si un admin intenta cambiar el rol de un usuario.
+        // Por ejemplo, un admin no debería poder degradarse o promoverse a sí mismo o a otros admins/masters.
+    }
+
 
     // Guardar los cambios
     await usuario.save();
 
+    console.log("Usuario actualizado:", usuario);
+
     res.json({ 
       message: "Usuario actualizado exitosamente",
+      user: { // Opcional: devolver los datos actualizados del usuario (sin contraseña hasheada)
+        id: usuario.id,
+        nombre: usuario.nombre,
+        email: usuario.email,
+        telefono: usuario.telefono,
+        role: usuario.role
+      }
     });
   } catch (error) {
+    console.error("Error al editar usuario:", error); // Mejorar el log del error
     res.status(400).json({ error: error.message });
   }
 };
@@ -195,7 +221,7 @@ const obtenerUsuarioPorId = async (req, res) => {
       return res.status(404).json({ error: "Usuario no encontrado" });
     }
 
-    // Devuelve los datos del usuario sin información sensible
+    // Devuelve los datos del usuario sin información sensible (como la contraseña)
     res.json({
       id: usuario.id,
       nombre: usuario.nombre,

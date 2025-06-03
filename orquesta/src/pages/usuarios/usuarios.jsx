@@ -11,12 +11,18 @@ export default function Usuarios() {
     });
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 15;
+    const [currentUserRole, setCurrentUserRole] = useState("");
+    const [currentUserId, setCurrentUserId] = useState(null); // Estado para el ID del usuario actual
 
     useEffect(() => {
         const fetchData = async () => {
-            if (JSON.parse(localStorage.getItem("user")).role !== "admin") {
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (!user || (user.role !== "admin" && user.role !== "master")) {
                 window.location.href = "/";
+                return;
             }
+            setCurrentUserRole(user.role);
+            setCurrentUserId(user.id); // Almacenar el ID del usuario actual
 
             const response = await fetch(
                 `https://backend.sinfocarabobo.com/api/usuarios/`, { credentials: 'include' }
@@ -83,15 +89,33 @@ export default function Usuarios() {
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+    // Función para determinar si se pueden mostrar las acciones (editar y eliminar)
+    const canPerformActions = (usuarioId, userRole) => {
+        // Si el usuario de la fila es el mismo que el usuario logeado, no se pueden realizar acciones.
+        if (usuarioId === currentUserId) {
+            return false;
+        }
+
+        // Lógica existente para permisos de edición/eliminación
+        if (currentUserRole === "master") {
+            return true; // Master puede editar/eliminar a todos excepto a sí mismo (ya manejado arriba)
+        } else if (currentUserRole === "admin") {
+            return userRole !== "admin" && userRole !== "master"; // Admin solo puede editar/eliminar usuarios normales
+        }
+        return false;
+    };
+
     return (
         <Layout>
             <div className="d-flex vh-100">
                 <div className="main-content flex-grow-1 p-4" style={{ width: "80%" }}>
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <h1>Usuarios</h1>
+                        {currentUserRole === "master" || currentUserRole === "admin" && (
                             <Link to="/crear_usuario" className="btn btn-blue">
                                 + Crear Usuario
                             </Link>
+                        )}
                     </div>
 
                     <div className="d-flex justify-content-between align-items-center mb-4">
@@ -134,6 +158,7 @@ export default function Usuarios() {
                                         >
                                             <option value="">Todos</option>
                                             <option value="admin">Admin</option>
+                                            <option value="master">Master</option>
                                             <option value="archivista">Empleado</option>
                                         </select>
                                     </div>
@@ -165,14 +190,15 @@ export default function Usuarios() {
                                         <td className="align-middle">{usuario.email}</td>
                                         <td className="align-middle">{usuario.telefono}</td>
                                         <td className="align-middle">{usuario.role}</td>
-                                        <td className="align-middle">
-                                        {usuario.role === "admin" ? (
-                                                <span className="text-muted">No disponible</span>
-                                        ) : (
+                                        <td className="align-middle d-flex align-items-center justify-content-center h-100"> {/* Añadido d-flex, align-items-center, justify-content-center, h-100 */}
+                                            {canPerformActions(usuario.id, usuario.role) ? (
                                                 <div className="d-flex gap-2">
-                                                <Link to={`/editar_usuario/${usuario.id}`} className="btn btn-sm btn-primary">
-                                                    Editar
-                                                </Link>
+                                                    <Link 
+                                                        to={`/editar_usuario/${usuario.id}`} 
+                                                        className="btn btn-sm btn-primary"
+                                                    >
+                                                        Editar
+                                                    </Link>
                                                     <button 
                                                         className="btn btn-sm btn-danger"
                                                         onClick={() => handleDelete(usuario.id)}
@@ -180,8 +206,10 @@ export default function Usuarios() {
                                                         Eliminar
                                                     </button>
                                                 </div>
+                                            ) : (
+                                                <span className="text-muted">No disponible</span>
                                             )}
-                                            </td>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
