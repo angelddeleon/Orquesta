@@ -12,9 +12,24 @@ const app = express()
 // Middleware para manejar JSON
 app.use(express.json());
 
+// Lista de orígenes permitidos
+const allowedOrigins = [
+  'http://partituras.sinfocarabobo.com',
+  'https://partituras.sinfocarabobo.com'
+];
+
 // Middleware para manejar CORS
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: function (origin, callback) {
+      // Permitir solicitudes sin origen (como aplicaciones móviles o curl)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Origen no permitido por CORS'));
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
