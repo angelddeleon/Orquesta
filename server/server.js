@@ -38,6 +38,7 @@ const startServer = async () => {
     console.log("Modelos sincronizados correctamente");
 
     // Carga inicial con reintentos
+    /*
     console.log("Cargando datos iniciales...");
     let retries = 3;
     while (retries > 0) {
@@ -51,6 +52,7 @@ const startServer = async () => {
         await new Promise(resolve => setTimeout(resolve, 2000)); // Espera 2 segundos
       }
     }
+      */
 
     // Iniciar servidor
     app.listen(PORT, () => {

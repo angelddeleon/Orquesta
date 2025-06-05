@@ -94,7 +94,8 @@ const obtenerPartituras = async (req, res) => {
           include: [{ model: Instrumento, as: "instrumento" }],
         },
       ],
-      order: [["createdAt", "DESC"]],
+      // CAMBIO: Ordenar por 'createdAt' en orden ascendente (ASC)
+      order: [["createdAt", "ASC"]],
       distinct: true,
     });
 

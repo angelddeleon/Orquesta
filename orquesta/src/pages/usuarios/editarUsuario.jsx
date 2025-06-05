@@ -192,7 +192,7 @@ export default function EditarUsuario() {
                                             value={formData.telefono}
                                             onChange={handleChange}
                                             required
-                                            maxLength={7}
+                                            maxLength={10}
                                         />
                                     </div>
                                 </div>
