@@ -37,23 +37,6 @@ const startServer = async () => {
     });
     console.log("Modelos sincronizados correctamente");
 
-    // Carga inicial con reintentos
-    /*
-    console.log("Cargando datos iniciales...");
-    let retries = 3;
-    while (retries > 0) {
-      try {
-        await loadInitialData();
-        break;
-      } catch (error) {
-        retries--;
-        console.error(`Error en carga inicial (${retries} intentos restantes):`, error.message);
-        if (retries === 0) throw error;
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Espera 2 segundos
-      }
-    }
-      */
-
     // Iniciar servidor
     app.listen(PORT, () => {
       console.log(`🚀 Servidor iniciado en http://localhost:${PORT}`);
